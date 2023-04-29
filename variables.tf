@@ -87,5 +87,3 @@ variable "virtual_network_name" {
   description = "Name of the virtual network for the private endpoint"
   default     = null
 }
-
-# Add more variables as needed
