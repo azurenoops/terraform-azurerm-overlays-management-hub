@@ -3,15 +3,14 @@
 
 resource "azurerm_network_security_group" "nsg" {
   name                = local.hub_nsg_name
-  resource_group_name       = local.resource_group_name
-  location                  = local.location
-  tags = merge(var.tags, {
-    DeployedBy = format("AzureNoOpsTF [%s]", terraform.workspace)
-  })
+  resource_group_name = local.resource_group_name
+  location            = local.location
+  tags                = merge(local.default_tags, var.add_tags, )
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsgassoc" {
-  subnet_id                 = azurerm_subnet.default_snet.id
+  for_each                  = var.subnets
+  subnet_id                 = azurerm_subnet.default_snet[each.key].id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
@@ -19,7 +18,7 @@ resource "azurerm_network_security_rule" "deny_all_inbound" {
   for_each = toset(var.deny_all_inbound ? ["enabled"] : [])
 
   name                        = "deny-all-inbound"
-  resource_group_name       = local.resource_group_name
+  resource_group_name         = local.resource_group_name
   access                      = "Deny"
   direction                   = "Inbound"
   network_security_group_name = azurerm_network_security_group.nsg.name

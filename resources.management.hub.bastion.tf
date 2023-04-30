@@ -42,7 +42,7 @@ resource "azurerm_public_ip" "bastion_pip" {
   allocation_method   = var.azure_bastion_public_ip_allocation_method
   sku                 = var.azure_bastion_public_ip_sku
   domain_name_label   = var.domain_name_label != null ? var.domain_name_label : format("gw%s%s", lower(replace(local.bastion_pip_name, "/[[:^alnum:]]/", "")), random_string.str.result)
-  tags                = merge({ "ResourceName" = local.bastion_pip_name }, var.tags, )
+  tags                = merge({ "ResourceName" = local.bastion_pip_name }, local.default_tags, var.add_tags, )
 
   lifecycle {
     ignore_changes = [
@@ -67,7 +67,7 @@ resource "azurerm_bastion_host" "main" {
   scale_units            = var.azure_bastion_host_sku == "Standard" ? var.scale_units : 2
   shareable_link_enabled = var.azure_bastion_host_sku == "Standard" ? var.enable_shareable_link : null
   tunneling_enabled      = var.azure_bastion_host_sku == "Standard" ? var.enable_tunneling : null
-  tags                   = merge({ "ResourceName" = lower(local.bastion_name) }, var.tags, )
+  tags                   = merge({ "ResourceName" = lower(local.bastion_name) }, local.default_tags, var.add_tags, )
 
   ip_configuration {
     name                 = "${lower(local.bastion_name)}-network"
@@ -88,7 +88,7 @@ resource "azurerm_bastion_host" "main" {
   vm_size                = var.jumpbox_vm_size
   delete_os_disk_on_termination = true
   delete_data_disks_on_termination = true
-  tags                   = merge({ "ResourceName" = lower(local.jumpbox_name) }, var.tags, )
+  tags                   = merge({ "ResourceName" = lower(local.jumpbox_name) }, local.default_tags, var.add_tags,, )
 
   storage_image_reference {
     publisher = var.jumpbox_image_publisher

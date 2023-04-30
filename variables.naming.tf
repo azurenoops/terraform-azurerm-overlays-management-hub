@@ -41,13 +41,13 @@ variable "hub_vnet_custom_name" {
   default     = null
 }
 
-variable "hub_fw_custom_name" {
+variable "hub_firewall_custom_name" {
   description = "The name of the custom virtual network firewall to create. If not set, the name will be generated using the 'name_prefix' and 'name_suffix' variables. If set, the 'name_prefix' and 'name_suffix' variables will be ignored."
   type        = string
   default     = null
 }
 
-variable "hub_fw_policy_custom_name" {
+variable "hub_firewall_policy_custom_name" {
   description = "The name of the custom virtual network firewall policy to create. If not set, the name will be generated using the 'name_prefix' and 'name_suffix' variables. If set, the 'name_prefix' and 'name_suffix' variables will be ignored."
   type        = string
   default     = null
@@ -65,13 +65,13 @@ variable "hub_nsg_custom_name" {
   default     = null
 }
 
-variable "hub_fw_client_pip_custom_name" {
+variable "hub_firewall_client_pip_custom_name" {
   description = "The name of the custom virtual network firewall client public IP to create. If not set, the name will be generated using the 'name_prefix' and 'name_suffix' variables. If set, the 'name_prefix' and 'name_suffix' variables will be ignored."
   type        = string
   default     = null
 }
 
-variable "hub_fw_mgt_pip_custom_name" {
+variable "hub_firewall_mgt_pip_custom_name" {
   description = "The name of the custom virtual network firewall management public IP to create. If not set, the name will be generated using the 'name_prefix' and 'name_suffix' variables. If set, the 'name_prefix' and 'name_suffix' variables will be ignored."
   type        = string
   default     = null

@@ -16,7 +16,7 @@ data "azurenoopsutils_resource_name" "vnet" {
   separator     = "-"
 }
 
-data "azurenoopsutils_resource_name" "fw" {
+data "azurenoopsutils_resource_name" "firewall" {
   name          = var.workload_name
   resource_type = "azurerm_firewall"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
@@ -26,7 +26,7 @@ data "azurenoopsutils_resource_name" "fw" {
   separator     = "-"
 }
 
-data "azurenoopsutils_resource_name" "fw_policy" {
+data "azurenoopsutils_resource_name" "firewall_policy" {
   name          = var.workload_name
   resource_type = "azurerm_firewall_policy"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
@@ -46,7 +46,7 @@ data "azurenoopsutils_resource_name" "snet" {
   separator     = "-"
 }
 
-data "azurenoopsutils_resource_name" "fw_client_pub_ip" {
+data "azurenoopsutils_resource_name" "firewall_client_pub_ip" {
   name          = var.workload_name
   resource_type = "azurerm_public_ip"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
@@ -56,7 +56,7 @@ data "azurenoopsutils_resource_name" "fw_client_pub_ip" {
   separator     = "-"
 }
 
-data "azurenoopsutils_resource_name" "fw_mgt_pub_ip" {
+data "azurenoopsutils_resource_name" "firewall_mgt_pub_ip" {
   name          = var.workload_name
   resource_type = "azurerm_public_ip"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]

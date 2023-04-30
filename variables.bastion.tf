@@ -12,7 +12,7 @@ variable "azure_bastion_public_ip_allocation_method" {
 }
 
 variable "azure_bastion_public_ip_sku" {
-  description = "The SKU of the Public IP. Accepted values are Basic and Standard. Defaults to Basic"
+  description = "The SKU of the Public IP. Accepted values are Basic and Standard. Defaults to Standard"
   default     = "Standard"
 }
 

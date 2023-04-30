@@ -12,5 +12,5 @@ resource "azurerm_storage_account" "storeacc" {
   account_tier              = "Standard"
   account_replication_type  = "GRS"
   enable_https_traffic_only = true
-  tags                      = merge({ "ResourceName" = format("hubstdiaglogs%s", lower(replace(local.hub_sa_name, "/[[:^alnum:]]/", ""))) }, var.tags, )
+  tags                      = merge({ "ResourceName" = format("hubstdiaglogs%s", lower(replace(local.hub_sa_name, "/[[:^alnum:]]/", ""))) }, local.default_tags, var.add_tags, )
 }

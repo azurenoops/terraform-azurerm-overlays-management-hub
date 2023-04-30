@@ -21,11 +21,6 @@ variable "ddos_plan_name" {
   default     = null
 }
 
-variable "dns_servers" {
-  description = "List of dns servers to use for virtual network"
-  default     = []
-}
-
 variable "create_network_watcher" {
   description = "Controls if Network Watcher resources should be created for the Azure subscription"
   default     = false

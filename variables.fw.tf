@@ -15,68 +15,76 @@ variable "enable_forced_tunneling" {
   default     = true
 }
 
-variable "fw_client_snet_address_prefix" {
+variable "firewall_subnet_address_prefix" {
   description = "The address prefix to use for the Firewall subnet"
-  default     = null
+  default     = []
 }
 
-variable "fw_management_snet_address_prefix" {
+variable "firewall_management_snet_address_prefix" {
   description = "The address prefix to use for Firewall managemement subnet to enable forced tunnelling. The Management Subnet used for the Firewall must have the name `AzureFirewallManagementSubnet` and the subnet mask must be at least a `/26`."
   default     = null
 }
 
-variable "fw_client_snet_service_endpoints" {
+variable "firewall_snet_service_endpoints" {
   description = "Service endpoints to add to the firewall client subnet"
   type        = list(string)
-  default     = []
+  default     = [
+    "Microsoft.AzureActiveDirectory",
+    "Microsoft.AzureCosmosDB",
+    "Microsoft.EventHub",
+    "Microsoft.KeyVault",
+    "Microsoft.ServiceBus",
+    "Microsoft.Sql",
+    "Microsoft.Storage",
+  ]
 }
 
-variable "fw_client_snet_private_endpoint_network_policies_enabled" {
+variable "firewall_snet_private_endpoint_network_policies_enabled" {
   description = "Controls if network policies are enabled on the firewall client subnet"
   type        = bool
   default     = false
 }
 
-variable "fw_client_snet_private_link_service_network_policies_enabled" {
+variable "firewall_snet_private_link_service_network_policies_enabled" {
   description = "Controls if private link service network policies are enabled on the firewall client subnet"
   type        = bool
   default     = false
 }
 
-variable "fw_management_snet_service_endpoints" {
+variable "firewall_management_snet_service_endpoints" {
   description = "Service endpoints to add to the firewall management subnet"
   type        = list(string)
   default     = []
 }
 
-variable "fw_management_snet_private_endpoint_network_policies_enabled" {
+variable "firewall_management_snet_private_endpoint_network_policies_enabled" {
   description = "Controls if network policies are enabled on the firewall management subnet"
   type        = bool
   default     = false
 }
 
-variable "fw_management_snet_private_link_service_network_policies_enabled" {
+variable "firewall_management_snet_private_link_service_network_policies_enabled" {
   description = "Controls if private link service network policies are enabled on the firewall management subnet"
   type        = bool
   default     = false
 }
 
-variable "fw_intrusion_detection_mode" {
+variable "firewall_intrusion_detection_mode" {
   description = "Controls if Azure Firewall Intrusion Detection System (IDS) should be enabled for the Azure subscription"
   default     = "Alert"
 
   validation {
-    condition     = contains(["Alert", "Deny", "Off"], var.fw_intrusion_detection_mode)
+    condition     = contains(["Alert", "Deny", "Off"], var.firewall_intrusion_detection_mode)
     error_message = "The Intrusion Detection Mode must be either 'Alert' or 'Deny' or 'Off'. The default value is 'Alert'."
   }
 }
 
-variable "fw_threat_intelligence_mode" {
+variable "firewall_threat_intelligence_mode" {
   description = "Controls if Azure Firewall Threat Intelligence should be enabled for the Azure subscription"
   default     = "Alert"
 
   validation {
-    condition     = contains(["Alert", "Deny", "Off"], var.fw_threat_intelligence_mode)
+    condition     = contains(["Alert", "Deny", "Off"], var.firewall_threat_intelligence_mode)
     error_message = "The Threat Intelligence Mode must be either 'Alert' or 'Deny' or 'Off'. The default value is 'Alert'."
   }
 }
@@ -86,16 +94,27 @@ variable "base_policy_id" {
   default     = null
 }
 
-variable "firewall_config" {
-  description = "Manages an Azure Firewall configuration"
-  type = object({
-    sku_name          = optional(string)
-    sku_tier          = optional(string)
-    dns_servers       = optional(list(string))
-    private_ip_ranges = optional(list(string))
-    threat_intel_mode = optional(string)
-    zones             = optional(list(string))
-  })
+variable "firewall_sku_name" {
+  description = "SKU name of the Firewall. Possible values are `AZfirewall_Hub` and `AZfirewall_VNet`"
+  type        = string
+  default     = "AZfirewall_VNet"
+}
+
+variable "firewall_sku_tier" {
+  description = "SKU tier of the Firewall. Possible values are `Premium`, `Standard` and `Basic`"
+  type        = string
+  default     = "Standard"
+}
+
+variable "firewall_zones" {
+  description = "A collection of availability zones to spread the Firewall over"
+  type        = list(string)
+  default     = null
+}
+
+variable "dns_servers" {
+  description = "List of dns servers to use for virtual network"
+  default     = []
 }
 
 variable "virtual_hub" {
@@ -107,7 +126,7 @@ variable "virtual_hub" {
   default = null
 }
 
-variable "fw_application_rules" {
+variable "firewall_application_rules" {
   description = "List of application rules to apply to firewall."
   type = list(object({
     name             = string
@@ -125,7 +144,7 @@ variable "fw_application_rules" {
   default = []
 }
 
-variable "fw_network_rules" {
+variable "firewall_network_rules" {
   description = "List of network rules to apply to firewall."
   type = list(object({
     name                  = string
@@ -140,7 +159,7 @@ variable "fw_network_rules" {
   default = []
 }
 
-variable "fw_nat_rules" {
+variable "firewall_nat_rules" {
   description = "List of nat rules to apply to firewall."
   type = list(object({
     name                  = string
@@ -161,13 +180,13 @@ variable "fw_nat_rules" {
 # Firewall PIP Configuration    ##
 ##################################
 
-variable "fw_pip_sku" {
+variable "firewall_pip_sku" {
   description = "The SKU of the public IP address"
   type        = string
   default     = "Standard"
 }
 
-variable "fw_pip_allocation_method" {
+variable "firewall_pip_allocation_method" {
   description = "The allocation method of the public IP address"
   type        = string
   default     = "Static"

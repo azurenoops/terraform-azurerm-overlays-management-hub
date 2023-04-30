@@ -5,7 +5,7 @@
 # Firewall Policy Configuration    ##
 #####################################
 
-variable "application_rule_collection" {
+variable "firewall_application_rule_collection" {
   default     = {}
   description = <<EOD
     application_rule_collection = [
@@ -69,7 +69,7 @@ EOD
 }
 
 
-variable "network_rule_collection" {
+variable "firewall_network_rules_collection" {
   default     = {}
   description = <<EOD
     network_rule_collections = [
@@ -98,7 +98,7 @@ variable "network_rule_collection" {
 EOD
 }
 
-variable "nat_rule_collections" {
+variable "firewall_nat_rule_collections" {
   default     = {}
   description = <<EOD
     name     = nat_rule_collection1

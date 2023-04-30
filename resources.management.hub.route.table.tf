@@ -10,30 +10,22 @@ DESCRIPTION: The following components will be options in this deployment
 AUTHOR/S: jspinella
 */
 
-resource "azurerm_route_table" "routetable" {
-  depends_on = [
-    module.mod_hub_rg
-  ]
+resource "azurerm_route_table" "routetable" { 
   name                          = local.hub_rt_name
   resource_group_name           = local.resource_group_name
   location                      = local.location
   disable_bgp_route_propagation = var.disable_bgp_route_propagation
-  tags                          = merge({ "ResourceName" = "route-network-outbound" }, var.tags, )
+  tags                          = merge({ "ResourceName" = "route-network-outbound" }, local.default_tags, var.add_tags, )
 }
 
 resource "azurerm_subnet_route_table_association" "rtassoc" {
-  subnet_id      = azurerm_subnet.default_snet.id
-  route_table_id = azurerm_route_table.routetable.id
-}
-
-resource "azurerm_subnet_route_table_association" "add_rtassoc" {
-  for_each       = var.add_subnets
-  subnet_id      = azurerm_subnet.additional_snets[each.value.name].id
+  for_each       = var.subnets
+  subnet_id      = azurerm_subnet.default_snet[each.key].id
   route_table_id = azurerm_route_table.routetable.id
 }
 
 resource "azurerm_route" "force_internet_tunneling" {
-  name                   = "InternetForceTunneling"
+  name                   = lower("route-to-firewall-${local.hub_vnet_name}-${local.location}")
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.routetable.name
   address_prefix         = "0.0.0.0/0"
@@ -45,7 +37,7 @@ resource "azurerm_route" "force_internet_tunneling" {
 
 resource "azurerm_route" "route" {
   for_each               = var.route_table_routes
-  name                   = lower("route-to-firewall-${each.value.route_name}-${module.mod_hub_rg.0.resource_group_location}")
+  name                   = lower("route-to-firewall-${each.value.route_name}-${local.location}")
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.routetable.name
   address_prefix         = each.value.address_prefix

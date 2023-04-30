@@ -3,22 +3,22 @@
 
 output "resource_group_name" {
   description = "The name of the hub virtual network resource group"
-  value       = azurerm_virtual_network.vnet.resource_group_name
+  value       = azurerm_virtual_network.hub_vnet.resource_group_name
 }
 
 output "virtual_network_name" {
   description = "The name of the hub virtual network"
-  value       = azurerm_virtual_network.vnet.name
+  value       = azurerm_virtual_network.hub_vnet.name
 }
 
 output "virtual_network_id" {
   description = "The id of the hub virtual network"
-  value       = azurerm_virtual_network.vnet.id
+  value       = azurerm_virtual_network.hub_vnet.id
 }
 
 output "virtual_network_address_space" {
   description = "List of address spaces that are used the virtual network."
-  value       = element(coalescelist(azurerm_virtual_network.vnet.*.address_space, [""]), 0)
+  value       = element(coalescelist(azurerm_virtual_network.hub_vnet.*.address_space, [""]), 0)
 }
 
 output "ddos_protection_plan" {
@@ -43,12 +43,12 @@ output "nsg_name" {
 
 output "default_subnet_id" {
   description = "The id of the default subnet"
-  value       = azurerm_subnet.default_snet.id
+  value       = element(concat(azurerm_subnet.default_snet.*.id, [""]), 0)
 }
 
 output "default_subnet_name" {
-  description = "The id of the default subnet"
-  value       = azurerm_subnet.default_snet.name
+  description = "The name of the default subnet"
+  value       = element(concat(azurerm_subnet.default_snet.*.name, [""]), 0)
 }
 
 output "firewall_id" {
@@ -109,29 +109,4 @@ output "azure_bastion_host_id" {
 output "azure_bastion_host_fqdn" {
   description = "The fqdn of the Bastion Host"
   value       = var.enable_bastion_host ? azurerm_bastion_host.main.0.dns_name : null
-}
-
-output "privatelink_monitor_azure_com" {
-  description = "The ip of the Bastion Host"
-  value       = azurerm_private_dns_zone.privatelink_monitor_azure_com.id
-}
-
-output "privatelink_oms_opinsights_azure_com" {
-  description = "The ip of the Bastion Host"
-  value       = azurerm_private_dns_zone.privatelink_oms_opinsights_azure_com.id
-}
-
-output "privatelink_ods_opinsights_azure_com" {
-  description = "The ip of the Bastion Host"
-  value       = azurerm_private_dns_zone.privatelink_ods_opinsights_azure_com.id
-}
-
-output "privatelink_agentsvc_azure_automation_net" {
-  description = "The ip of the Bastion Host"
-  value       = azurerm_private_dns_zone.privatelink_agentsvc_azure_automation_net.id
-}
-
-output "privatelink_blob_core_cloudapi_net" {
-  description = "The ip of the Bastion Host"
-  value       = azurerm_private_dns_zone.privatelink_blob_core_cloudapi_net.id
 }

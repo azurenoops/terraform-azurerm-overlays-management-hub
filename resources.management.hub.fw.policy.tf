@@ -18,27 +18,27 @@ AUTHOR/S: jspinella
 # Azure Firewall Policy / Rules 
 #----------------------------------------------
 resource "azurerm_firewall_policy" "firewallpolicy" {
-  name                     = local.hub_fw_policy_name
+  name                     = local.hub_firewall_policy_name
   resource_group_name      = local.resource_group_name
   location                 = local.location
-  sku                      = var.firewall_config.sku_tier
+  sku                      = var.firewall_sku_tier
   base_policy_id           = var.base_policy_id == null ? null : var.base_policy_id
-  threat_intelligence_mode = var.fw_threat_intelligence_mode
+  threat_intelligence_mode = var.firewall_threat_intelligence_mode
   dynamic "intrusion_detection" {
-    for_each = var.firewall_config.sku_tier == "Premium" ? [1] : []
+    for_each = var.firewall_sku_tier == "Premium" ? [1] : []
     content {
-      mode = var.fw_intrusion_detection_mode
+      mode = var.firewall_intrusion_detection_mode
     }
   }
 }
 
 resource "azurerm_firewall_policy_rule_collection_group" "app_rule_collection_group" {
-  name               = "${local.hub_fw_policy_name}-default-arcg"
+  name               = "${local.hub_firewall_policy_name}-default-arcg"
   firewall_policy_id = azurerm_firewall_policy.firewallpolicy.id
   priority           = "300"
 
   dynamic "application_rule_collection" {
-    for_each = var.application_rule_collection
+    for_each = var.firewall_application_rule_collection
     content {
       name     = application_rule_collection.value.name
       priority = application_rule_collection.value.priority
@@ -63,12 +63,12 @@ resource "azurerm_firewall_policy_rule_collection_group" "app_rule_collection_gr
 }
 
 resource "azurerm_firewall_policy_rule_collection_group" "nw_rule_collection_group" {
-  name               = "${local.hub_fw_policy_name}-default-nwrcg"
+  name               = "${local.hub_firewall_policy_name}-default-nwrcg"
   firewall_policy_id = azurerm_firewall_policy.firewallpolicy.id
   priority           = "100"
 
   dynamic "network_rule_collection" {
-    for_each = var.network_rule_collection
+    for_each = var.firewall_network_rules_collection
     content {
       name     = network_rule_collection.value.name
       priority = network_rule_collection.value.priority
@@ -91,12 +91,12 @@ resource "azurerm_firewall_policy_rule_collection_group" "nw_rule_collection_gro
 }
 
 resource "azurerm_firewall_policy_rule_collection_group" "nat_rule_collection_group" {
-  name               = "${local.hub_fw_policy_name}-default-natrcg"
+  name               = "${local.hub_firewall_policy_name}-default-natrcg"
   firewall_policy_id = azurerm_firewall_policy.firewallpolicy.id
   priority           = "110"
 
   dynamic "nat_rule_collection" {
-    for_each = var.nat_rule_collections
+    for_each = var.firewall_nat_rule_collections
     content {
       name     = nat_rule_collection.value.name
       priority = nat_rule_collection.value.priority

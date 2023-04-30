@@ -6,9 +6,9 @@
 #########################
 
 variable "deny_all_inbound" {
-  description = "True to deny all inbound traffic by default"
+  description = "True to deny all inbound traffic by default. If false, only deny inbound traffic that is not explicitly allowed. Default is false."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "http_inbound_allowed" {
@@ -123,7 +123,7 @@ variable "load_balancer_rules_enabled" {
   default     = false
 }
 
-variable "additional_rules" {
+variable "nsg_additional_rules" {
   description = "Additional network security group rules to add. For arguements please refer to https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule#argument-reference"
   type = list(object({
     priority  = number

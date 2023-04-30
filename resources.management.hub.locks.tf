@@ -18,7 +18,7 @@ resource "azurerm_management_lock" "vnet_resource_group_level_lock" {
 resource "azurerm_management_lock" "subnet_resource_group_level_lock" {
   count      = var.enable_resource_locks ? 1 : 0
   name       = "${local.hub_snet_name}-${var.lock_level}-lock"
-  scope      = azurerm_subnet.default_snet.id
+  scope      = azurerm_subnet.default_snet.*.id
   lock_level = var.lock_level
   notes      = "Subnet '${local.hub_snet_name}' is locked with '${var.lock_level}' level."
 }
@@ -26,7 +26,7 @@ resource "azurerm_management_lock" "subnet_resource_group_level_lock" {
 resource "azurerm_management_lock" "fw_client_subnet_resource_group_level_lock" {
   count      = var.enable_resource_locks ? 1 : 0
   name       = "FW Client Subnet-${var.lock_level}-lock"
-  scope      = azurerm_subnet.fw_client_snet.0.id
+  scope      = azurerm_subnet.firewall_client_snet.0.id
   lock_level = var.lock_level
   notes      = "FW Client Subnet is locked with '${var.lock_level}' level."
 }
@@ -34,7 +34,7 @@ resource "azurerm_management_lock" "fw_client_subnet_resource_group_level_lock" 
 resource "azurerm_management_lock" "fw_mgt_subnet_resource_group_level_lock" {
   count      = var.enable_resource_locks ? 1 : 0
   name       = "FW Management Subnet-${var.lock_level}-lock"
-  scope      = azurerm_subnet.fw_management_snet.0.id
+  scope      = azurerm_subnet.firewall_management_snet.0.id
   lock_level = var.lock_level
   notes      = "FW Management Subnet is locked with '${var.lock_level}' level."
 }
