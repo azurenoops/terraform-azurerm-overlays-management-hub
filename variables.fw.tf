@@ -28,7 +28,7 @@ variable "firewall_management_snet_address_prefix" {
 variable "firewall_snet_service_endpoints" {
   description = "Service endpoints to add to the firewall client subnet"
   type        = list(string)
-  default     = [
+  default = [
     "Microsoft.AzureActiveDirectory",
     "Microsoft.AzureCosmosDB",
     "Microsoft.EventHub",
@@ -95,9 +95,9 @@ variable "base_policy_id" {
 }
 
 variable "firewall_sku_name" {
-  description = "SKU name of the Firewall. Possible values are `AZfirewall_Hub` and `AZfirewall_VNet`"
+  description = "SKU name of the Firewall. Possible values are `AZFW_Hub` and `AZFW_VNet`"
   type        = string
-  default     = "AZfirewall_VNet"
+  default     = "AZFW_VNet"
 }
 
 variable "firewall_sku_tier" {

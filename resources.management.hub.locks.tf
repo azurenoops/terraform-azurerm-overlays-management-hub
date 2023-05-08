@@ -15,14 +15,6 @@ resource "azurerm_management_lock" "vnet_resource_group_level_lock" {
 #------------------------------------------------------------
 # Subnet Lock configuration - Default (required). 
 #------------------------------------------------------------
-resource "azurerm_management_lock" "subnet_resource_group_level_lock" {
-  count      = var.enable_resource_locks ? 1 : 0
-  name       = "${local.hub_snet_name}-${var.lock_level}-lock"
-  scope      = azurerm_subnet.default_snet.*.id
-  lock_level = var.lock_level
-  notes      = "Subnet '${local.hub_snet_name}' is locked with '${var.lock_level}' level."
-}
-
 resource "azurerm_management_lock" "fw_client_subnet_resource_group_level_lock" {
   count      = var.enable_resource_locks ? 1 : 0
   name       = "FW Client Subnet-${var.lock_level}-lock"

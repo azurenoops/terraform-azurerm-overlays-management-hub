@@ -24,11 +24,11 @@ resource "azurerm_subnet" "gw_snet" {
 }
 
 resource "azurerm_subnet" "default_snet" {
-  for_each             = var.subnets
-  name                 = lower(format("${var.org_name}-${module.mod_azregions.location_cli}-%s-snet", each.value.name))
+  for_each             = var.hub_subnets
+  name                 = var.hub_snet_custom_name != null ? "${var.hub_snet_custom_name}_${each.key}" : "${data.azurenoopsutils_resource_name.snet[each.key].result}"
   resource_group_name  = local.resource_group_name
   virtual_network_name = azurerm_virtual_network.hub_vnet.name
-  address_prefixes     = each.value.subnet_address_prefix
+  address_prefixes     = each.value.address_prefixes
   service_endpoints    = lookup(each.value, "service_endpoints", [])
   # Applicable to the subnets which used for Private link endpoints or services 
   private_endpoint_network_policies_enabled     = lookup(each.value, "private_endpoint_network_policies_enabled", null)

@@ -114,4 +114,10 @@ variable "ops_logging_law_custom_name" {
   default     = null
 }
 
+variable "ddos_plan_custom_name" {
+  description = "The name of the custom ddos protection plan to create. If not set, the name will be generated using the 'name_prefix' and 'name_suffix' variables. If set, the 'name_prefix' variable will be ignored."
+  type        = string
+  default     = null
+}
+
 

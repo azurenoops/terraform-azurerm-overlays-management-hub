@@ -1,19 +1,31 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+# Resource Group
 output "resource_group_name" {
-  description = "The name of the hub virtual network resource group"
-  value       = azurerm_virtual_network.hub_vnet.resource_group_name
+  description = "The name of the resource group in which resources are created"
+  value       = element(coalescelist(data.azurerm_resource_group.rgrp.*.name, module.mod_scaffold_rg.*.resource_group_name, [""]), 0)
 }
 
+output "resource_group_id" {
+  description = "The id of the resource group in which resources are created"
+  value       = element(coalescelist(data.azurerm_resource_group.rgrp.*.id, module.mod_scaffold_rg.*.resource_group_id, [""]), 0)
+}
+
+output "resource_group_location" {
+  description = "The location of the resource group in which resources are created"
+  value       = element(coalescelist(data.azurerm_resource_group.rgrp.*.location, module.mod_scaffold_rg.*.resource_group_location, [""]), 0)
+}
+
+# Vnet and Subnets
 output "virtual_network_name" {
-  description = "The name of the hub virtual network"
-  value       = azurerm_virtual_network.hub_vnet.name
+  description = "The name of the virtual network"
+  value       = element(concat(azurerm_virtual_network.hub_vnet.*.name, [""]), 0)
 }
 
 output "virtual_network_id" {
-  description = "The id of the hub virtual network"
-  value       = azurerm_virtual_network.hub_vnet.id
+  description = "The id of the virtual network"
+  value       = element(concat(azurerm_virtual_network.hub_vnet.*.id, [""]), 0)
 }
 
 output "virtual_network_address_space" {
@@ -21,49 +33,98 @@ output "virtual_network_address_space" {
   value       = element(coalescelist(azurerm_virtual_network.hub_vnet.*.address_space, [""]), 0)
 }
 
-output "ddos_protection_plan" {
+output "subnet_ids" {
+  description = "List of IDs of subnets"
+  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.id], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.id : null], [azurerm_subnet.firewall_client_snet.0.id], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.id : null]))
+}
+
+output "subnet_ids_names" {
+  description = "List of IDs of subnets with names"
+  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.id], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.id : null], [azurerm_subnet.firewall_client_snet.0.id], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.id : null]))
+}
+
+output "subnet_address_prefixes" {
+  description = "List of address prefix for subnets"
+  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.address_prefixes : null], [azurerm_subnet.firewall_client_snet.0.address_prefixes], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.address_prefixes : null]))
+}
+
+# Network Security group ids
+output "network_security_group_ids" {
+  description = "List of Network security groups and ids"
+  value       = [for n in azurerm_network_security_group.nsg : n.id]
+}
+
+# DDoS Protection Plan
+output "ddos_protection_plan_id" {
   description = "Ddos protection plan details"
   value       = var.create_ddos_plan ? element(concat(azurerm_network_ddos_protection_plan.ddos.*.id, [""]), 0) : null
 }
 
+# Network Watcher
 output "network_watcher_id" {
   description = "ID of Network Watcher"
-  value       = var.create_network_watcher != false ? element(concat(azurerm_network_watcher.nwatcher.*.id, [""]), 0) : null
+  value       = element(concat(azurerm_network_watcher.nwatcher.*.id, [""]), 0)
 }
 
-output "nsg_id" {
-  description = "The id of the hub nsg"
-  value       = azurerm_network_security_group.nsg.id
+output "route_table_name" {
+  description = "The name of the route table"
+  value       = azurerm_route_table.routetable.name
 }
 
-output "nsg_name" {
-  description = "The name of the hub nsg"
-  value       = azurerm_network_security_group.nsg.name
+output "route_table_id" {
+  description = "The resource id of the route table"
+  value       = azurerm_route_table.routetable.id
 }
 
-output "default_subnet_id" {
-  description = "The id of the default subnet"
-  value       = element(concat(azurerm_subnet.default_snet.*.id, [""]), 0)
+output "private_dns_zone_names" {
+  description = "The name of the Private DNS zones within Azure DNS"
+  value       = [for s in azurerm_private_dns_zone.pdz : s.name] 
 }
 
-output "default_subnet_name" {
-  description = "The name of the default subnet"
-  value       = element(concat(azurerm_subnet.default_snet.*.name, [""]), 0)
+output "private_dns_zone_ids" {
+  description = "The resource id of Private DNS zones within Azure DNS"
+  value       = [for s in azurerm_private_dns_zone.pdz : s.id] 
 }
 
-output "firewall_id" {
-  description = "The ID of the Azure Firewall"
-  value       = azurerm_firewall.fw.0.id
+output "storage_account_id" {
+  description = "The ID of the storage account."
+  value       = azurerm_storage_account.storeacc.id
+}
+
+output "storage_account_name" {
+  description = "The name of the storage account."
+  value       = azurerm_storage_account.storeacc.name
+}
+
+output "storage_primary_access_key" {
+  sensitive   = true
+  description = "The primary access key for the storage account."
+  value       = azurerm_storage_account.storeacc.primary_access_key
 }
 
 output "public_ip_prefix_id" {
   description = "The id of the Public IP Prefix resource"
-  value       = azurerm_public_ip_prefix.fw-pref.0.id
+  value       = azurerm_public_ip_prefix.firewall_pref.0.id
 }
 
-output "firewall_public_ip" {
+output "firewall_client_public_ip" {
   description = "the public ip of firewall."
-  value       = azurerm_firewall.fw.0.ip_configuration.0.public_ip_address_id
+  value       = element(concat([for ip in azurerm_public_ip.firewall_client_pip : ip.ip_address], [""]), 0)
+}
+
+output "firewall_client_public_ip_fqdn" {
+  description = "Fully qualified domain name of the A DNS record associated with the public IP."
+  value       = element(concat([for f in azurerm_public_ip.firewall_client_pip : f.fqdn], [""]), 0)
+}
+
+output "firewall_management_public_ip" {
+  description = "the public ip of firewall."
+  value       = element(concat([for ip in azurerm_public_ip.firewall_management_pip : ip.ip_address], [""]), 0)
+}
+
+output "firewall_management_public_ip_fqdn" {  
+  description = "Fully qualified domain name of the A DNS record associated with the public IP."
+  value       = element(concat([for f in azurerm_public_ip.firewall_management_pip : f.fqdn], [""]), 0)
 }
 
 output "firewall_private_ip" {
@@ -71,19 +132,14 @@ output "firewall_private_ip" {
   value       = azurerm_firewall.fw.0.ip_configuration.0.private_ip_address
 }
 
+output "firewall_id" {
+  description = "The Resource ID of the Azure Firewall."
+  value       = azurerm_firewall.fw.0.id
+}
+
 output "firewall_name" {
   description = "The name of the Azure Firewall."
   value       = azurerm_firewall.fw.0.name
-}
-
-output "virtual_private_ip_address" {
-  description = "The private IP address associated with the Firewall"
-  value       = var.virtual_hub != null ? azurerm_firewall.fw.0.virtual_hub.0.private_ip_address : null
-}
-
-output "virtual_public_ip_addresses" {
-  description = "The private IP address associated with the Firewall"
-  value       = var.virtual_hub != null ? azurerm_firewall.fw.0.virtual_hub.0.public_ip_addresses : null
 }
 
 output "azure_bastion_subnet_id" {

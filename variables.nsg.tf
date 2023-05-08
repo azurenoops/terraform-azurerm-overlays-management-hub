@@ -1,15 +1,9 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-#########################
-# NSG Configuration    ##
-#########################
-
-variable "deny_all_inbound" {
-  description = "True to deny all inbound traffic by default. If false, only deny inbound traffic that is not explicitly allowed. Default is false."
-  type        = bool
-  default     = false
-}
+#############################
+# NSG Rules Configuration  ##
+#############################
 
 variable "http_inbound_allowed" {
   description = "True to allow inbound HTTP traffic"

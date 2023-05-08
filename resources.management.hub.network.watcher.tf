@@ -26,17 +26,17 @@ resource "azurerm_network_watcher" "nwatcher" {
   tags                = merge({ "ResourceName" = format("%s", "NetworkWatcher_${var.location}") }, local.default_tags, var.add_tags, )
 }
 
-#-----------------------------------------
+/* #-----------------------------------------
 # Network flow logs for subnet and NSG
 #-----------------------------------------
 resource "azurerm_network_watcher_flow_log" "nwflog" {
-  count                     = var.create_network_watcher != false ? 1 : 0
-  name                      = lower("${azurerm_network_watcher.nwatcher.name}-flow-log")
-  network_watcher_name      = azurerm_network_watcher.nwatcher.name
-  resource_group_name       = azurerm_resource_group.nwatcher.name # Must provide Netwatcher resource Group
-  network_security_group_id = azurerm_network_security_group.nsg.id
+  for_each                  = var.hub_subnets
+  name                      = lower("${azurerm_network_watcher.nwatcher[0].name}-flow-log")
+  network_watcher_name      = azurerm_network_watcher.nwatcher[0].name
+  resource_group_name       = azurerm_resource_group.nwatcher[0].name # Must provide Netwatcher resource Group
+  network_security_group_id = azurerm_network_security_group.nsg[each.key].id
   storage_account_id        = azurerm_storage_account.storeacc.id
-  enabled                   = true
+  enabled                   = var.create_network_watcher != false ? true : false
   version                   = 2
   retention_policy {
     enabled = true
@@ -44,10 +44,10 @@ resource "azurerm_network_watcher_flow_log" "nwflog" {
   }
 
   traffic_analytics {
-    enabled               = true
-    workspace_id          = data.azurerm_log_analytics_workspace.logws.workspace_id
+    enabled               = var.enable_traffic_analytics
+    workspace_id          = data.azurerm_log_analytics_workspace.logws.0.workspace_id
     workspace_region      = local.location
-    workspace_resource_id = data.azurerm_log_analytics_workspace.logws.id
+    workspace_resource_id = data.azurerm_log_analytics_workspace.logws.0.id
     interval_in_minutes   = 10
   }
-}
+} */

@@ -39,7 +39,7 @@ resource "azurerm_subnet" "firewall_management_snet" {
 #------------------------------------------
 # Public IP resources for Azure Firewall
 #------------------------------------------
-resource "azurerm_public_ip_prefix" "fw-pref" {
+resource "azurerm_public_ip_prefix" "firewall_pref" {
   count               = var.enable_firewall ? 1 : 0
   name                = lower("${local.hub_firewall_name}-prefix")
   resource_group_name = local.resource_group_name
@@ -55,6 +55,8 @@ resource "azurerm_public_ip" "firewall_client_pip" {
   location            = local.location
   allocation_method   = var.firewall_pip_allocation_method
   sku                 = var.firewall_pip_sku
+  zones               = var.firewall_zones != null ? var.firewall_zones : null
+  public_ip_prefix_id = azurerm_public_ip_prefix.firewall_pref.0.id
   tags                = var.add_tags
 }
 
@@ -65,6 +67,8 @@ resource "azurerm_public_ip" "firewall_management_pip" {
   location            = local.location
   allocation_method   = var.firewall_pip_allocation_method
   sku                 = var.firewall_pip_sku
+  zones               = var.firewall_zones != null ? var.firewall_zones : null
+  public_ip_prefix_id = azurerm_public_ip_prefix.firewall_pref.0.id
   tags                = var.add_tags
 }
 
@@ -79,10 +83,8 @@ resource "azurerm_firewall" "fw" {
   sku_name            = var.firewall_sku_name
   sku_tier            = var.firewall_sku_tier
   firewall_policy_id  = azurerm_firewall_policy.firewallpolicy.id
-  dns_servers         = var.dns_servers
-  private_ip_ranges   = var.private_ip_ranges
   threat_intel_mode   = var.firewall_threat_intelligence_mode
-  zones               = var.firewall_zones
+  zones               = var.firewall_zones != null ? var.firewall_zones : null
   tags                = merge({ "ResourceName" = format("%s", local.hub_firewall_name) }, local.default_tags, var.add_tags, )
 
   ip_configuration {
@@ -94,7 +96,7 @@ resource "azurerm_firewall" "fw" {
   dynamic "management_ip_configuration" {
     for_each = var.enable_forced_tunneling ? [1] : []
     content {
-      name                 = lower("${local.hub_firewall_name}-forced-tunnel")
+      name                 = lower("${local.hub_firewall_name}-forced-tunnel-ipconfig")
       subnet_id            = azurerm_subnet.firewall_management_snet.0.id
       public_ip_address_id = azurerm_public_ip.firewall_management_pip[0].id
     }

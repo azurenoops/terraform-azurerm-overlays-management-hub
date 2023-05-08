@@ -10,7 +10,7 @@ DESCRIPTION: The following components will be options in this deployment
 AUTHOR/S: jspinella
 */
 
-resource "azurerm_route_table" "routetable" { 
+resource "azurerm_route_table" "routetable" {
   name                          = local.hub_rt_name
   resource_group_name           = local.resource_group_name
   location                      = local.location
@@ -19,7 +19,7 @@ resource "azurerm_route_table" "routetable" {
 }
 
 resource "azurerm_subnet_route_table_association" "rtassoc" {
-  for_each       = var.subnets
+  for_each       = var.hub_subnets
   subnet_id      = azurerm_subnet.default_snet[each.key].id
   route_table_id = azurerm_route_table.routetable.id
 }

@@ -27,20 +27,8 @@ variable "private_link_service_network_policies_enabled" {
   default     = null
 }
 
-variable "subnets" {
-  description = "A list of subnets to add to the hub"
-  type = map(object({
-    name                                       = string
-    address_prefixes                           = list(string)
-    service_endpoints                          = list(string)
-    private_endpoint_network_policies_enabled  = bool
-    private_endpoint_service_endpoints_enabled = bool
-    delegation = optional(map(object({
-      name                       = string
-      service_delegation_name    = string
-      service_delegation_actions = optional(list(string))
-    })))
-  }))
+variable "hub_subnets" {
+  description = "A list of subnets to add to the hub"  
   default = {}
 }
 
