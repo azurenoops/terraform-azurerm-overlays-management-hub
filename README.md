@@ -24,7 +24,7 @@ AzureFirewallSubnet and GatewaySubnet will not contain any UDR (User Defined Rou
 
 Source: [Microsoft Azure Hub-Spoke Topology Documentation](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/hub-spoke)
 
-![Architecture](./docs/images/mission_enclave_hub_simple.png)
+![Architecture](https://github.com/azurenoops/terraform-azurerm-overlays-management-hub/blob/main/docs/images/mission_enclave_hub_simple.png)
 
 ## Resources Supported
 
@@ -56,25 +56,175 @@ provider "azurerm" {
   features {}
 }
 
+module "mod_vnet_hub" {
+  source  = "azurenoops/overlays-management-hub/azurerm"
+  version = "x.x.x"
+
+  # By default, this module will create a resource group, provide the name here
+  # To use an existing resource group, specify the existing resource group name, 
+  # and set the argument to `create_resource_group = false`. Location will be same as existing RG.
+  create_resource_group = true
+  location              = "eastus"
+  deploy_environment    = "dev"
+  org_name              = "anoa"
+  environment           = "public"
+  workload_name         = "hub-core"
+
+  # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
+  virtual_network_address_space           = ["10.0.0.0/16"]     # (Required)  Hub Virtual Network Parameters  
+  firewall_subnet_address_prefix          = ["10.0.100.0/26"]   # (Required)  Hub Firewall Subnet Parameters  
+  ampls_subnet_address_prefix             = ["10.0.125.0/26"]   # (Required)  AMPLS Subnet Parameters
+  firewall_management_snet_address_prefix = ["10.0.100.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters
+  gateway_subnet_address_prefix           = ["10.0.100.192/27"] # (Optional)  Hub Gateway Subnet Parameters
+
+  # (Required) Hub Subnets 
+  # Default Subnets, Service Endpoints
+  # This is the default subnet with required configuration, check README.md for more details
+  # First address ranges from VNet Address space reserved for Firewall Subnets. 
+  # ex.: For 10.0.100.128/27 address space, usable address range start from 10.0.100.0/24 for all subnets.
+  # default subnet name will be set as per Azure NoOps naming convention by defaut.
+  # Multiple Subnets, Service delegation, Service Endpoints, Network security groups
+  # These are default subnets with required configuration, check README.md for more details
+  # NSG association to be added automatically for all subnets listed here.
+  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets. 
+  # ex.: For 10.1.0.0/16 address space, usable address range start from 10.1.2.0/24 for all subnets.
+  # subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
+  hub_subnets = {
+    default = {
+      name                                       = "hub-core"
+      address_prefixes                           = ["10.0.100.64/26"]
+      service_endpoints                          = ["Microsoft.Storage"]
+      private_endpoint_network_policies_enabled  = false
+      private_endpoint_service_endpoints_enabled = true
+    }
+
+    dmz = {
+      name                                       = "appgateway"
+      address_prefixes                           = ["10.0.100.224/27"]
+      service_endpoints                          = ["Microsoft.Storage"]
+      private_endpoint_network_policies_enabled  = false
+      private_endpoint_service_endpoints_enabled = true
+      nsg_subnet_inbound_rules = [
+        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+        # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
+        # 65200-65335 port to be opened if you planning to create application gateway
+        ["http", "100", "Inbound", "Allow", "Tcp", "80", "*", ["0.0.0.0/0"]],
+        ["https", "200", "Inbound", "Allow", "Tcp", "443", "*", [""]],
+        ["appgwports", "300", "Inbound", "Allow", "Tcp", "65200-65335", "*", [""]],
+
+      ]
+      nsg_subnet_outbound_rules = [
+        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+        # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
+        ["ntp_out", "400", "Outbound", "Allow", "Udp", "123", "", ["0.0.0.0/0"]],
+      ]
+    }
+  }
+
+  # By default, this will module will deploy management logging.
+  # If you do not want to enable management logging, 
+  # set enable_management_logging to false.
+  # All Log solutions are enabled (true) by default. To disable a solution, set the argument to `enable_<solution_name> = false`.
+  enable_management_logging = true
+
+  # Firewall Settings
+  # By default, Azure NoOps will create Azure Firewall in Hub VNet. 
+  # If you do not want to create Azure Firewall, 
+  # set enable_firewall to false. This will allow different firewall products to be used (Example: F5).  
+  enable_firewall = true
+
+  # By default, forced tunneling is enabled for Azure Firewall.
+  # If you do not want to enable forced tunneling, 
+  # set enable_forced_tunneling to false.
+  enable_forced_tunneling = true
+
+  # (Optional) To enable the availability zones for firewall. 
+  # Availability Zones can only be configured during deployment 
+  # You can't modify an existing firewall to include Availability Zones
+  firewall_zones = [1, 2, 3]
+
+  # # (Optional) specify the Network rules for Azure Firewall l
+  # This is default values, do not need this if keeping default values
+  firewall_network_rules_collection = [
+    {
+      name     = "AllowAzureCloud"
+      priority = "100"
+      action   = "Allow"
+      rules = [
+        {
+          name                  = "AzureCloud"
+          protocols             = ["Any"]
+          source_addresses      = ["*"]
+          destination_addresses = ["AzureCloud"]
+          destination_ports     = ["*"]
+        }
+      ]
+    },
+    {
+      name     = "AllowTrafficBetweenSpokes"
+      priority = "200"
+      action   = "Allow"
+      rules = [
+        {
+          name                  = "AllSpokeTraffic"
+          protocols             = ["Any"]
+          source_addresses      = ["10.96.0.0/19"]
+          destination_addresses = ["*"]
+          destination_ports     = ["*"]
+        }
+      ]
+    }
+  ]
+
+  # (Optional) specify the application rules for Azure Firewall
+  # This is default values, do not need this if keeping default values
+  firewall_application_rule_collection = [
+    {
+      name     = "AzureAuth"
+      priority = "110"
+      action   = "Allow"
+      rules = [
+        {
+          name              = "msftauth"
+          source_addresses  = ["*"]
+          destination_fqdns = ["aadcdn.msftauth.net", "aadcdn.msauth.net"]
+          protocols = {
+            type = "Https"
+            port = 443
+          }
+        }
+      ]
+    }
+  ]
+
+  # Private DNS Zone Settings
+  # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
+  # If you do want to create addtional Private DNS Zones, 
+  # add in the list of private_dns_zones to be created.
+  # else, remove the private_dns_zones argument.
+  private_dns_zones = ["privatelink.file.core.windows.net"]
+
+  # By default, this module will create a bastion host, 
+  # and set the argument to `enable_bastion_host = false`, to disable the bastion host.
+  enable_bastion_host                 = true
+  azure_bastion_host_sku              = "Standard"
+  azure_bastion_subnet_address_prefix = ["10.0.200.0/27"]
+
+  # By default, this will apply resource locks to all resources created by this module.
+  # To disable resource locks, set the argument to `enable_resource_locks = false`.
+  enable_resource_locks = false
+
+  # Tags
+  add_tags = {
+    Example = "Management Hub"
+  } # Tags to be applied to all resources
+}
+
 ```
 
 ## Hub Networking
 
 Hub Networking is set up in a Management Hub design based on the SCCA Hub/Spoke architecture. The Management hub is a central point of connectivity to many different networks.
-
-The Management hub contains the following resources:
-
-* Virtual Network
-* Subnets
-* Subnet Service Delegation
-* Virtual Network service endpoints
-* Private Link service/Endpoint network policies on Subnet
-* Azure Network DDoS Protection Plan
-* Private DNS Zones
-* Network Security Groups
-* Azure Firewall
-* Azure Firewall Application Rule Collection
-* Azure Firewall Network Rule Collection
 
 The following parameters affect Management Hub Networking.
 
@@ -89,7 +239,7 @@ Parameter name | Location | Default Value | Description
 
 This module handles the creation and a list of address spaces for subnets. This module uses `for_each` to create subnets and corresponding service endpoints, service delegation, and network security groups. This module associates the subnets to network security groups as well with additional user-defined NSG rules.  
 
-This module creates 4 subnets by default: Gateway Subnet, AzureFirewallSubnet, ApplicationGateway Subnet and Management Subnet.
+This module creates 4 subnets by default: Gateway Subnet, AzureFirewallSubnet, AzureFirewallManagementSubnet and AzureBastionSubnet. 
 
 Name | Description
 ---- | -----------
@@ -98,7 +248,7 @@ AzureFirewallSubnet|If added the Firewall module, it Deploys an Azure Firewall t
 AzureFirewallManagementSubnet| An additional dedicated subnet named AzureFirewallManagementSubnet (minimum subnet size /26) is required with its own associated public IP address. This public IP address is for management traffic. It is used exclusively by the Azure platform and can't be used for any other purpose.
 AzureBastionSubnet | Management subnet for Bastion host, accessible from gateway
 
-Both Gateway Subnet and AzureFirewallSubnet allow traffic out and can have public IPs. ApplicationGateway and Management subnet route traffic through the firewall and does not support public IPs due to asymmetric routing.
+Both Gateway Subnet and AzureFirewallSubnet allow traffic out and can have public IPs. Management subnets route traffic through the firewall and does not support public IPs due to asymmetric routing.
 
 ## Virtual Network service endpoints
 
@@ -320,7 +470,7 @@ module "vnet-hub" {
 
 ## Network Security Groups
 
-By default, the network security groups connected to Management and ApplicationGateway subnets will only allow necessary traffic and block everything else (deny-all rule). Use `nsg_subnet_inbound_rules` and `nsg_subnet_outbound_rules` in this Terraform module to create a Network Security Group (NSG) for each subnet and allow it to add additional rules for inbound flows.
+By default, the network security groups connected to subnets will only allow necessary traffic and block everything else (deny-all rule). Use `nsg_subnet_inbound_rules` and `nsg_subnet_outbound_rules` in this Terraform module to create a Network Security Group (NSG) for each subnet and allow it to add additional rules for inbound flows.
 
 In the Source and Destination columns, `VirtualNetwork`, `AzureLoadBalancer`, and `Internet` are service tags, rather than IP addresses. In the protocol column, Any encompasses `TCP`, `UDP`, and `ICMP`. When creating a rule, you can specify `TCP`, `UDP`, `ICMP` or `*`. `0.0.0.0/0` in the Source and Destination columns represents all addresses.
 
@@ -358,17 +508,25 @@ module "vnet-hub" {
 }
 ```
 
-## Network Security Groups Rules
-
-There are NSG rules that can be applied to the subnets. These rules are applied to the subnets by default. The rules are as follows:
-
-|Rule Collection Priority | Rule Collection Name | Rule name | Source | Port     | Protocol                               |
-|-------------------------|----------------------|-----------|--------|----------|----------------------------------------|
-|100                      | AllowAzureCloud      | AzureCloud|*       |   *      |Any                                     |
-
 ## Peering
 
 To peer spoke networks to the hub networks requires the service principal that performs the peering has `Network Contributor` role on hub network. Linking the Spoke to Hub DNS zones, the service principal also needs the `Private DNS Zone Contributor` role on hub network.
+
+## AMPLS for Azure Monitoring (Azure Managed Private Link Service)
+
+AMPLS for Azure Monitoring is a service that is deployed into a VNet and provides private endpoints for Azure Monitor services. It is a managed service that is deployed and managed by Microsoft. It is not a service that you deploy and manage yourself. It is a service that you deploy into a VNet and then connect to other Azure Monitor services.
+
+By default, this module deploys AMPLS for Azure Monitoring into the management subnet. It creates private dns zone for Azure Monitor services and links the private dns zone to the management subnet. It also creates a private endpoint for Azure Monitor services and links the private endpoint to the private dns zone.
+
+DNS Zones:
+
+* `privatelink.monitor.azure.com`
+* `privatelink.ods.opinsights.azure.com`
+* `privatelink.oms.opinsights.azure.com`
+* `privatelink.blob.core.windows.net`
+* `privatelink.agentsvc.azure-automation.net`
+
+> **Note:** *`privatelink.blob.core.windows.net` is deployed thru AMPLS make that you do not add this to private dns zones variable. This will cause a conflict.*
 
 ## Optional Features
 
@@ -378,7 +536,15 @@ Management Hub has optional features that can be enabled by setting parameters o
 
 By default, this module will create a resource group and the name of the resource group to be given in an argument `resource_group_name` located in `variables.naming.tf`. If you want to use an existing resource group, specify the existing resource group name, and set the argument to `create_resource_group = false`.
 
-> *If you are using an existing resource group, then this module uses the same resource group location to create all resources in this module.*
+> **Note:** *If you are using an existing resource group, then this module uses the same resource group location to create all resources in this module.*
+
+## Azure Monitoring Diagnostics
+
+Platform logs in Azure, including the Azure Activity log and resource logs, provide detailed diagnostic and auditing information for Azure resources and the Azure platform they depend on.
+
+Diagnostic settings are controlled trough Policy. Policy will create a policy assignment to enable diagnostic settings for all resources in the resource group.
+
+Please review the [Mission Enclave Policy Starter](https://github.com/azurenoops/ref-scca-enclave-policy-starter) reference implementation for more information.
 
 ## Azure Network DDoS Protection Plan
 
@@ -388,7 +554,7 @@ By default, this module will not create a DDoS Protection Plan. You can enable/d
 
 This module handle the provision of Network Watcher resource by defining `create_network_watcher` variable. It will enable network watcher, flow logs and traffic analytics for all the subnets in the Virtual Network. Since Azure uses a specific naming standard on network watchers, It will create a resource group `NetworkWatcherRG` and adds the location specific resource.
 
-> **Note:** Log Analytics workspace is required for NSG Flow Logs and Traffic Analytics. If you want to enable NSG Flow Logs and Traffic Analytics, you must create a Log Analytics workspace and provide the workspace name set argument `log_analytics_workspace_name` and rg set argument `log_analytics_workspace_resource_group_name`
+> **Note:** *Log Analytics workspace is required for NSG Flow Logs and Traffic Analytics. If you want to enable NSG Flow Logs and Traffic Analytics, you must create a Log Analytics workspace and provide the workspace name set argument `log_analytics_workspace_name` and rg set argument `log_analytics_workspace_resource_group_name`*
 
 ## Enable Force Tunneling for the Firewall
 
@@ -428,7 +594,7 @@ Using tags to properly organize your Azure resources, resource groups, and subsc
 See Resource name and tagging choice guide for advice on how to apply a tagging strategy.
 
 >**Important** :
-For operations, tag names are case-insensitive. A tag with a tag name is updated or retrieved, independent of casing. The resource provider, on the other hand, may preserve the casing you supply for the tag name. Cost reports will show that casing. **The case of tag values is important.**
+*For operations, tag names are case-insensitive. A tag with a tag name is updated or retrieved, independent of casing. The resource provider, on the other hand, may preserve the casing you supply for the tag name. Cost reports will show that casing. **The case of tag values is important.***
 
 An effective naming convention creates resource names by incorporating vital resource information into the name. A public IP resource for a production SharePoint workload, for example, is named `pip-sharepoint-prod-westus-001` using these [recommended naming conventions](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging#example-names).
 
