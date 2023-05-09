@@ -95,9 +95,8 @@ Name | Description
 ---- | -----------
 GatewaySubnet| Contain VPN Gateway, Express route Gateway
 AzureFirewallSubnet|If added the Firewall module, it Deploys an Azure Firewall that will monitor all incoming and outgoing traffic
-AzureFirewallManagementSubnet|
-ApplicationGateway|This subnet contain an Application Gateway and any other DMZ services
-Management|Management subnet for Bastion host, accessible from gateway
+AzureFirewallManagementSubnet| An additional dedicated subnet named AzureFirewallManagementSubnet (minimum subnet size /26) is required with its own associated public IP address. This public IP address is for management traffic. It is used exclusively by the Azure platform and can't be used for any other purpose.
+AzureBastionSubnet | Management subnet for Bastion host, accessible from gateway
 
 Both Gateway Subnet and AzureFirewallSubnet allow traffic out and can have public IPs. ApplicationGateway and Management subnet route traffic through the firewall and does not support public IPs due to asymmetric routing.
 
@@ -404,6 +403,8 @@ This module facilitates the private DNS zone for the virtual network.  To create
 If you want to remotely access the network and the resources you've deployed you can use [Azure Bastion](https://docs.microsoft.com/en-us/azure/bastion/) to remotely access virtual machines within the network without exposing them via Public IP Addresses.
 
 By default, this module will not create a Azure Bastion Host. You can enable/disable it by appending an argument `enable_bastion_host` located in `variables.bastion.tf` If you want to enable a Azure Bastion Host using this module, set argument `enable_bastion_host = true`.
+
+If you would like to create a jumpbox VM in the network, you can use the [Azure Bastion Jumpbox](https://registry.terraform.io/modules/azurenoops/overlays-virtual-machine/azurerm/latest) Virtual Machine module.
 
 ## Azure Firewall Premium
 

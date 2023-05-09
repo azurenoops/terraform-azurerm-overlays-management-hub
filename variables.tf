@@ -31,6 +31,12 @@ variable "org_name" {
   type        = string
 }
 
+variable "ops_subscription_id" {
+  description = "Subscription ID for the operations subscription. If not set, the current subscription will be used."
+  type        = string
+  default     = null
+}
+
 #######################
 # RG Configuration   ##
 #######################

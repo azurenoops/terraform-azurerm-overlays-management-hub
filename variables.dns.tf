@@ -5,4 +5,3 @@ variable "private_dns_zones" {
   type = list(string)
   default = null
 }
-  

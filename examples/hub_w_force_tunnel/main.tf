@@ -62,7 +62,7 @@ module "mod_vnet_hub" {
   deploy_environment    = "dev"
   org_name              = "anoa"
   environment           = "public"
-  workload_name         = "hub-core"
+  workload_name         = "hub-mgt"
 
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
   virtual_network_address_space               = ["10.0.100.0/24"]              # (Required)  Hub Virtual Network Parameters  
@@ -86,7 +86,7 @@ module "mod_vnet_hub" {
   # subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
   hub_subnets = {
     default_subnet = {
-      name                                       = "hub-core"
+      name                                       = "hub-mgt"
       address_prefixes                           = ["10.0.100.64/27"]
       service_endpoints                          = ["Microsoft.Storage"]
       private_endpoint_network_policies_enabled  = false

@@ -25,6 +25,7 @@ module "mod_vnet_hub" {
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
   virtual_network_address_space           = ["10.0.0.0/16"]     # (Required)  Hub Virtual Network Parameters  
   firewall_subnet_address_prefix          = ["10.0.100.0/26"]   # (Required)  Hub Firewall Subnet Parameters  
+  ampls_subnet_address_prefix             = ["10.0.125.0/26"]   # (Required)  AMPLS Subnet Parameters
   firewall_management_snet_address_prefix = ["10.0.100.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters
   gateway_subnet_address_prefix           = ["10.0.100.192/27"] # (Optional)  Hub Gateway Subnet Parameters
 
@@ -71,6 +72,12 @@ module "mod_vnet_hub" {
       ]
     }
   }
+
+  # By default, this will module will deploy management logging.
+  # If you do not want to enable management logging, 
+  # set enable_management_logging to false.
+  # All Log solutions are enabled (true) by default. To disable a solution, set the argument to `enable_<solution_name> = false`.
+  enable_management_logging = true
 
   # Firewall Settings
   # By default, Azure NoOps will create Azure Firewall in Hub VNet. 

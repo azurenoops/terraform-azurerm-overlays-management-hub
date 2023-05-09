@@ -4,8 +4,8 @@
 # remove file if not needed
 data "azurerm_client_config" "current" {}
 
-data "azurerm_log_analytics_workspace" "logws" {
-  count = var.create_network_watcher ? 1 : 0
-  name                = var.log_analytics_workspace_name
-  resource_group_name = var.log_analytics_workspace_resource_group_name
+data "azurerm_resource_group" "netwatch" {
+  depends_on = [azurerm_virtual_network.hub_vnet]
+  count      = var.create_network_watcher == false ? 1 : 0
+  name       = "NetworkWatcherRG"
 }

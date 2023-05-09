@@ -14,3 +14,12 @@ terraform {
     }
   }
 }
+
+#-------------------------------------
+# Azure Provider Alias for Peering
+#-------------------------------------
+provider "azurerm" {
+  alias           = "ops_network"
+  subscription_id = coalesce(var.ops_subscription_id, data.azurerm_client_config.current.subscription_id)
+  features {}
+}

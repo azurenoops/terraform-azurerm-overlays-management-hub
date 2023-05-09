@@ -52,3 +52,9 @@ variable "gateway_private_link_service_network_policies_enabled" {
   description = "Whether or not to enable link service network policies on the private link service gateway subnet"
   default     = null
 }
+
+variable "ampls_subnet_address_prefix" {
+  description = "The address prefix to use for the ampls private endpoint subnet"
+  default     = null
+}
+ 
