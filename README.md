@@ -1,8 +1,8 @@
-# Azure Virtual Network Management Hub with Firewall Terraform Module
+# Azure Virtual Network Management Hub Overlay with Firewall Terraform Module
 
 [![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![MIT License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/azurenoops/overlays-management-hub/azurerm/)
 
-This Overlay Terraform module deploys a Management Hub network using the [Microsoft recommended Hub-Spoke network topology](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/hub-spoke). Usually, only one hub in each region with multiple spokes and each of the spokes can also be in separate subscriptions.
+This Overlay Terraform module deploys a Management Hub Overlay network using the [Microsoft recommended Hub-Spoke network topology](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/hub-spoke). Usually, only one hub in each region with multiple spokes and each of the spokes can also be in separate subscriptions.
 
 ## SCCA Compliance
 
@@ -16,9 +16,9 @@ If you want to contribute to this repository, feel free to to contribute to our 
 
 More details are available in the [CONTRIBUTING.md](./CONTRIBUTING.md#pull-request-process) file.
 
-## Management Hub Architecture
+## Management Hub Overlay Architecture
 
-The following reference architecture shows how to implement a SCCA compliant hub-spoke topology in Azure. The Management hub is a virtual network in Azure that acts as a central point of connectivity to an optional on-premises network. The spokes are virtual networks that peer with the Management hub and can be used to isolate workloads. Traffic flows between the on-premises datacenter and the hub can be achieved through an ExpressRoute or VPN gateway connection.
+The following reference architecture shows how to implement a SCCA compliant hub-spoke topology in Azure. The Management Hub Overlay is a virtual network in Azure that acts as a central point of connectivity to an optional on-premises network. The spokes are virtual networks that peer with the Management Hub Overlay and can be used to isolate workloads. Traffic flows between the on-premises datacenter and the hub can be achieved through an ExpressRoute or VPN gateway connection.
 
 AzureFirewallSubnet and GatewaySubnet will not contain any UDR (User Defined Route) or NSG/Rules (Network Security Group). Management and DMZ subnets will route all outgoing traffic through firewall instance.
 
@@ -216,7 +216,7 @@ module "mod_vnet_hub" {
 
   # Tags
   add_tags = {
-    Example = "Management Hub"
+    Example = "Management Hub Overlay"
   } # Tags to be applied to all resources
 }
 
@@ -224,9 +224,9 @@ module "mod_vnet_hub" {
 
 ## Hub Networking
 
-Hub Networking is set up in a Management Hub design based on the SCCA Hub/Spoke architecture. The Management hub is a central point of connectivity to many different networks.
+Hub Networking is set up in a Management Hub Overlay design based on the SCCA Hub/Spoke architecture. The Management Hub Overlay is a central point of connectivity to many different networks.
 
-The following parameters affect Management Hub Networking.
+The following parameters affect Management Hub Overlay Networking.
 
 Parameter name | Location | Default Value | Description
 -------------- | ------------- | ------------- | -----------
@@ -385,7 +385,7 @@ You can centrally create, enforce, and log application and network connectivity 
 
 This is designed to support hub and spoke architecture in the azure and further security hardening would be recommend to add appropriate firewall application/network/NAT rules to use this for any production workloads.
 
-All network traffic is directed through the firewall residing in the Management Hub Network resource group. The firewall is configured as the default route for all other spokes including T0 (Identity and Authorization), T1 (Operations), T2 (Shared Services) Management Spokes and T3 (workload/team environments) workload spoke as follows:
+All network traffic is directed through the firewall residing in the Management Hub Overlay Network resource group. The firewall is configured as the default route for all other spokes including T0 (Identity and Authorization), T1 (Operations), T2 (Shared Services) Management Spokes and T3 (workload/team environments) workload spoke as follows:
 
 |Name         |Address prefix| Next hop type| Next hop IP address|
 |-------------|--------------|-----------------|-----------------|
@@ -393,7 +393,7 @@ All network traffic is directed through the firewall residing in the Management 
 
 *-example IP for firewall
 
-The default firewall configured for Management Hub Network is [Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features).
+The default firewall configured for Management Hub Overlay Network is [Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features).
 
 >### Firewall Availability Zones
 
@@ -527,11 +527,11 @@ DNS Zones:
 * `privatelink.blob.core.windows.net`
 * `privatelink.agentsvc.azure-automation.net`
 
-> **Note:** *`privatelink.blob.core.windows.net` is deployed thru AMPLS make that you do not add this to private dns zones variable. This will cause a conflict, if deployed again to the management hub.*
+> **Note:** *`privatelink.blob.core.windows.net` is deployed thru AMPLS make that you do not add this to private dns zones variable. This will cause a conflict, if deployed again to the Management Hub Overlay.*
 
 ## Optional Features
 
-Management Hub has optional features that can be enabled by setting parameters on the deployment.
+Management Hub Overlay has optional features that can be enabled by setting parameters on the deployment.
 
 ## Create resource group
 
@@ -539,13 +539,26 @@ By default, this module will create a resource group and the name of the resourc
 
 > **Note:** *If you are using an existing resource group, then this module uses the same resource group location to create all resources in this module.*
 
-## Azure Monitoring Diagnostics
+## Management Operations Logging
 
-Platform logs in Azure, including the Azure Activity log and resource logs, provide detailed diagnostic and auditing information for Azure resources and the Azure platform they depend on.
+This module enables diagnostic settings for Azure resources that emit platform logs. The diagnostic settings are configured to send platform logs to a Log Analytics workspace. The Log Analytics workspace is created in the same resource group as the hub virtual network. The Log Analytics workspace is configured to retain data for 30 days. The Log Analytics workspace is configured to use the Standard pricing tier.
+
+Management Operations Logging is enabled by default, If you do not want to use Management Operations Logging, set the argument to `enable_management_logging = false`.
 
 Diagnostic settings are controlled trough Policy. Policy will create a policy assignment to enable diagnostic settings for all resources in the resource group.
 
-Please review the [Mission Enclave Policy Starter](https://github.com/azurenoops/ref-scca-enclave-policy-starter) reference implementation for more information.
+The following Azure resources can be configured to send platform logs to the Log Analytics workspace:
+
+* Azure Firewall
+* Azure Storage
+* Azure Key Vault
+* Azure Application Gateway
+* Azure Load Balancer
+* Azure Network Security Group
+* Azure Virtual Network Gateway
+* Azure Virtual Network
+
+> **NOTE:**  Please review the [Mission Enclave Policy Starter](https://github.com/azurenoops/ref-scca-enclave-policy-starter) reference implementation for more information.
 
 ## Azure Network DDoS Protection Plan
 
@@ -575,7 +588,7 @@ If you would like to create a jumpbox VM in the network, you can use the [Azure 
 
 ## Azure Firewall Premium
 
-By default, Management Hub deploys **[Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features). Not all regions support Azure Firewall Premium.** Check here to [see if the region you're deploying to supports Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features#supported-regions). If necessary you can set a different firewall SKU or location.
+By default, Management Hub Overlay deploys **[Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features). Not all regions support Azure Firewall Premium.** Check here to [see if the region you're deploying to supports Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features#supported-regions). If necessary you can set a different firewall SKU or location.
 
 You can manually specify which SKU of Azure Firewall to use for your deployment by specifying the `firewallSkuTier` parameter. This parameter only accepts values of `Standard` or `Premium`.
 
@@ -587,7 +600,7 @@ If you'd like to specify a different region to deploy your resources into, chang
 
 ## `use_location_short_name` - use the shorten location name on resource names
 
-By default, Management Hub uses the shorten location name for naming resources. For example, `eus2` is used instead of `eastus2`. You can enable/disable it by appending an argument `use_location_short_name` located in `variables.tf` If you want to disable shorten location name using this module, set argument `use_location_short_name = false`.
+By default, Management Hub Overlay uses the shorten location name for naming resources. For example, `eus2` is used instead of `eastus2`. You can enable/disable it by appending an argument `use_location_short_name` located in `variables.tf` If you want to disable shorten location name using this module, set argument `use_location_short_name = false`.
 
 ## Recommended naming and tagging conventions
 

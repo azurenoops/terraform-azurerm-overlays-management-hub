@@ -6,7 +6,7 @@
 ########################################
 
 variable "enable_management_logging" {
-  description = "Enable Management Logging for Operations Logging. **IMPORTANT** `enable_management_logging` should only be used with the operations tier."
+  description = "Enable Management Logging for Operations Logging. Defaults to 'true'. **IMPORTANT** `enable_management_logging` should only be used with the operations tier. if you are using multiple subscriptions, set `operations_subscription_id` to operations tier subscription esale it will use the Hub subscription."
   type        = bool
   default     = true
 }
@@ -24,9 +24,9 @@ variable "log_analytics_logs_retention_in_days" {
 }
 
 variable "log_analytics_storage_account_kind" {
-  description = "Specifies the kind of log analytics storage account. Possible values are Storage, StorageV2, BlobStorage, and FileStorage. Default is Storage."
+  description = "Specifies the kind of log analytics storage account. Possible values are Storage, StorageV2, BlobStorage, and FileStorage. Default is StorageV2."
   type        = string
-  default     = "Storage"
+  default     = "StorageV2"
 }
 
 variable "log_analytics_storage_account_tier" {

@@ -12,7 +12,7 @@ AUTHOR/S: jspinella
 ### Private Endpoint Configuration  ###
 #######################################
 
-resource "azurerm_subnet" "pe_snet" {  
+resource "azurerm_subnet" "pe_snet" {
   name                                          = "ampls-private-endpoints"
   resource_group_name                           = local.resource_group_name
   virtual_network_name                          = azurerm_virtual_network.hub_vnet.name
@@ -24,6 +24,7 @@ resource "azurerm_subnet" "pe_snet" {
 
 module "mod_ampls_main_private_endpoint" {
   source = "./modules/private_endpoints"
+  depends_on = [ module.mod_ops_logging.global_pls, module.mod_ampls_pdz.this ]
 
   org_name           = var.org_name
   environment        = var.environment
@@ -37,6 +38,6 @@ module "mod_ampls_main_private_endpoint" {
   subresource_name    = "azuremonitor"
 
   use_existing_private_dns_zones = true
-  private_dns_zones_names        = tolist(local.ample_dns_zones)
+  private_dns_zones_ids        = [for s in module.mod_ampls_pdz : s.private_dns_zone_id]
 
 }

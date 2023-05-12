@@ -15,9 +15,9 @@ module "mgt_sa" {
   deploy_environment           = var.deploy_environment
   workload_name                = var.workload_name
   org_name                     = var.org_name
-  account_kind                 = var.storage_account_kind
-  account_tier                 = var.storage_account_tier
-  account_replication_type     = var.storage_account_replication_type
+  account_kind                 = var.hub_storage_account_kind
+  account_tier                 = var.hub_storage_account_tier
+  account_replication_type     = var.hub_storage_account_replication_type
   enable_resource_locks        = var.enable_resource_locks
 
   add_tags = merge({ "ResourceName" = format("hubstdiaglogs%s", lower(replace(local.hub_sa_name, "/[[:^alnum:]]/", ""))) }, local.default_tags, var.add_tags, )
