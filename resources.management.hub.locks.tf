@@ -30,15 +30,3 @@ resource "azurerm_management_lock" "fw_mgt_subnet_resource_group_level_lock" {
   lock_level = var.lock_level
   notes      = "FW Management Subnet is locked with '${var.lock_level}' level."
 }
-
-#------------------------------------------------------------
-# Storage Account Lock configuration - Default (required). 
-#------------------------------------------------------------
-resource "azurerm_management_lock" "sa_resource_group_level_lock" {
-  count      = var.enable_resource_locks ? 1 : 0
-  name       = "${local.hub_sa_name}-${var.lock_level}-lock"
-  scope      = azurerm_storage_account.storeacc.id
-  lock_level = var.lock_level
-  notes      = "Storage Account '${local.hub_sa_name}' is locked with '${var.lock_level}' level."
-}
-

@@ -22,6 +22,24 @@ variable "log_analytics_logs_retention_in_days" {
   type        = number
   default     = 30
 }
+
+variable "log_analytics_storage_account_kind" {
+  description = "Specifies the kind of log analytics storage account. Possible values are Storage, StorageV2, BlobStorage, and FileStorage. Default is Storage."
+  type        = string
+  default     = "Storage"
+}
+
+variable "log_analytics_storage_account_tier" {
+  description = "Specifies the Tier to use for this log analytics storage account. Possible values are Standard and Premium. Default is Standard."
+  type        = string
+  default     = "Standard"
+}
+
+variable "log_analytics_storage_account_replication_type" {
+  description = "Specifies the type of replication to use for this log analytics storage account. Possible values are LRS, GRS, RAGRS, ZRS, and GZRS. Default is GRS."
+  type        = string
+  default     = "GRS"
+}
   
 #####################################
 # Log Solutions Configuration     ##

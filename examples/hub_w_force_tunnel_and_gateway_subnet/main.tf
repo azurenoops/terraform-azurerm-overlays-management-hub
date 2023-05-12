@@ -23,11 +23,11 @@ module "mod_vnet_hub" {
   workload_name         = "hub-core"
 
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
-  virtual_network_address_space           = ["10.0.0.0/16"]     # (Required)  Hub Virtual Network Parameters  
-  firewall_subnet_address_prefix          = ["10.0.100.0/26"]   # (Required)  Hub Firewall Subnet Parameters  
-  ampls_subnet_address_prefix             = ["10.0.125.0/26"]   # (Required)  AMPLS Subnet Parameters
-  firewall_management_snet_address_prefix = ["10.0.100.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters
-  gateway_subnet_address_prefix           = ["10.0.100.192/27"] # (Optional)  Hub Gateway Subnet Parameters
+  virtual_network_address_space           = ["10.8.4.0/23"]     # (Required)  Hub Virtual Network Parameters  
+  firewall_subnet_address_prefix          = ["10.8.4.64/26"]   # (Required)  Hub Firewall Subnet Parameters  
+  ampls_subnet_address_prefix             = ["10.8.5.160/27"]   # (Required)  AMPLS Subnet Parameters
+  firewall_management_snet_address_prefix = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters
+  gateway_subnet_address_prefix           = ["10.8.4.0/27"] # (Optional)  Hub Gateway Subnet Parameters
 
   # (Required) Hub Subnets 
   # Default Subnets, Service Endpoints
@@ -44,7 +44,7 @@ module "mod_vnet_hub" {
   hub_subnets = {
     default = {
       name                                       = "hub-core"
-      address_prefixes                           = ["10.0.100.64/26"]
+      address_prefixes                           = ["10.8.4.224/27"]
       service_endpoints                          = ["Microsoft.Storage"]
       private_endpoint_network_policies_enabled  = false
       private_endpoint_service_endpoints_enabled = true
@@ -52,7 +52,7 @@ module "mod_vnet_hub" {
 
     dmz = {
       name                                       = "appgateway"
-      address_prefixes                           = ["10.0.100.224/27"]
+      address_prefixes                           = ["10.8.5.64/27"]
       service_endpoints                          = ["Microsoft.Storage"]
       private_endpoint_network_policies_enabled  = false
       private_endpoint_service_endpoints_enabled = true
@@ -160,7 +160,7 @@ module "mod_vnet_hub" {
   # and set the argument to `enable_bastion_host = false`, to disable the bastion host.
   enable_bastion_host                 = true
   azure_bastion_host_sku              = "Standard"
-  azure_bastion_subnet_address_prefix = ["10.0.200.0/27"]
+  azure_bastion_subnet_address_prefix = ["10.8.4.192/27"]
 
   # By default, this will apply resource locks to all resources created by this module.
   # To disable resource locks, set the argument to `enable_resource_locks = false`.

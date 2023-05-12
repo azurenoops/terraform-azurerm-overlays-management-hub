@@ -35,7 +35,7 @@ resource "azurerm_network_watcher_flow_log" "nwflog" {
   network_watcher_name      = var.create_network_watcher != false ? azurerm_network_watcher.nwatcher.0.name : "NetworkWatcher_${local.netwatcher_rg_location}" 
   resource_group_name       = local.netwatcher_rg_name # Must provide Netwatcher resource Group
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
-  storage_account_id        = azurerm_storage_account.storeacc.id
+  storage_account_id        = module.mgt_sa.storage_account_id
   enabled                   = var.create_network_watcher != false ? true : false
   version                   = 2
   retention_policy {

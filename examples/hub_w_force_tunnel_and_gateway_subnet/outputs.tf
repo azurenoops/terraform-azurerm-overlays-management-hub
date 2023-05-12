@@ -87,12 +87,6 @@ output "storage_account_name" {
   value       = module.mod_vnet_hub.storage_account_name
 }
 
-output "storage_primary_access_key" {
-  sensitive   = true
-  description = "The primary access key for the storage account."
-  value       = module.mod_vnet_hub.storage_primary_access_key
-}
-
 output "public_ip_prefix_id" {
   description = "The id of the Public IP Prefix resource"
   value       = module.mod_vnet_hub.public_ip_prefix_id

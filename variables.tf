@@ -37,6 +37,12 @@ variable "ops_subscription_id" {
   default     = null
 }
 
+variable "disable_telemetry" {
+  description = "If set to true, will disable the telemetry sent as part of the module."
+  type        = string
+  default     = false
+}
+
 #######################
 # RG Configuration   ##
 #######################

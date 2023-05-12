@@ -23,15 +23,6 @@ resource "azurerm_subnet" "gw_snet" {
   private_link_service_network_policies_enabled = var.gateway_private_link_service_network_policies_enabled
 }
 
-resource "azurerm_subnet" "pe_snet" {  
-  name                                          = "ampls-private-endpoints"
-  resource_group_name                           = local.resource_group_name
-  virtual_network_name                          = azurerm_virtual_network.hub_vnet.name
-  address_prefixes                              = var.ampls_subnet_address_prefix
-  private_endpoint_network_policies_enabled     = true
-  private_link_service_network_policies_enabled = true
-}
-
 resource "azurerm_subnet" "default_snet" {
   for_each             = var.hub_subnets
   name                 = var.hub_snet_custom_name != null ? "${var.hub_snet_custom_name}_${each.key}" : "${data.azurenoopsutils_resource_name.snet[each.key].result}"

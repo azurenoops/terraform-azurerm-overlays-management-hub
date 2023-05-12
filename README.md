@@ -247,6 +247,7 @@ GatewaySubnet| Contain VPN Gateway, Express route Gateway
 AzureFirewallSubnet|If added the Firewall module, it Deploys an Azure Firewall that will monitor all incoming and outgoing traffic
 AzureFirewallManagementSubnet| An additional dedicated subnet named AzureFirewallManagementSubnet (minimum subnet size /26) is required with its own associated public IP address. This public IP address is for management traffic. It is used exclusively by the Azure platform and can't be used for any other purpose.
 AzureBastionSubnet | Management subnet for Bastion host, accessible from gateway
+PrivateEndpointSubnet| Hosts the private endpoints used by the Azure Monitor.
 
 Both Gateway Subnet and AzureFirewallSubnet allow traffic out and can have public IPs. Management subnets route traffic through the firewall and does not support public IPs due to asymmetric routing.
 
@@ -514,9 +515,9 @@ To peer spoke networks to the hub networks requires the service principal that p
 
 ## AMPLS for Azure Monitoring (Azure Managed Private Link Service)
 
-AMPLS for Azure Monitoring is a service that is deployed into a VNet and provides private endpoints for Azure Monitor services. It is a managed service that is deployed and managed by Microsoft. It is not a service that you deploy and manage yourself. It is a service that you deploy into a VNet and then connect to other Azure Monitor services.
+Azure Monitor Private Link Scope connects a Private Endpoint to a set of Azure Monitor resources as [Azure Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-overview). It is a managed service that is deployed and managed by Microsoft. It is not a service that you deploy and manage yourself. It is a service that you deploy into a VNet and then connect to other Azure Monitor services.
 
-By default, this module deploys AMPLS for Azure Monitoring into the management subnet. It creates private dns zone for Azure Monitor services and links the private dns zone to the management subnet. It also creates a private endpoint for Azure Monitor services and links the private endpoint to the private dns zone.
+By default, this module deploys AMPLS for Azure Monitoring into the privateEndpoint subnet. It creates private dns zone for Azure Monitor services and links the private dns zone to the privateEndpoint ubnet. subnet. It also creates a private endpoint for Azure Monitor services and links the private endpoint to the private dns zone.
 
 DNS Zones:
 
@@ -526,7 +527,7 @@ DNS Zones:
 * `privatelink.blob.core.windows.net`
 * `privatelink.agentsvc.azure-automation.net`
 
-> **Note:** *`privatelink.blob.core.windows.net` is deployed thru AMPLS make that you do not add this to private dns zones variable. This will cause a conflict.*
+> **Note:** *`privatelink.blob.core.windows.net` is deployed thru AMPLS make that you do not add this to private dns zones variable. This will cause a conflict, if deployed again to the management hub.*
 
 ## Optional Features
 

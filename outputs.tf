@@ -35,17 +35,17 @@ output "virtual_network_address_space" {
 
 output "subnet_ids" {
   description = "List of IDs of subnets"
-  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.id], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.id : null], [azurerm_subnet.firewall_client_snet.0.id], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.id : null]))
+  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.id], [azurerm_subnet.pe_snet.id], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.id : null], [azurerm_subnet.firewall_client_snet.0.id], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.id : null]))
 }
 
-output "subnet_ids_names" {
-  description = "List of IDs of subnets with names"
-  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.id], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.id : null], [azurerm_subnet.firewall_client_snet.0.id], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.id : null]))
+output "subnet_names" {
+  description = "List of names of subnet"
+  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.name], [azurerm_subnet.pe_snet.name], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.name : null], [azurerm_subnet.firewall_client_snet.0.name], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.name : null]))
 }
 
 output "subnet_address_prefixes" {
   description = "List of address prefix for subnets"
-  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.address_prefixes : null], [azurerm_subnet.firewall_client_snet.0.address_prefixes], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.address_prefixes : null]))
+  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [azurerm_subnet.pe_snet.address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.address_prefixes : null], [azurerm_subnet.firewall_client_snet.0.address_prefixes], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.address_prefixes : null]))
 }
 
 # Network Security group ids
@@ -78,28 +78,27 @@ output "route_table_id" {
 
 output "private_dns_zone_names" {
   description = "The name of the Private DNS zones within Azure DNS"
-  value       = [for s in azurerm_private_dns_zone.pdz : s.name] 
+  value       = [for s in module.mod_pdz : s.private_dns_zone_name] 
 }
 
 output "private_dns_zone_ids" {
   description = "The resource id of Private DNS zones within Azure DNS"
-  value       = [for s in azurerm_private_dns_zone.pdz : s.id] 
+  value       = [for s in module.mod_pdz : s.private_dns_zone_id] 
+}
+
+output "ampls_private_dns_zone_ids" {
+  description = "The name of the Private DNS zones within Azure DNS"
+  value       = module.mod_ampls_main_private_endpoint.private_dns_zones_ids
 }
 
 output "storage_account_id" {
   description = "The ID of the storage account."
-  value       = azurerm_storage_account.storeacc.id
+  value       = module.mgt_sa.storage_account_id
 }
 
 output "storage_account_name" {
   description = "The name of the storage account."
-  value       = azurerm_storage_account.storeacc.name
-}
-
-output "storage_primary_access_key" {
-  sensitive   = true
-  description = "The primary access key for the storage account."
-  value       = azurerm_storage_account.storeacc.primary_access_key
+  value       = module.mgt_sa.storage_account_name
 }
 
 output "public_ip_prefix_id" {
