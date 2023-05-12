@@ -6,8 +6,8 @@
 #---------------------------------
 module "mod_ops_logging" {
   providers = { azurerm = azurerm.ops_network }
-  source  = "azurenoops/overlays-management-logging/azurerm"
-  version = ">= 1.0.0"
+  source    = "azurenoops/overlays-management-logging/azurerm"
+  version   = ">= 1.0.0"
 
   count = var.enable_management_logging ? 1 : 0
 
@@ -39,8 +39,11 @@ module "mod_ops_logging" {
   # (Required) To enable Azure Monitoring
   # Sku Name - Possible values are PerGB2018 and Free
   # Log Retention in days - Possible values range between 30 and 730
-  log_analytics_workspace_sku          = var.log_analytics_workspace_sku
-  log_analytics_logs_retention_in_days = var.log_analytics_logs_retention_in_days
+  log_analytics_workspace_sku                   = var.log_analytics_workspace_sku
+  log_analytics_logs_retention_in_days          = var.log_analytics_logs_retention_in_days
+  loganalytics_storage_account_kind             = var.log_analytics_storage_account_kind
+  loganalytics_storage_account_tier             = var.log_analytics_storage_account_tier
+  loganalytics_storage_account_replication_type = var.log_analytics_storage_account_replication_type
 
   #############################
   ## Misc Configuration     ###
@@ -51,5 +54,16 @@ module "mod_ops_logging" {
   enable_resource_locks = false
 
   # Tags
-  add_tags = {} # Tags to be applied to all resources
+  add_tags = merge(local.default_tags, var.add_tags, ) # Tags to be applied to all resources
 }
+
+#---------------------------------
+# Management Logging Storage Account
+#---------------------------------
+/* resource "azurerm_log_analytics_linked_storage_account" "mgt_loganalytics_st_alerts_link" {
+  depends_on = [ module.mod_ops_logging, module.mgt_sa ]
+  data_source_type      = "Alerts"
+  resource_group_name   = local.resource_group_name
+  workspace_resource_id = module.mod_ops_logging.0.laws_resource_id
+  storage_account_ids   = [module.mgt_sa.storage_account_id]
+} */
