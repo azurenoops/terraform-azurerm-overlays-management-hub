@@ -23,7 +23,7 @@ variable "use_naming" {
 }
 
 # Custom naming override
-variable "custom_resource_group_name" {
+variable "custom_hub_resource_group_name" {
   description = "The name of the resource group to create. If not set, the name will be generated using the 'name_prefix' and 'name_suffix' variables. If set, the 'name_prefix' and 'name_suffix' variables will be ignored."
   type        = string
   default     = null

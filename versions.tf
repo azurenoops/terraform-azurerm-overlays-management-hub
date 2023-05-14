@@ -15,6 +15,10 @@ terraform {
   }
 }
 
+provider "azurerm" {
+  features {}
+}
+
 #-------------------------------------
 # Azure Provider Alias for Peering
 #-------------------------------------
