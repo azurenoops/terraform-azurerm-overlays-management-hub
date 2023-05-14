@@ -168,35 +168,35 @@ output "azure_bastion_host_fqdn" {
 
 output "managmement_logging_log_analytics_id" {
   description = "The resource ID of the management logging log analytics workspace"
-  value       = var.enable_management_logging ? module.mod_ops_logging.laws_resource_id : null
+  value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_resource_id : null
 }
 
 output "managmement_logging_log_analytics_name" {
   description = "The name of the management logging log analytics workspace"
-  value       = var.enable_management_logging ? module.mod_ops_logging.laws_name : null
+  value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_name : null
 }
 
 output "managmement_logging_log_analytics_resource_group" {
   description = "The rg of the management logging log analytics workspace"
-  value       = var.enable_management_logging ? module.mod_ops_logging.laws_rgname : null
+  value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_rgname : null
 }
 
 output "managmement_logging_storage_account_workspace_id" {
   description = "The rg of the management logging log analytics workspace"
-  value       = var.enable_management_logging ? module.mod_ops_logging.laws_workspace_id : null
+  value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_workspace_id : null
 }
 
 output "managmement_logging_storage_account_id" {
   description = "The resource ID of the management logging log analytics workspace"
-  value       = var.enable_management_logging ? module.mod_ops_logging.laws_storage_account_id : null
+  value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_storage_account_id : null
 }
 
 output "managmement_logging_storage_account_name" {
   description = "The name of the management logging log analytics workspace"
-  value       = var.enable_management_logging ? module.mod_ops_logging.laws_storage_account_name : null
+  value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_storage_account_name : null
 }
 
 output "managmement_logging_storage_account_resource_group" {
   description = "The rg of the management logging log analytics workspace"
-  value       = var.enable_management_logging ? module.mod_ops_logging.laws_storage_account_rgname : null
+  value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_storage_account_rgname : null
 }
