@@ -181,9 +181,14 @@ output "managmement_logging_log_analytics_resource_group" {
   value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_rgname : null
 }
 
-output "managmement_logging_storage_account_workspace_id" {
+output "managmement_logging_log_analytics_workspace_id" {
   description = "The rg of the management logging log analytics workspace"
   value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_workspace_id : null
+}
+
+output "managmement_logging_log_analytics_primary_shared_key" {
+  description = "The rg of the management logging log analytics workspace"
+  value       = var.enable_management_logging ? module.mod_ops_logging.0.laws_primary_shared_key : null
 }
 
 output "managmement_logging_storage_account_id" {
