@@ -31,7 +31,7 @@ resource "azurerm_network_watcher" "nwatcher" {
 #-----------------------------------------
 resource "azurerm_network_watcher_flow_log" "nwflog" {
   for_each                  = var.hub_subnets
-  name                      = lower("network-watcher-flow-log")
+  name                      = lower("network-watcher-flow-log-${each.value.name}")
   network_watcher_name      = var.create_network_watcher != false ? azurerm_network_watcher.nwatcher.0.name : "NetworkWatcher_${local.netwatcher_rg_location}" 
   resource_group_name       = local.netwatcher_rg_name # Must provide Netwatcher resource Group
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
