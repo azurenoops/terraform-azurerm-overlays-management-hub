@@ -1,8 +1,31 @@
-# Azure Virtual Network Management Hub Overlay with Firewall Terraform Module
+# Azure Management Virtual Network Hub Overlay with Firewall Terraform Module
 
 [![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![MIT License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/azurenoops/overlays-management-hub/azurerm/)
 
-This Overlay Terraform module deploys a Management Hub Overlay network using the [Microsoft recommended Hub-Spoke network topology](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/hub-spoke). Usually, only one hub in each region with multiple spokes and each of the spokes can also be in separate subscriptions.
+This Terraform module deploys a Management Virtual Network Hub Overlay using the [Microsoft recommended Hub-Spoke network topology](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/hub-spoke). Usually, only one hub in each region with multiple spokes and each of the spokes can also be in separate subscriptions.
+
+## Using Azure Clouds
+
+Since this module is built for both public and us government clouds. The `environment` variable defaults to `public` for Azure Cloud. When using this module with the Azure Government Cloud, you must set the `environment` variable to `usgovernment`. You will also need to set the azurerm provider `environment` variable to the proper cloud as well. This will ensure that the correct Azure Government Cloud endpoints are used. You will also need to set the `location` variable to a valid Azure Government Cloud location.
+
+Example Usage for Azure Government Cloud:
+
+```hcl
+
+provider "azurerm" {
+  environment = "usgovernment"
+}
+
+module "overlays-management-spoke" {
+  source  = "azurenoops/overlays-management-spoke/azurerm"
+  version = "2.0.0"
+  
+  location = "usgovvirginia"
+  environment = "usgovernment"
+  ...
+}
+
+```
 
 ## SCCA Compliance
 
@@ -226,7 +249,7 @@ module "mod_vnet_hub" {
 
 Hub Networking is set up in a Management Hub Overlay design based on the SCCA Hub/Spoke architecture. The Management Hub Overlay is a central point of connectivity to many different networks.
 
-The following parameters affect Management Hub Overlay Networking.
+The following parameters affect Management Virtual Network Hub Overlaying.
 
 Parameter name | Location | Default Value | Description
 -------------- | ------------- | ------------- | -----------
@@ -385,7 +408,7 @@ You can centrally create, enforce, and log application and network connectivity 
 
 This is designed to support hub and spoke architecture in the azure and further security hardening would be recommend to add appropriate firewall application/network/NAT rules to use this for any production workloads.
 
-All network traffic is directed through the firewall residing in the Management Hub Overlay Network resource group. The firewall is configured as the default route for all other spokes including T0 (Identity and Authorization), T1 (Operations), T2 (Shared Services) Management Spokes and T3 (workload/team environments) workload spoke as follows:
+All network traffic is directed through the firewall residing in the Management Virtual Network Hub Overlay resource group. The firewall is configured as the default route for all other spokes including T0 (Identity and Authorization), T1 (Operations), T2 (Shared Services) Management Spokes and T3 (workload/team environments) workload spoke as follows:
 
 |Name         |Address prefix| Next hop type| Next hop IP address|
 |-------------|--------------|-----------------|-----------------|
@@ -393,7 +416,7 @@ All network traffic is directed through the firewall residing in the Management 
 
 *-example IP for firewall
 
-The default firewall configured for Management Hub Overlay Network is [Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features).
+The default firewall configured for Management Virtual Network Hub Overlay is [Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features).
 
 >### Firewall Availability Zones
 
