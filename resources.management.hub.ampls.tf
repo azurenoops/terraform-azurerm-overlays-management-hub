@@ -13,6 +13,7 @@ AUTHOR/S: jspinella
 #######################################
 
 resource "azurerm_subnet" "pe_snet" {
+  count = var.enable_management_logging ? 1 : 0
   name                                          = "ampls-private-endpoints"
   resource_group_name                           = local.resource_group_name
   virtual_network_name                          = azurerm_virtual_network.hub_vnet.name
@@ -26,6 +27,8 @@ module "mod_ampls_main_private_endpoint" {
   source = "./modules/private_endpoints"
   depends_on = [ module.mod_ops_logging.global_pls, module.mod_ampls_pdz.this ]
 
+  count = var.enable_management_logging ? 1 : 0
+
   org_name           = var.org_name
   environment        = var.environment
   deploy_environment = var.deploy_environment
@@ -33,7 +36,7 @@ module "mod_ampls_main_private_endpoint" {
   workload_name      = var.workload_name
 
   resource_group_name = local.resource_group_name
-  subnet_id           = azurerm_subnet.pe_snet.id
+  subnet_id           = azurerm_subnet.pe_snet.0.id
   target_resource     = module.mod_ops_logging.0.laws_private_link_scope_id
   subresource_name    = "azuremonitor"
 
