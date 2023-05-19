@@ -249,7 +249,7 @@ module "mod_vnet_hub" {
 
 Hub Networking is set up in a Management Hub Overlay design based on the SCCA Hub/Spoke architecture. The Management Hub Overlay is a central point of connectivity to many different networks.
 
-The following parameters affect Management Virtual Network Hub Overlaying.
+The following parameters affect Management Virtual Network Hub Overlay.
 
 Parameter name | Location | Default Value | Description
 -------------- | ------------- | ------------- | -----------
@@ -416,7 +416,7 @@ All network traffic is directed through the firewall residing in the Management 
 
 *-example IP for firewall
 
-The default firewall configured for Management Virtual Network Hub Overlay is [Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features).
+The default firewall configured for Management Virtual Network Hub Overlay is [Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features). Firewall Premium is the only version that meets SCCA compliance as it can break-and-inspect traffic whereas Firewall Standard can not.
 
 >### Firewall Availability Zones
 
