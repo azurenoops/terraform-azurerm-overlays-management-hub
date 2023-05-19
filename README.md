@@ -144,12 +144,6 @@ module "mod_vnet_hub" {
     }
   }
 
-  # By default, this will module will deploy management logging.
-  # If you do not want to enable management logging, 
-  # set enable_management_logging to false.
-  # All Log solutions are enabled (true) by default. To disable a solution, set the argument to `enable_<solution_name> = false`.
-  enable_management_logging = true
-
   # Firewall Settings
   # By default, Azure NoOps will create Azure Firewall in Hub VNet. 
   # If you do not want to create Azure Firewall, 
@@ -566,7 +560,7 @@ By default, this module will create a resource group and the name of the resourc
 
 This module enables diagnostic settings for Azure resources that emit platform logs. The diagnostic settings are configured to send platform logs to a Log Analytics workspace. The Log Analytics workspace is created in the same resource group as the hub virtual network. The Log Analytics workspace is configured to retain data for 30 days. The Log Analytics workspace is configured to use the Standard pricing tier.
 
-Management Operations Logging is enabled by default, If you do not want to use Management Operations Logging, set the argument to `enable_management_logging = false`.
+As part of SCCA compliance, Management Operations Logging is enabled.
 
 Diagnostic settings are controlled trough Policy. Policy will create a policy assignment to enable diagnostic settings for all resources in the resource group.
 

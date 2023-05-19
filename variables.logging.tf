@@ -5,12 +5,6 @@
 # Management Logging Configuration    ##
 ########################################
 
-variable "enable_management_logging" {
-  description = "Enable Management Logging for Operations Logging. Defaults to 'true'. **IMPORTANT** `enable_management_logging` should only be used with the operations tier. if you are using multiple subscriptions, set `operations_subscription_id` to operations tier subscription esale it will use the Hub subscription."
-  type        = bool
-  default     = true
-}
-
 variable "log_analytics_workspace_sku" {
   description = "The SKU of the Log Analytics Workspace. Possible values are PerGB2018 and Free. Default is PerGB2018."
   type        = string
