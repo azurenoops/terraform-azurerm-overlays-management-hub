@@ -34,7 +34,7 @@ module "mod_ampls_main_private_endpoint" {
 
   resource_group_name = local.resource_group_name
   subnet_id           = azurerm_subnet.pe_snet.id
-  target_resource     = module.mod_ops_logging.0.laws_private_link_scope_id
+  target_resource     = module.mod_ops_logging.laws_private_link_scope_id
   subresource_name    = "azuremonitor"
 
   use_existing_private_dns_zones = true

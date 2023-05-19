@@ -9,8 +9,6 @@ module "mod_ops_logging" {
   source    = "azurenoops/overlays-management-logging/azurerm"
   version   = ">= 1.0.0"
 
-  count = var.enable_management_logging ? 1 : 0
-
   #####################################
   ## Global Settings Configuration  ###
   #####################################

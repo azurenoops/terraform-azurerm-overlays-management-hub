@@ -34,10 +34,10 @@ locals {
   privateDnsZones_privatelink_blob_core_cloudapi_net_name    = (var.environment == "public" ? "privatelink.blob.core.windows.net" : "privatelink.blob.core.usgovcloudapi.net")
   privateDnsZones_privatelink_agentsvc_azure_automation_name = (var.environment == "public" ? "privatelink.agentsvc.azure-automation.net" : "privatelink.agentsvc.azure-automation.us")
 
-  privateLinkConnectionName    = "plconn${module.mod_ops_logging.0.laws_name}${random_id.uniqueString.hex}"
-  privateLinkEndpointName      = "pl${module.mod_ops_logging.0.laws_name}${random_id.uniqueString.hex}"
-  privateLinkScopeName         = "plscope${module.mod_ops_logging.0.laws_name}${random_id.uniqueString.hex}-connection"
-  privateLinkScopeResourceName = "plscres${module.mod_ops_logging.0.laws_name}${random_id.uniqueString.hex}"
+  privateLinkConnectionName    = "plconn${module.mod_ops_logging.laws_name}${random_id.uniqueString.hex}"
+  privateLinkEndpointName      = "pl${module.mod_ops_logging.laws_name}${random_id.uniqueString.hex}"
+  privateLinkScopeName         = "plscope${module.mod_ops_logging.laws_name}${random_id.uniqueString.hex}-connection"
+  privateLinkScopeResourceName = "plscres${module.mod_ops_logging.laws_name}${random_id.uniqueString.hex}"
   
   ample_dns_zones = [
     local.privateDnsZones_privatelink_monitor_azure_name,

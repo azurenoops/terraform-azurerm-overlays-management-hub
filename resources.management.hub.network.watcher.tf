@@ -45,9 +45,9 @@ resource "azurerm_network_watcher_flow_log" "nwflog" {
 
   traffic_analytics {
     enabled               = var.enable_traffic_analytics
-    workspace_id          = module.mod_ops_logging.0.laws_workspace_id
+    workspace_id          = module.mod_ops_logging.laws_workspace_id
     workspace_region      = local.location
-    workspace_resource_id = module.mod_ops_logging.0.laws_resource_id
+    workspace_resource_id = module.mod_ops_logging.laws_resource_id
     interval_in_minutes   = 10
   }
 }
