@@ -64,7 +64,7 @@ resource "azurerm_route" "route" {
 }
 
 resource "azurerm_route" "afw_route" {
-  name                   = lower("route-to-firewall-${each.value.route_name}-${local.location}")
+  name                   = lower("route-to-afw-subnet-${each.value.route_name}-${local.location}")
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.afw_routetable.name
   address_prefix         = var.encrypted_transport_address_prefix
