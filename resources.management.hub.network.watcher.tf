@@ -9,7 +9,10 @@ AUTHOR/S: jspinella
 */
 
 #-------------------------------------
-# Network Watcher - Default is "true"
+# Network Watcher - Default is "false", 
+# Network Watcher should only be 
+# created when one is not provided.
+# check README.md for more details 
 #-------------------------------------
 resource "azurerm_resource_group" "nwatcher" {
   count    = var.create_network_watcher != false ? 1 : 0
