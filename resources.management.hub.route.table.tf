@@ -63,7 +63,7 @@ resource "azurerm_route" "route" {
   next_hop_in_ip_address = each.value.next_hop_in_ip_address
 }
 
-resource "azurerm_route" "route" {
+resource "azurerm_route" "afw_route" {
   name                   = lower("route-to-firewall-${each.value.route_name}-${local.location}")
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.afw_routetable.name
