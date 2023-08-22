@@ -20,10 +20,10 @@ resource "azurerm_resource_group" "nwatcher" {
 
 resource "azurerm_network_watcher" "nwatcher" {
   count               = var.create_network_watcher != false ? 1 : 0
-  name                = "NetworkWatcher_${var.location}"
-  location            = local.netwatcher_rg_location
+  name                = "NetworkWatcher_${local.location}"
+  location            = local.location
   resource_group_name = local.netwatcher_rg_name
-  tags                = merge({ "ResourceName" = format("%s", "NetworkWatcher_${var.location}") }, local.default_tags, var.add_tags, )
+  tags                = merge({ "ResourceName" = format("%s", "NetworkWatcher_${local.location}") }, local.default_tags, var.add_tags, )
 }
 
 #-----------------------------------------
