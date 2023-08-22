@@ -634,4 +634,5 @@ An effective naming convention creates resource names by incorporating vital res
 
 ## Other resources
 
+* [Azure Firewall Documentation](https://docs.microsoft.com/en-us/azure/firewall/overview)
 * [Terraform AzureRM Provider Documentation](https://www.terraform.io/docs/providers/azurerm/index.html)
