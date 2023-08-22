@@ -15,14 +15,14 @@ AUTHOR/S: jspinella
 # check README.md for more details 
 #-------------------------------------
 resource "azurerm_resource_group" "nwatcher" {
-  count    = var.create_network_watcher != false ? 1 : 0
+  count    = var.create_network_watcher ? 1 : 0
   name     = "NetworkWatcherRG"
   location = local.location
   tags     = merge({ "ResourceName" = "NetworkWatcherRG" }, local.default_tags, var.add_tags, )
 }
 
 resource "azurerm_network_watcher" "nwatcher" {
-  count               = var.create_network_watcher != false ? 1 : 0
+  count               = var.create_network_watcher ? 1 : 0
   name                = "NetworkWatcher_${local.location}"
   location            = local.location
   resource_group_name = local.netwatcher_rg_name
@@ -35,7 +35,7 @@ resource "azurerm_network_watcher" "nwatcher" {
 resource "azurerm_network_watcher_flow_log" "nwflog" {
   for_each                  = var.hub_subnets
   name                      = lower("network-watcher-flow-log-${each.value.name}")
-  network_watcher_name      = var.create_network_watcher != false ? azurerm_network_watcher.nwatcher.0.name : "NetworkWatcher_${local.location}" 
+  network_watcher_name      = var.create_network_watcher ? azurerm_network_watcher.nwatcher.0.name : "NetworkWatcher_${local.location}" 
   resource_group_name       = local.netwatcher_rg_name # Must provide Netwatcher resource Group
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
   storage_account_id        = module.mgt_sa.storage_account_id
