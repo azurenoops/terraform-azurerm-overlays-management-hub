@@ -30,9 +30,54 @@ output "virtual_network_address_space" {
   value       = module.mod_vnet_hub.virtual_network_address_space
 }
 
+output "ampls_subnet_id" {
+  description = "Name of ampls subnet id"
+  value       = module.mod_vnet_hub.ampls_subnet_id
+}
+
+output "ampls_subnet_name" {
+  description = "Name of ampls subnet"
+  value       = module.mod_vnet_hub.ampls_subnet_name
+}
+
+output "gateway_subnet_id" {
+  description = "Name of gateway subnet id"
+  value       = module.mod_vnet_hub.gateway_subnet_id
+}
+
+output "gateway_subnet_name" {
+  description = "Name of gateway subnet"
+  value       = module.mod_vnet_hub.gateway_subnet_name
+}
+
+output "firewall_client_subnet_id" {
+  description = "Name of firewall client subnet id"
+  value       = module.mod_vnet_hub.firewall_client_subnet_id
+}
+
+output "firewall_client_subnet_name" {
+  description = "Name of gateway subnet"
+  value       = module.mod_vnet_hub.firewall_client_subnet_name
+}
+
+output "firewall_management_subnet_id" {
+  description = "Name of firewall management subnet id"
+  value       = module.mod_vnet_hub.firewall_management_subnet_id
+}
+
+output "firewall_management_subnet_name" {
+  description = "Name of firewall management subnet"
+  value       = module.mod_vnet_hub.firewall_management_subnet_name
+}
+
 output "subnet_ids" {
-  description = "List of IDs of subnets"
+  description = "Map of IDs of subnets"
   value       = module.mod_vnet_hub.subnet_ids
+}
+
+output "subnet_names" {
+  description = "Map of Names of subnets"
+  value       = module.mod_vnet_hub.subnet_names
 }
 
 output "subnet_address_prefixes" {
@@ -43,6 +88,11 @@ output "subnet_address_prefixes" {
 output "network_security_group_ids" {
   description = "List of Network security groups and ids"
   value       = module.mod_vnet_hub.network_security_group_ids
+}
+
+output "network_security_group_names" {
+  description = "List of Network security groups and ids"
+  value       = module.mod_vnet_hub.network_security_group_names
 }
 
 # DDoS Protection plan
@@ -67,16 +117,6 @@ output "route_table_id" {
   value       = module.mod_vnet_hub.route_table_id
 }
 
-output "private_dns_zone_name" {
-  description = "The name of the Private DNS zones within Azure DNS"
-  value       = module.mod_vnet_hub.private_dns_zone_name
-}
-
-output "private_dns_zone_id" {
-  description = "The resource id of Private DNS zones within Azure DNS"
-  value       = module.mod_vnet_hub.private_dns_zone_id
-}
-
 output "storage_account_id" {
   description = "The ID of the storage account."
   value       = module.mod_vnet_hub.storage_account_id
@@ -87,30 +127,14 @@ output "storage_account_name" {
   value       = module.mod_vnet_hub.storage_account_name
 }
 
-output "storage_primary_access_key" {
-  sensitive   = true
-  description = "The primary access key for the storage account."
-  value       = module.mod_vnet_hub.storage_primary_access_key
-}
-
 output "log_analytics_workspace_name" {
   description = "Specifies the name of the Log Analytics Workspace"
-  value       = module.mod_logging.log_analytics_workspace_name
+  value       = module.mod_vnet_hub.managmement_logging_log_analytics_name
 }
 
 output "log_analytics_workspace_id" {
   description = "Specifies the name of the Log Analytics Workspace"
-  value       = module.mod_logging.log_analytics_workspace_id
-}
-
-output "log_analytics_customer_id" {
-  description = "The Workspace (or Customer) ID for the Log Analytics Workspace."
-  value       = module.mod_logging.log_analytics_customer_id
-}
-
-output "log_analytics_logs_retention_in_days" {
-  description = "The workspace data retention in days. Possible values range between 30 and 730."
-  value       = module.mod_logging.log_analytics_logs_retention_in_days
+  value       = module.mod_vnet_hub.managmement_logging_log_analytics_id
 }
 
 output "public_ip_prefix_id" {
