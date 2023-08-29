@@ -41,14 +41,14 @@ resource "azurerm_route_table" "afw_routetable" {
   resource_group_name           = local.resource_group_name
   location                      = local.location
   disable_bgp_route_propagation = false
-  tags                          = merge({ "ResourceName" = "afw-route-network-outbound" }, local.default_tags, var.add_tags, )
+  tags                          = merge({ "ResourceName" = "afw-subnet-route-network-outbound" }, local.default_tags, var.add_tags, )
 
   count = var.enable_encrypted_transport ? 1 : 0
 }
 
 resource "azurerm_subnet_route_table_association" "afw_rtassoc" {
-  subnet_id      = azurerm_subnet.firewall_client_snet.id
-  route_table_id = azurerm_route_table.afw_routetable.id
+  subnet_id      = azurerm_subnet.firewall_client_snet.0.id
+  route_table_id = azurerm_route_table.afw_routetable.0.id
 
   count = var.enable_encrypted_transport ? 1 : 0
 }
@@ -64,9 +64,9 @@ resource "azurerm_route" "route" {
 }
 
 resource "azurerm_route" "afw_route" {
-  name                   = lower("route-to-afw-subnet-${each.value.route_name}-${local.location}")
+  name                   = lower("route-to-afw-subnet-${local.location}")
   resource_group_name    = local.resource_group_name
-  route_table_name       = azurerm_route_table.afw_routetable.name
+  route_table_name       = azurerm_route_table.afw_routetable.0.name
   address_prefix         = var.encrypted_transport_address_prefix
   next_hop_type          = var.encrypted_transport_next_hop_type
   next_hop_in_ip_address = var.encrypted_transport_next_hop_in_ip_address

@@ -16,9 +16,7 @@ locals {
   hub_rt_name                  = coalesce(var.hub_routtable_custom_name, "${data.azurenoopsutils_resource_name.rt.result}")
   hub_afw_rt_name              = coalesce(var.hub_routtable_custom_name, "${data.azurenoopsutils_resource_name.afw_rt.result}")
   hub_sa_name                  = coalesce(var.hub_sa_custom_name, data.azurenoopsutils_resource_name.st.result)
-  netwatcher_rg_name           = element(coalescelist(data.azurerm_resource_group.netwatch.*.name, azurerm_resource_group.nwatcher.*.name, [""]), 0)
-  netwatcher_rg_location       = element(coalescelist(data.azurerm_resource_group.netwatch.*.location, azurerm_resource_group.nwatcher.*.location, [""]), 0)
-
+  
   # DDOS Protection Plan
   ddos_plan_name = coalesce(var.ddos_plan_custom_name, "${data.azurenoopsutils_resource_name.ddos.result}")
 
