@@ -7,7 +7,7 @@
 module "mod_ops_logging" {
   providers = { azurerm = azurerm.ops_network }
   source    = "azurenoops/overlays-management-logging/azurerm"
-  version   = ">= 1.0.0"
+  version   = "~> 1.0"
 
   #####################################
   ## Global Settings Configuration  ###
@@ -49,7 +49,7 @@ module "mod_ops_logging" {
 
   # By default, this will apply resource locks to all resources created by this module.
   # To disable resource locks, set the argument to `enable_resource_locks = false`.
-  enable_resource_locks = false
+  enable_resource_locks = var.enable_resource_locks
 
   # Tags
   add_tags = merge(local.default_tags, var.add_tags, ) # Tags to be applied to all resources
