@@ -50,7 +50,7 @@ variable "lock_level" {
 # Management Logging  ###
 #########################
 
-variable "ampls_subnet_address_prefixes" {
+variable "ampls_subnet_address_prefix" {
   description = "A name for the ops logging. It defaults to ops-logging-core."
   type        = list(string)
   default     = ["10.8.5.160/27"]
