@@ -59,6 +59,20 @@ hub_subnets = {
     service_endpoints                          = ["Microsoft.Storage"]
     private_endpoint_network_policies_enabled  = false
     private_endpoint_service_endpoints_enabled = true
+    nsg_subnet_rules = [
+      {
+        name                       = "allow-443",
+        description                = "Allow access to port 443",
+        priority                   = 100,
+        direction                  = "Inbound",
+        access                     = "Allow",
+        protocol                   = "*",
+        source_port_range          = "*",
+        destination_port_range     = "443",
+        source_address_prefix      = "*",
+        destination_address_prefix = "*"
+      }
+    ]
   },
 }
 

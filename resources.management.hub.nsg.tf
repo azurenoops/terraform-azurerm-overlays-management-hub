@@ -7,19 +7,32 @@ resource "azurerm_network_security_group" "nsg" {
   resource_group_name = local.resource_group_name
   location            = local.location
   tags                = merge({ "ResourceName" = lower("nsg_${each.key}") }, local.default_tags, var.add_tags, )
+
+
   dynamic "security_rule" {
-    for_each = concat(lookup(each.value, "nsg_subnet_inbound_rules", []), lookup(each.value, "nsg_subnet_outbound_rules", []))
+    for_each = each.value.nsg_subnet_rules != null ? each.value.nsg_subnet_rules : []
+
     content {
-      name                         = security_rule.value[0] == "" ? "Default_Rule" : security_rule.value[0]
-      priority                     = security_rule.value[1]
-      direction                    = security_rule.value[2] == "" ? "Inbound" : security_rule.value[2]
-      access                       = security_rule.value[3] == "" ? "Allow" : security_rule.value[3]
-      protocol                     = security_rule.value[4] == "" ? "Tcp" : security_rule.value[4]
-      source_port_range            = "*"
-      destination_port_range       = security_rule.value[5] == "" ? "*" : security_rule.value[5]
-      source_address_prefix        = security_rule.value[6] == "" ? element(each.value.address_prefixes, 0) : security_rule.value[6]
-      destination_address_prefixes = security_rule.value[7] == [""] ? each.value.address_prefixes : security_rule.value[7]
-      description                  = "${security_rule.value[2]}_Port_${security_rule.value[5]}"
+      name        = security_rule.value["name"]
+      description = security_rule.value["description"]
+      priority    = security_rule.value["priority"]
+      direction   = security_rule.value["direction"]
+      access      = security_rule.value["access"]
+      protocol    = security_rule.value["protocol"]
+
+      source_port_range  = security_rule.value["source_port_range"]
+      source_port_ranges = security_rule.value["source_port_ranges"]
+
+      destination_port_range  = security_rule.value["destination_port_range"]
+      destination_port_ranges = security_rule.value["destination_port_ranges"]
+
+      source_address_prefix                 = security_rule.value["source_address_prefix"]
+      source_address_prefixes               = security_rule.value["source_address_prefixes"]
+      source_application_security_group_ids = security_rule.value["source_application_security_group_ids"]
+
+      destination_address_prefix                 = security_rule.value["destination_address_prefix"]
+      destination_address_prefixes               = security_rule.value["destination_address_prefixes"]
+      destination_application_security_group_ids = security_rule.value["destination_application_security_group_ids"]
     }
   }
 }

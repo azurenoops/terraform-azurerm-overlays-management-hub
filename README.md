@@ -86,25 +86,25 @@ Source: [Microsoft Azure Hub-Spoke Topology Documentation](https://docs.microsof
 
 ## Resources Supported
 
-* [Virtual Network](https://www.terraform.io/docs/providers/azurerm/r/virtual_network.html)
-* [Subnets](https://www.terraform.io/docs/providers/azurerm/r/subnet.html)
-* [Subnet Service Delegation](https://www.terraform.io/docs/providers/azurerm/r/subnet.html#delegation)
-* [Virtual Network service endpoints](https://www.terraform.io/docs/providers/azurerm/r/subnet.html#service_endpoints)
-* [Private Link service/Endpoint network policies on Subnet](https://www.terraform.io/docs/providers/azurerm/r/subnet.html#enforce_private_link_endpoint_network_policies)
-* [AzureNetwork DDoS Protection Plan](https://www.terraform.io/docs/providers/azurerm/r/network_ddos_protection_plan.html)
-* [Network Security Groups](https://www.terraform.io/docs/providers/azurerm/r/network_security_group.html)
-* [Azure Firewall](https://www.terraform.io/docs/providers/azurerm/r/firewall.html)
-* [Azure Firewall Application Rule Collection](https://www.terraform.io/docs/providers/azurerm/r/firewall_application_rule_collection.html)
-* [Azure Firewall Network Rule Collection](https://www.terraform.io/docs/providers/azurerm/r/firewall_network_rule_collection.html)
-* [Azure Firewall NAT Rule Collection](https://www.terraform.io/docs/providers/azurerm/r/firewall_nat_rule_collection.html)
-* [Route Table](https://www.terraform.io/docs/providers/azurerm/r/route_table.html)
-* [Role Assignment for Peering](https://www.terraform.io/docs/providers/azurerm/r/role_assignment.html)
-* [Storage Account for Log Archive](https://www.terraform.io/docs/providers/azurerm/r/storage_account.html)
-* [Log Analytics Workspace](https://www.terraform.io/docs/providers/azurerm/r/log_analytics_workspace.html)
-* [Azure Monitoring Diagnostics](https://www.terraform.io/docs/providers/azurerm/r/monitor_diagnostic_setting.html)
-* [Network Watcher](https://www.terraform.io/docs/providers/azurerm/r/network_watcher.html)
-* [Network Watcher Workflow Logs](https://www.terraform.io/docs/providers/azurerm/r/network_watcher_flow_log.html)
-* [Private DNS Zone](https://www.terraform.io/docs/providers/azurerm/r/private_dns_zone.html)
+- [Virtual Network](https://www.terraform.io/docs/providers/azurerm/r/virtual_network.html)
+- [Subnets](https://www.terraform.io/docs/providers/azurerm/r/subnet.html)
+- [Subnet Service Delegation](https://www.terraform.io/docs/providers/azurerm/r/subnet.html#delegation)
+- [Virtual Network service endpoints](https://www.terraform.io/docs/providers/azurerm/r/subnet.html#service_endpoints)
+- [Private Link service/Endpoint network policies on Subnet](https://www.terraform.io/docs/providers/azurerm/r/subnet.html#enforce_private_link_endpoint_network_policies)
+- [AzureNetwork DDoS Protection Plan](https://www.terraform.io/docs/providers/azurerm/r/network_ddos_protection_plan.html)
+- [Network Security Groups](https://www.terraform.io/docs/providers/azurerm/r/network_security_group.html)
+- [Azure Firewall](https://www.terraform.io/docs/providers/azurerm/r/firewall.html)
+- [Azure Firewall Application Rule Collection](https://www.terraform.io/docs/providers/azurerm/r/firewall_application_rule_collection.html)
+- [Azure Firewall Network Rule Collection](https://www.terraform.io/docs/providers/azurerm/r/firewall_network_rule_collection.html)
+- [Azure Firewall NAT Rule Collection](https://www.terraform.io/docs/providers/azurerm/r/firewall_nat_rule_collection.html)
+- [Route Table](https://www.terraform.io/docs/providers/azurerm/r/route_table.html)
+- [Role Assignment for Peering](https://www.terraform.io/docs/providers/azurerm/r/role_assignment.html)
+- [Storage Account for Log Archive](https://www.terraform.io/docs/providers/azurerm/r/storage_account.html)
+- [Log Analytics Workspace](https://www.terraform.io/docs/providers/azurerm/r/log_analytics_workspace.html)
+- [Azure Monitoring Diagnostics](https://www.terraform.io/docs/providers/azurerm/r/monitor_diagnostic_setting.html)
+- [Network Watcher](https://www.terraform.io/docs/providers/azurerm/r/network_watcher.html)
+- [Network Watcher Workflow Logs](https://www.terraform.io/docs/providers/azurerm/r/network_watcher_flow_log.html)
+- [Private DNS Zone](https://www.terraform.io/docs/providers/azurerm/r/private_dns_zone.html)
 
 ## Module Usage
 
@@ -162,20 +162,32 @@ module "mod_vnet_hub" {
       service_endpoints                          = ["Microsoft.Storage"]
       private_endpoint_network_policies_enabled  = false
       private_endpoint_service_endpoints_enabled = true
-      nsg_subnet_inbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        # 65200-65335 port to be opened if you planning to create application gateway
-        ["http", "100", "Inbound", "Allow", "Tcp", "80", "*", ["0.0.0.0/0"]],
-        ["https", "200", "Inbound", "Allow", "Tcp", "443", "*", [""]],
-        ["appgwports", "300", "Inbound", "Allow", "Tcp", "65200-65335", "*", [""]],
-
-      ]
-      nsg_subnet_outbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["ntp_out", "400", "Outbound", "Allow", "Udp", "123", "", ["0.0.0.0/0"]],
-      ]
+      nsg_subnet_rules = [
+      {
+        name                       = "allow-443",
+        description                = "Allow access to port 443",
+        priority                   = 100,
+        direction                  = "Inbound",
+        access                     = "Allow",
+        protocol                   = "*",
+        source_port_range          = "*",
+        destination_port_range     = "443",
+        source_address_prefix      = "*",
+        destination_address_prefix = "*"
+      }
+      {
+        name                       = "ntp_out",
+        description                = "Allow NTP out on 123",
+        priority                   = 400,
+        direction                  = "Outbound",
+        access                     = "Allow",
+        protocol                   = "Udp",
+        source_port_range          = "123",
+        destination_port_range     = "",
+        source_address_prefix      = "0.0.0.0/0",
+        destination_address_prefix = "*"
+      }
+    ]      
     }
   }
 
@@ -523,11 +535,13 @@ module "vnet-hub" {
 
 ## Network Security Groups
 
-By default, the network security groups connected to subnets will only allow necessary traffic and block everything else (deny-all rule). Use `nsg_subnet_inbound_rules` and `nsg_subnet_outbound_rules` in this Terraform module to create a Network Security Group (NSG) for each subnet and allow it to add additional rules for inbound flows.
+By default, the network security groups connected to subnets will only allow necessary traffic and block everything else (deny-all rule). Use `nsg_subnet_rules` in this Terraform module to create a Network Security Group (NSG) for each subnet and allow it to add additional rules for inbound flows.
 
 In the Source and Destination columns, `VirtualNetwork`, `AzureLoadBalancer`, and `Internet` are service tags, rather than IP addresses. In the protocol column, Any encompasses `TCP`, `UDP`, and `ICMP`. When creating a rule, you can specify `TCP`, `UDP`, `ICMP` or `*`. `0.0.0.0/0` in the Source and Destination columns represents all addresses.
 
 *You cannot remove the default rules, but you can override them by creating rules with higher priorities.*
+
+This module supports enabling the NSG Rules of your choosing under the virtual network and with the specified subnet.  For more information, check the [terraform resource documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group#security_rule).
 
 ```hcl
 module "vnet-hub" {
@@ -541,18 +555,22 @@ module "vnet-hub" {
     mgnt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
-      nsg_subnet_inbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["weballow", "200", "Inbound", "Allow", "Tcp", "22", "*", ""],
-        ["weballow1", "201", "Inbound", "Allow", "Tcp", "3389", "*", ""],
-      ]
 
-      nsg_subnet_outbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["ntp_out", "103", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
-      ]
+      nsg_subnet_rules = [
+          {
+            name                       = "allow-443",
+            description                = "Allow access to port 443",
+            priority                   = 100,
+            direction                  = "Inbound",
+            access                     = "Allow",
+            protocol                   = "*",
+            source_port_range          = "*",
+            destination_port_range     = "443",
+            source_address_prefix      = "*",
+            destination_address_prefix = "*"
+          }
+        ]
+      }
     }
   }
 
@@ -575,14 +593,14 @@ Diagnostic settings are controlled trough Policy. Policy will create a policy as
 
 The following Azure resources can be configured to send platform logs to the Log Analytics workspace:
 
-* Azure Firewall
-* Azure Storage
-* Azure Key Vault
-* Azure Application Gateway
-* Azure Load Balancer
-* Azure Network Security Group
-* Azure Virtual Network Gateway
-* Azure Virtual Network
+- Azure Firewall
+- Azure Storage
+- Azure Key Vault
+- Azure Application Gateway
+- Azure Load Balancer
+- Azure Network Security Group
+- Azure Virtual Network Gateway
+- Azure Virtual Network
 
 > **NOTE:**  Please review the [Mission Enclave Policy Starter](https://github.com/azurenoops/ref-scca-enclave-policy-starter) reference implementation for more information.
 
@@ -594,11 +612,11 @@ By default, this module deploys AMPLS for Azure Monitoring into the privateEndpo
 
 DNS Zones:
 
-* `privatelink.monitor.azure.com`
-* `privatelink.ods.opinsights.azure.com`
-* `privatelink.oms.opinsights.azure.com`
-* `privatelink.blob.core.windows.net`
-* `privatelink.agentsvc.azure-automation.net`
+- `privatelink.monitor.azure.com`
+- `privatelink.ods.opinsights.azure.com`
+- `privatelink.oms.opinsights.azure.com`
+- `privatelink.blob.core.windows.net`
+- `privatelink.agentsvc.azure-automation.net`
 
 > **Note:** *`privatelink.blob.core.windows.net` is deployed thru AMPLS make that you do not add this to private dns zones variable. This will cause a conflict, if deployed again to the Management Hub Overlay.*
 
@@ -691,5 +709,5 @@ An effective naming convention creates resource names by incorporating vital res
 
 ## Other resources
 
-* [Azure Firewall Documentation](https://docs.microsoft.com/en-us/azure/firewall/overview)
-* [Terraform AzureRM Provider Documentation](https://www.terraform.io/docs/providers/azurerm/index.html)
+- [Azure Firewall Documentation](https://docs.microsoft.com/en-us/azure/firewall/overview)
+- [Terraform AzureRM Provider Documentation](https://www.terraform.io/docs/providers/azurerm/index.html)
