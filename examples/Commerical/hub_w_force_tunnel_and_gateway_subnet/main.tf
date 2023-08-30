@@ -9,7 +9,7 @@ provider "azurerm" {
 module "mod_vnet_hub" {
   #source  = "azurenoops/overlays-management-hub/azurerm"
   #version = "x.x.x"
-  source = "../.."
+  source = "../../.."
 
   ################################
   # Landing Zone Configuration  ##
