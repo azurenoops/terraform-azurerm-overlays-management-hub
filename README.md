@@ -573,7 +573,7 @@ Management Hub Overlay has optional features that can be enabled by setting para
 
 ## Create resource group
 
-By default, this module will create a resource group and the name of the resource group to be given in an argument `resource_group_name` located in `variables.naming.tf`. If you want to use an existing resource group, specify the existing resource group name, and set the argument to `create_resource_group = false`.
+By default, this module will create a resource group and the name of the resource group to be given in an argument `resource_group_name` located in `variables.naming.tf`. If you want to use an existing resource group, specify the existing resource group name, and set the argument to `create_hub_resource_group = false`.
 
 > **Note:** *If you are using an existing resource group, then this module uses the same resource group location to create all resources in this module.*
 
