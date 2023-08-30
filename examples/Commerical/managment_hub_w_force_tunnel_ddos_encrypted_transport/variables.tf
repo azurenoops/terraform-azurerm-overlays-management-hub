@@ -221,3 +221,31 @@ variable "azure_bastion_subnet_address_prefix" {
   type        = list(string)
   default     = null
 }
+
+#######################################
+# Encrypted Transport Configuration  ##
+#######################################
+
+variable "enable_encrypted_transport" {
+  description = "Enables encrypted transport for the hub virtual network. Default is false."
+  type        = bool
+  default     = false
+}
+
+variable "encrypted_transport_address_prefix" {
+  description = "The address prefix of the encrypted transport subnet."
+  type        = string
+  default     = null
+}
+
+variable "encrypted_transport_next_hop_in_ip_address" {
+  description = "The next hop in IP address of the encrypted transport subnet."
+  type        = string
+  default     = null
+}
+
+variable "encrypted_transport_next_hop_type" {
+  description = "The next hop type of the encrypted transport subnet. Valid values are VirtualAppliance and VnetLocal."
+  type        = string
+  default     = null
+}
