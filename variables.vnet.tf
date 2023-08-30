@@ -16,11 +16,6 @@ variable "create_ddos_plan" {
   default     = false
 }
 
-variable "create_network_watcher" {
-  description = "Controls if Network Watcher resources should be created for the Azure subscription. Default is false"
-  default     = false
-}
-
 variable "log_analytics_workspace_name" {
   description = "The name of the Log Analytics Workspace to be used for Azure Network Watcher"
   default     = null
