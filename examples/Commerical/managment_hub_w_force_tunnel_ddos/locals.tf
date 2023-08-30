@@ -1,7 +1,6 @@
 locals {
-  tags = {
-    Project = "Azure NoOps"
-    Module  = "overlays-key-vault"
+  tags = {    
+    Module  = "overlays-management-hub"
     Toolkit = "Terraform"
     Example = "Management Hub with force tunneling"
   }

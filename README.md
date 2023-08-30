@@ -256,7 +256,7 @@ Parameter name | Location | Default Value | Description
 
 This module handles the creation and a list of address spaces for subnets. This module uses `for_each` to create subnets and corresponding service endpoints, service delegation, and network security groups. This module associates the subnets to network security groups as well with additional user-defined NSG rules.  
 
-This module creates 4 subnets by default: Gateway Subnet, AzureFirewallSubnet, AzureFirewallManagementSubnet and AzureBastionSubnet. 
+This module creates 4 subnets by default: Gateway Subnet, AzureFirewallSubnet, AzureFirewallManagementSubnet and AzureBastionSubnet.
 
 Name | Description
 ---- | -----------
@@ -530,6 +530,27 @@ module "vnet-hub" {
 
 To peer spoke networks to the hub networks requires the service principal that performs the peering has `Network Contributor` role on hub network. Linking the Spoke to Hub DNS zones, the service principal also needs the `Private DNS Zone Contributor` role on hub network.
 
+## Management Operations Logging
+
+This module enables diagnostic settings for Azure resources that emit platform logs. The diagnostic settings are configured to send platform logs to a Log Analytics workspace. The Log Analytics workspace is created in the same resource group as the hub virtual network. The Log Analytics workspace is configured to retain data for 30 days. The Log Analytics workspace is configured to use the Standard pricing tier.
+
+As part of SCCA compliance, Management Operations Logging is enabled.
+
+Diagnostic settings are controlled trough Policy. Policy will create a policy assignment to enable diagnostic settings for all resources in the resource group.
+
+The following Azure resources can be configured to send platform logs to the Log Analytics workspace:
+
+* Azure Firewall
+* Azure Storage
+* Azure Key Vault
+* Azure Application Gateway
+* Azure Load Balancer
+* Azure Network Security Group
+* Azure Virtual Network Gateway
+* Azure Virtual Network
+
+> **NOTE:**  Please review the [Mission Enclave Policy Starter](https://github.com/azurenoops/ref-scca-enclave-policy-starter) reference implementation for more information.
+
 ## AMPLS for Azure Monitoring (Azure Managed Private Link Service)
 
 Azure Monitor Private Link Scope connects a Private Endpoint to a set of Azure Monitor resources as [Azure Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-overview). It is a managed service that is deployed and managed by Microsoft. It is not a service that you deploy and manage yourself. It is a service that you deploy into a VNet and then connect to other Azure Monitor services.
@@ -556,40 +577,41 @@ By default, this module will create a resource group and the name of the resourc
 
 > **Note:** *If you are using an existing resource group, then this module uses the same resource group location to create all resources in this module.*
 
-## Management Operations Logging
-
-This module enables diagnostic settings for Azure resources that emit platform logs. The diagnostic settings are configured to send platform logs to a Log Analytics workspace. The Log Analytics workspace is created in the same resource group as the hub virtual network. The Log Analytics workspace is configured to retain data for 30 days. The Log Analytics workspace is configured to use the Standard pricing tier.
-
-As part of SCCA compliance, Management Operations Logging is enabled.
-
-Diagnostic settings are controlled trough Policy. Policy will create a policy assignment to enable diagnostic settings for all resources in the resource group.
-
-The following Azure resources can be configured to send platform logs to the Log Analytics workspace:
-
-* Azure Firewall
-* Azure Storage
-* Azure Key Vault
-* Azure Application Gateway
-* Azure Load Balancer
-* Azure Network Security Group
-* Azure Virtual Network Gateway
-* Azure Virtual Network
-
-> **NOTE:**  Please review the [Mission Enclave Policy Starter](https://github.com/azurenoops/ref-scca-enclave-policy-starter) reference implementation for more information.
-
 ## Azure Network DDoS Protection Plan
 
 By default, this module will not create a DDoS Protection Plan. You can enable/disable it by appending an argument `create_ddos_plan` located in `variables.vnet.tf`. If you want to enable a DDoS plan using this module, set argument `create_ddos_plan = true`
 
 ## Azure Network Network Watcher
 
-This module handle the provision of Network Watcher resource by defining `create_network_watcher` variable. It will enable network watcher, flow logs and traffic analytics for all the subnets in the Virtual Network. Since Azure uses a specific naming standard on network watchers, It will create a resource group `NetworkWatcherRG` and adds the location specific resource.
+This module handles the lookup of Network Watcher resource. It will use network watcher, flow logs and traffic analytics for all the subnets in the Virtual Network.
 
 > **Note:** *Log Analytics workspace is required for NSG Flow Logs and Traffic Analytics. If you want to enable NSG Flow Logs and Traffic Analytics, you must create a Log Analytics workspace and provide the workspace name set argument `log_analytics_workspace_name` and rg set argument `log_analytics_workspace_resource_group_name`*
 
 ## Enable Force Tunneling for the Firewall
 
 By default, this module will not create a force tunnel on the firewall. You can enable/disable it by appending an argument `enable_force_tunneling` located in `variables.fw.tf` If you want to enable a DDoS plan using this module, set argument `enable_force_tunneling = true`. Enabling this feature will ensure that the firewall is the default route for all the T0 through T3 Network routes.
+
+## Enable Encrypted Transport Add-On
+
+"The Encrypted Transport Add-on [Encrypted Transport Add-On]() requires modifications to the Firewall in the form of a new Route Table on the AzureFirewallSubnet as well as a new route. If you decide to use the Encrypted Transport Add-on then set the `enable_encrypted_transport` argument to `true`." Addtion to enabling Encrypted Transport, you will need to add `encrypted_transport_address_prefix`, `encrypted_transport_next_hop_in_ip_address` and `encrypted_transport_next_hop_type` arguments.
+
+```hcl
+module "vnet-hub" {
+  source  = "azurenoops/overlays-management-hub/azurerm"
+  version = "x.x.x"
+
+  # .... omitted
+
+  # Enable Encrypted Transport
+  enable_encrypted_transport = true
+  encrypted_transport_address_prefix = "10.0.100.0/27"
+  encrypted_transport_next_hop_in_ip_address = "10.0.100.0/27"
+  encrypted_transport_next_hop_type = "VirtualAppliance"
+
+# ....omitted
+
+}
+```
 
 ## Private DNS Zones for Azure PasS Services
 
