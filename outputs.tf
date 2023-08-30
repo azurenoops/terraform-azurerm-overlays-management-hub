@@ -33,14 +33,60 @@ output "virtual_network_address_space" {
   value       = element(coalescelist(azurerm_virtual_network.hub_vnet.*.address_space, [""]), 0)
 }
 
+output "ampls_subnet_id" {
+  description = "Name of ampls subnet id"
+  value       = azurerm_subnet.pe_snet.id
+}
+
+output "ampls_subnet_name" {
+  description = "Name of ampls subnet"
+  value       = azurerm_subnet.pe_snet.name
+}
+
+output "gateway_subnet_id" {
+  description = "Name of gateway subnet id"
+  value       = var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.id : null
+}
+
+output "gateway_subnet_name" {
+  description = "Name of gateway subnet"
+  value       = var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.name : null
+}
+
+output "firewall_client_subnet_id" {
+  description = "Name of firewall client subnet id"
+  value       = azurerm_subnet.firewall_client_snet.0.id
+}
+
+output "firewall_client_subnet_name" {
+  description = "Name of gateway subnet"
+  value       = azurerm_subnet.firewall_client_snet.0.name
+}
+
+output "firewall_management_subnet_id" {
+  description = "Name of firewall management subnet id"
+  value       = var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null ? azurerm_subnet.firewall_management_snet.0.id : null
+}
+
+output "firewall_management_subnet_name" {
+  description = "Name of firewall management subnet"
+  value       = var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null ? azurerm_subnet.firewall_management_snet.0.name : null
+}
+
 output "subnet_ids" {
-  description = "List of IDs of subnets"
-  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.id], [azurerm_subnet.pe_snet.id], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.id : null], [azurerm_subnet.firewall_client_snet.0.id], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.id : null]))
+  description = "Map of ids for default subnets"
+  value = { for key, id in zipmap(
+    sort(keys(var.hub_subnets)),
+    sort(values(azurerm_subnet.default_snet)[*]["id"])) :
+  key => { key = key, id = id } }
 }
 
 output "subnet_names" {
-  description = "List of names of subnet"
-  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.name], [azurerm_subnet.pe_snet.name], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.name : null], [azurerm_subnet.firewall_client_snet.0.name], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.name : null]))
+  description = "Map of names for default subnets"
+  value = { for key, name in zipmap(
+    sort(keys(var.hub_subnets)),
+    sort(values(azurerm_subnet.default_snet)[*]["name"])) :
+  key => { key = key, name = name } }
 }
 
 output "subnet_address_prefixes" {
@@ -50,8 +96,19 @@ output "subnet_address_prefixes" {
 
 # Network Security group ids
 output "network_security_group_ids" {
-  description = "List of Network security groups and ids"
-  value       = [for n in azurerm_network_security_group.nsg : n.id]
+  description = "Map of ids for default NSGs"
+  value = { for key, id in zipmap(
+    sort(keys(var.hub_subnets)),
+    sort(values(azurerm_network_security_group.nsg)[*]["id"])) :
+  key => { key = key, id = id } }
+}
+
+output "network_security_group_names" {
+  description = "Map of names for default NSGs"
+  value = { for key, name in zipmap(
+    sort(keys(var.hub_subnets)),
+    sort(values(azurerm_network_security_group.nsg)[*]["name"])) :
+  key => { key = key, name = name } }
 }
 
 # DDoS Protection Plan
@@ -63,7 +120,7 @@ output "ddos_protection_plan_id" {
 # Network Watcher
 output "network_watcher_id" {
   description = "ID of Network Watcher"
-  value       = element(concat(azurerm_network_watcher.nwatcher.*.id, [""]), 0)
+  value       = data.azurerm_network_watcher.nwatcher.id
 }
 
 output "route_table_name" {
@@ -78,12 +135,12 @@ output "route_table_id" {
 
 output "private_dns_zone_names" {
   description = "The name of the Private DNS zones within Azure DNS"
-  value       = [for s in module.mod_ampls_pdz : s.private_dns_zone_name] 
+  value       = [for s in module.mod_ampls_pdz : s.private_dns_zone_name]
 }
 
 output "private_dns_zone_ids" {
   description = "The resource id of Private DNS zones within Azure DNS"
-  value       = [for s in module.mod_ampls_pdz : s.private_dns_zone_id] 
+  value       = [for s in module.mod_ampls_pdz : s.private_dns_zone_id]
 }
 
 output "ampls_private_dns_zone_ids" {
@@ -121,7 +178,7 @@ output "firewall_management_public_ip" {
   value       = element(concat([for ip in azurerm_public_ip.firewall_management_pip : ip.ip_address], [""]), 0)
 }
 
-output "firewall_management_public_ip_fqdn" {  
+output "firewall_management_public_ip_fqdn" {
   description = "Fully qualified domain name of the A DNS record associated with the public IP."
   value       = element(concat([for f in azurerm_public_ip.firewall_management_pip : f.fqdn], [""]), 0)
 }
@@ -168,40 +225,40 @@ output "azure_bastion_host_fqdn" {
 
 output "managmement_logging_log_analytics_id" {
   description = "The resource ID of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_resource_id 
+  value       = module.mod_ops_logging.laws_resource_id
 }
 
 output "managmement_logging_log_analytics_name" {
   description = "The name of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_name 
+  value       = module.mod_ops_logging.laws_name
 }
 
 output "managmement_logging_log_analytics_resource_group" {
   description = "The rg of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_rgname 
+  value       = module.mod_ops_logging.laws_rgname
 }
 
 output "managmement_logging_log_analytics_workspace_id" {
   description = "The rg of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_workspace_id 
+  value       = module.mod_ops_logging.laws_workspace_id
 }
 
 output "managmement_logging_log_analytics_primary_shared_key" {
   description = "The rg of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_primary_shared_key 
+  value       = module.mod_ops_logging.laws_primary_shared_key
 }
 
 output "managmement_logging_storage_account_id" {
   description = "The resource ID of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_storage_account_id 
+  value       = module.mod_ops_logging.laws_storage_account_id
 }
 
 output "managmement_logging_storage_account_name" {
   description = "The name of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_storage_account_name 
+  value       = module.mod_ops_logging.laws_storage_account_name
 }
 
 output "managmement_logging_storage_account_resource_group" {
   description = "The rg of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_storage_account_rgname 
+  value       = module.mod_ops_logging.laws_storage_account_rgname
 }

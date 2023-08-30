@@ -47,7 +47,7 @@ variable "disable_telemetry" {
 # RG Configuration   ##
 #######################
 
-variable "create_resource_group" {
+variable "create_hub_resource_group" {
   description = "Controls if the resource group should be created. If set to false, the resource group name must be provided by existing_resource_group_name variable. Default is false."
   type        = bool
   default     = false
