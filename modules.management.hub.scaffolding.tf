@@ -14,12 +14,12 @@ module "mod_azregions" {
 
 # By default, this module will not create a resource group
 # provide a name to use an existing resource group, specify the existing resource group name,
-# and set the argument to `create_resource_group = false`. Location will be same as existing RG.
+# and set the argument to `create_hub_resource_group = false`. Location will be same as existing RG.
 #---------------------------------------------------------
 # Resource Group Creation
 #----------------------------------------------------------
 data "azurerm_resource_group" "rgrp" {
-  count = var.create_resource_group == false ? 1 : 0
+  count = var.create_hub_resource_group == false ? 1 : 0
   name  = var.existing_resource_group_name
 }
 
@@ -27,7 +27,7 @@ module "mod_scaffold_rg" {
   source  = "azurenoops/overlays-resource-group/azurerm"
   version = "~> 1.0.1"
 
-  count = var.create_resource_group ? 1 : 0
+  count = var.create_hub_resource_group ? 1 : 0
 
   location                = module.mod_azregions.location_cli
   use_location_short_name = var.use_location_short_name # Use the short location name in the resource group name
