@@ -532,7 +532,7 @@ To peer spoke networks to the hub networks requires the service principal that p
 
 ## Management Operations Logging
 
-This module enables diagnostic settings for Azure resources that emit platform logs. The diagnostic settings are configured to send platform logs to a Log Analytics workspace. The Log Analytics workspace is created in the same resource group as the hub virtual network. The Log Analytics workspace is configured to retain data for 30 days. The Log Analytics workspace is configured to use the Standard pricing tier.
+This module enables diagnostic settings for Azure resources that emit platform logs. The diagnostic settings are configured to send platform logs to a Log Analytics workspace. The workspace is created in the same resource group as the hub virtual network and it is configured to retain data for 30 days. The Log Analytics workspace is configured to use the Standard pricing tier.
 
 As part of SCCA compliance, Management Operations Logging is enabled.
 
@@ -589,11 +589,11 @@ This module handles the lookup of Network Watcher resource. It will use network 
 
 ## Enable Force Tunneling for the Firewall
 
-By default, this module will not create a force tunnel on the firewall. You can enable/disable it by appending an argument `enable_force_tunneling` located in `variables.fw.tf` If you want to enable a DDoS plan using this module, set argument `enable_force_tunneling = true`. Enabling this feature will ensure that the firewall is the default route for all the T0 through T3 Network routes.
+By default, this module will not create a force tunnel on the firewall. You can enable/disable it by appending an argument `enable_force_tunneling`. Enabling this feature will ensure that the firewall is the default route for all the T0 through T3 Network routes.
 
 ## Enable Encrypted Transport Add-On
 
-"The Encrypted Transport Add-on [Encrypted Transport Add-On]() requires modifications to the Firewall in the form of a new Route Table on the AzureFirewallSubnet as well as a new route. If you decide to use the Encrypted Transport Add-on then set the `enable_encrypted_transport` argument to `true`." Addtion to enabling Encrypted Transport, you will need to add `encrypted_transport_address_prefix`, `encrypted_transport_next_hop_in_ip_address` and `encrypted_transport_next_hop_type` arguments.
+"The Encrypted Transport Add-on [Encrypted Transport Add-On](https://github.com/azurenoops/ref-scca-encrypted-transport-native-starter) requires modifications to the Firewall in the form of a new Route Table on the AzureFirewallSubnet as well as a new route. If you decide to use the Encrypted Transport Add-on then set the `enable_encrypted_transport` argument to `true`." Addition to enabling Encrypted Transport, you will need to add `encrypted_transport_address_prefix`, `encrypted_transport_next_hop_in_ip_address` and `encrypted_transport_next_hop_type` arguments.
 
 ```hcl
 module "vnet-hub" {
