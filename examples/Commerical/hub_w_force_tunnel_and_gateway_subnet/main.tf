@@ -47,7 +47,7 @@ module "mod_vnet_hub" {
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
   virtual_network_address_space           = var.hub_vnet_address_space              # (Required)  Hub Virtual Network Parameters  
   firewall_subnet_address_prefix          = var.fw_client_snet_address_prefixes     # (Required)  Hub Firewall Subnet Parameters  
-  ampls_subnet_address_prefix             = var.ampls_subnet_address_prefixes         # (Required)  AMPLS Subnet Parameters
+  ampls_subnet_address_prefix             = var.ampls_subnet_address_prefix         # (Required)  AMPLS Subnet Parameters
   firewall_management_snet_address_prefix = var.fw_management_snet_address_prefixes # (Optional)  Hub Firewall Management Subnet Parameters
   gateway_subnet_address_prefix           = ["10.8.4.0/27"] # (Optional)  Hub Gateway Subnet Parameters
   
