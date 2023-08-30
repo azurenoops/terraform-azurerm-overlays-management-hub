@@ -22,8 +22,8 @@ module "mod_vnet_hub" {
 
   # By default, this module will create a resource group, provide the name here
   # To use an existing resource group, specify the existing resource group name, 
-  # and set the argument to `create_resource_group = false`. Location will be same as existing RG.
-  create_resource_group = true
+  # and set the argument to `create_hub_resource_group = false`. Location will be same as existing RG.
+  create_hub_resource_group = true
   location              = var.default_location
   deploy_environment    = var.deploy_environment
   org_name              = var.org_name
