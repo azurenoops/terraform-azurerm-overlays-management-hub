@@ -22,6 +22,6 @@ provider "azurerm" {
   alias           = "ops_network"
   subscription_id = coalesce(var.ops_subscription_id, data.azurerm_client_config.current.subscription_id)
   environment     = var.environment
-  skip_provider_registration = var.environment == "usgovernment" ? true : false # Azure Government Cloud does not support some of the providers used in this module
+  skip_provider_registration = var.environment == "usgovernment" ? true : false # Terraform auto registers more providers need by this module. Please see list of provider that are needed.
   features {}
 }

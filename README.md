@@ -27,6 +27,41 @@ module "overlays-management-spoke" {
 
 ```
 
+### Resource Provider List
+
+Terraform requires the following resource providers to be available:
+
+- Microsoft.Network
+- Microsoft.Storage
+- Microsoft.Compute
+- Microsoft.KeyVault
+- Microsoft.Authorization
+- Microsoft.Resources
+- Microsoft.OperationalInsights
+- Microsoft.GuestConfiguration
+- Microsoft.Insights
+- Microsoft.Advisor
+- Microsoft.Security
+- Microsoft.OperationsManagement
+- Microsoft.AAD
+- Microsoft.AlertsManagement
+- Microsoft.Authorization
+- Microsoft.AnalysisServices
+- Microsoft.Automation
+- Microsoft.Subscription
+- Microsoft.Support
+- Microsoft.PolicyInsights
+- Microsoft.SecurityInsights
+- Microsoft.Security
+- Microsoft.Monitor
+- Microsoft.Management
+- Microsoft.ManagedServices
+- Microsoft.ManagedIdentity
+- Microsoft.Billing
+- Microsoft.Consumption
+
+Please note that some of the resource providers may not  be available in Azure Government Cloud. Please check the [Azure Government Cloud documentation](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-get-started-connect-with-cli) for more information.
+
 ## SCCA Compliance
 
 This module is be SCCA compliant and can be used in a SCCA compliant Network. Enable SCCA compliant network rules to make it SCCA compliant.
