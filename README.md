@@ -377,48 +377,6 @@ module "vnet-hub" {
 }
 ```
 
-## Subnet NSG Rules
-
-Subnet NSG Rules enables you to add additional rules to the subnet NSG. The NSG association to be added automatically for all subnets listed here.
-
-This module supports enabling the NSG Rules of your choosing under the virtual network and with the specified subnet.  For more information, check the [terraform resource documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group#security_rule).
-
-```hcl
-module "vnet-hub" {
-  source  = "azurenoops/overlays-management-hub/azurerm"
-  version = "x.x.x"
-
-  # .... omitted
-
-  # Multiple Subnets, Service delegation, Service Endpoints
-  subnets = {
-    mgnt_subnet = {
-      subnet_name           = "management"
-      subnet_address_prefix = "10.1.2.0/24"
-
-      nsg_subnet_rules = [
-          {
-            name                       = "allow-443",
-            description                = "Allow access to port 443",
-            priority                   = 100,
-            direction                  = "Inbound",
-            access                     = "Allow",
-            protocol                   = "*",
-            source_port_range          = "*",
-            destination_port_range     = "443",
-            source_address_prefix      = "*",
-            destination_address_prefix = "*"
-          }
-        ]
-      }
-    }
-  }
-
-# ....omitted
-
-}
-```
-
 ## `private_endpoint_network_policies_enabled` - Private Link Endpoint on the subnet
 
 Network policies, like network security groups (NSG), are not supported for Private Link Endpoints. In order to deploy a Private Link Endpoint on a given subnet, you must set the `private_endpoint_network_policies_enabled` attribute to `true`. This setting is only applicable for the Private Link Endpoint, for all other resources in the subnet access is controlled based via the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
@@ -577,11 +535,13 @@ module "vnet-hub" {
 
 ## Network Security Groups
 
-By default, the network security groups connected to subnets will only allow necessary traffic and block everything else (deny-all rule). Use `nsg_subnet_inbound_rules` and `nsg_subnet_outbound_rules` in this Terraform module to create a Network Security Group (NSG) for each subnet and allow it to add additional rules for inbound flows.
+By default, the network security groups connected to subnets will only allow necessary traffic and block everything else (deny-all rule). Use `nsg_subnet_rules` in this Terraform module to create a Network Security Group (NSG) for each subnet and allow it to add additional rules for inbound flows.
 
 In the Source and Destination columns, `VirtualNetwork`, `AzureLoadBalancer`, and `Internet` are service tags, rather than IP addresses. In the protocol column, Any encompasses `TCP`, `UDP`, and `ICMP`. When creating a rule, you can specify `TCP`, `UDP`, `ICMP` or `*`. `0.0.0.0/0` in the Source and Destination columns represents all addresses.
 
 *You cannot remove the default rules, but you can override them by creating rules with higher priorities.*
+
+This module supports enabling the NSG Rules of your choosing under the virtual network and with the specified subnet.  For more information, check the [terraform resource documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group#security_rule).
 
 ```hcl
 module "vnet-hub" {
@@ -595,18 +555,22 @@ module "vnet-hub" {
     mgnt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
-      nsg_subnet_inbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["weballow", "200", "Inbound", "Allow", "Tcp", "22", "*", ""],
-        ["weballow1", "201", "Inbound", "Allow", "Tcp", "3389", "*", ""],
-      ]
 
-      nsg_subnet_outbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["ntp_out", "103", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
-      ]
+      nsg_subnet_rules = [
+          {
+            name                       = "allow-443",
+            description                = "Allow access to port 443",
+            priority                   = 100,
+            direction                  = "Inbound",
+            access                     = "Allow",
+            protocol                   = "*",
+            source_port_range          = "*",
+            destination_port_range     = "443",
+            source_address_prefix      = "*",
+            destination_address_prefix = "*"
+          }
+        ]
+      }
     }
   }
 
