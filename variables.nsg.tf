@@ -118,7 +118,7 @@ variable "load_balancer_rules_enabled" {
 }
 
 variable "nsg_additional_rules" {
-  description = "Additional network security group rules to add. For arguements please refer to https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule#argument-reference"
+  description = "Additional network security group rules to add. For arguments please refer to https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule#argument-reference"
   type = list(object({
     priority  = number
     name      = string

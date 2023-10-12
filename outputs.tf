@@ -223,42 +223,42 @@ output "azure_bastion_host_fqdn" {
   value       = var.enable_bastion_host ? azurerm_bastion_host.main.0.dns_name : null
 }
 
-output "managmement_logging_log_analytics_id" {
+output "management_logging_log_analytics_id" {
   description = "The resource ID of the management logging log analytics workspace"
   value       = module.mod_ops_logging.laws_resource_id
 }
 
-output "managmement_logging_log_analytics_name" {
+output "management_logging_log_analytics_name" {
   description = "The name of the management logging log analytics workspace"
   value       = module.mod_ops_logging.laws_name
 }
 
-output "managmement_logging_log_analytics_resource_group" {
+output "management_logging_log_analytics_resource_group" {
   description = "The rg of the management logging log analytics workspace"
   value       = module.mod_ops_logging.laws_rgname
 }
 
-output "managmement_logging_log_analytics_workspace_id" {
+output "management_logging_log_analytics_workspace_id" {
   description = "The rg of the management logging log analytics workspace"
   value       = module.mod_ops_logging.laws_workspace_id
 }
 
-output "managmement_logging_log_analytics_primary_shared_key" {
+output "management_logging_log_analytics_primary_shared_key" {
   description = "The rg of the management logging log analytics workspace"
   value       = module.mod_ops_logging.laws_primary_shared_key
 }
 
-output "managmement_logging_storage_account_id" {
+output "management_logging_storage_account_id" {
   description = "The resource ID of the management logging log analytics workspace"
   value       = module.mod_ops_logging.laws_storage_account_id
 }
 
-output "managmement_logging_storage_account_name" {
+output "management_logging_storage_account_name" {
   description = "The name of the management logging log analytics workspace"
   value       = module.mod_ops_logging.laws_storage_account_name
 }
 
-output "managmement_logging_storage_account_resource_group" {
+output "management_logging_storage_account_resource_group" {
   description = "The rg of the management logging log analytics workspace"
   value       = module.mod_ops_logging.laws_storage_account_rgname
 }

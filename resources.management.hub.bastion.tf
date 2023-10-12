@@ -5,7 +5,7 @@
 SUMMARY: Module Example to deploy an Bastion Host with Jumpboxes to the Hub Virtual Network
 DESCRIPTION: The following components will be options in this deployment
             * Bastion Host with Jumpboxes    
-AUTHOR/S: jspinella
+AUTHOR/S: jrspinella
 */
 #####################################
 ### Bastion Host Configuration    ###

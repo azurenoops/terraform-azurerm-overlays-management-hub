@@ -5,7 +5,7 @@
 SUMMARY: Module Example to deploy an Azure Monitor Private Endpoints and Private DNS Zones
 DESCRIPTION: The following components will be options in this deployment
             *  Private Endpoints            
-AUTHOR/S: jspinella
+AUTHOR/S: jrspinella
 */
 
 #######################################

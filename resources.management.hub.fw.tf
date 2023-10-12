@@ -5,7 +5,7 @@
 SUMMARY: Module to deploy a firewall in the Hub Network based on the Azure Mission Landing Zone conceptual architecture
 DESCRIPTION: The following components will be options in this deployment
               * Firewall              
-AUTHOR/S: jspinella
+AUTHOR/S: jrspinella
 */
 
 #---------------------------------------------------------
@@ -23,7 +23,7 @@ resource "azurerm_subnet" "firewall_client_snet" {
 }
 
 #---------------------------------------------------------
-# Firewall Managemnet Subnet Creation
+# Firewall Management Subnet Creation
 #----------------------------------------------------------
 resource "azurerm_subnet" "firewall_management_snet" {
   count                                         = (var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? 1 : 0

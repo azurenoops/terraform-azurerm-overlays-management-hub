@@ -140,13 +140,13 @@ module "mod_vnet_hub" {
   # This is the default subnet with required configuration, check README.md for more details
   # First address ranges from VNet Address space reserved for Firewall Subnets. 
   # ex.: For 10.0.100.128/27 address space, usable address range start from 10.0.100.0/24 for all subnets.
-  # default subnet name will be set as per Azure NoOps naming convention by defaut.
+  # default subnet name will be set as per Azure NoOps naming convention by default.
   # Multiple Subnets, Service delegation, Service Endpoints, Network security groups
   # These are default subnets with required configuration, check README.md for more details
   # NSG association to be added automatically for all subnets listed here.
   # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets. 
   # ex.: For 10.1.0.0/16 address space, usable address range start from 10.1.2.0/24 for all subnets.
-  # subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
+  # subnet name will be set as per Azure naming convention by default. expected value here is: <App or project name>
   hub_subnets = {
     default = {
       name                                       = "hub-core"
@@ -263,7 +263,7 @@ module "mod_vnet_hub" {
 
   # Private DNS Zone Settings
   # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
-  # If you do want to create addtional Private DNS Zones, 
+  # If you do want to create additional Private DNS Zones, 
   # add in the list of private_dns_zones to be created.
   # else, remove the private_dns_zones argument.
   private_dns_zones = ["privatelink.file.core.windows.net"]
@@ -330,7 +330,7 @@ module "vnet-hub" {
 
   # Multiple Subnets, Service delegation, Service Endpoints
   subnets = {
-    mgnt_subnet = {
+    mgmt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
 
@@ -358,7 +358,7 @@ module "vnet-hub" {
 
   # Multiple Subnets, Service delegation, Service Endpoints
   subnets = {
-    mgnt_subnet = {
+    mgmt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
 
@@ -392,7 +392,7 @@ module "vnet-hub" {
 
   # Multiple Subnets, Service delegation, Service Endpoints
   subnets = {
-    mgnt_subnet = {
+    mgmt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
       private_endpoint_network_policies_enabled = true
@@ -422,7 +422,7 @@ module "vnet-hub" {
 
   # Multiple Subnets, Service delegation, Service Endpoints
   subnets = {
-    mgnt_subnet = {
+    mgmt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
       private_link_service_network_policies_enabled = true
@@ -552,7 +552,7 @@ module "vnet-hub" {
 
   # Multiple Subnets, Service delegation, Service Endpoints
   subnets = {
-    mgnt_subnet = {
+    mgmt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
 
@@ -608,7 +608,7 @@ The following Azure resources can be configured to send platform logs to the Log
 
 Azure Monitor Private Link Scope connects a Private Endpoint to a set of Azure Monitor resources as [Azure Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-overview). It is a managed service that is deployed and managed by Microsoft. It is not a service that you deploy and manage yourself. It is a service that you deploy into a VNet and then connect to other Azure Monitor services.
 
-By default, this module deploys AMPLS for Azure Monitoring into the privateEndpoint subnet. It creates private dns zone for Azure Monitor services and links the private dns zone to the privateEndpoint ubnet. subnet. It also creates a private endpoint for Azure Monitor services and links the private endpoint to the private dns zone.
+By default, this module deploys AMPLS for Azure Monitoring into the privateEndpoint subnet. It creates private dns zone for Azure Monitor services and links the private dns zone to the privateEndpoint subnet. subnet. It also creates a private endpoint for Azure Monitor services and links the private endpoint to the private dns zone.
 
 DNS Zones:
 

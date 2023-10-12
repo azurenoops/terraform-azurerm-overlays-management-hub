@@ -17,7 +17,7 @@ locals {
 #---------------------------------
 resource "random_id" "uniqueString" {
   keepers = {
-    # Generate a new id each time we change resourePrefix variable
+    # Generate a new id each time we change resourcePrefix variable
     org_prefix = var.org_name
     subid      = var.workload_name
   }

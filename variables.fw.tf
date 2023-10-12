@@ -21,7 +21,7 @@ variable "firewall_subnet_address_prefix" {
 }
 
 variable "firewall_management_snet_address_prefix" {
-  description = "The address prefix to use for Firewall managemement subnet to enable forced tunnelling. The Management Subnet used for the Firewall must have the name `AzureFirewallManagementSubnet` and the subnet mask must be at least a `/26`."
+  description = "The address prefix to use for Firewall management subnet to enable forced tunnelling. The Management Subnet used for the Firewall must have the name `AzureFirewallManagementSubnet` and the subnet mask must be at least a `/26`."
   default     = null
 }
 

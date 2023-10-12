@@ -5,11 +5,11 @@
 SUMMARY: Module to deploy a subnet in the Hub Network based on the Azure Mission Landing Zone conceptual architecture
 DESCRIPTION: The following components will be options in this deployment
               * Subnets      
-AUTHOR/S: jspinella
+AUTHOR/S: jrspinella
 */
 
 #--------------------------------------------------------------------------------------------------------
-# Subnets Creation with, private link endpoint/servie network policies, service endpoints and Deligation.
+# Subnets Creation with, private link endpoint/service network policies, service endpoints and Delegation.
 #--------------------------------------------------------------------------------------------------------
 
 resource "azurerm_subnet" "gw_snet" {

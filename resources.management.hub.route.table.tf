@@ -7,7 +7,7 @@ DESCRIPTION: The following components will be options in this deployment
               * Route Table
                 * Route Table Association
                 * Route     
-AUTHOR/S: jspinella
+AUTHOR/S: jrspinella
 */
 
 resource "azurerm_route_table" "routetable" {
