@@ -50,7 +50,7 @@ module "mod_vnet_hub" {
   # (Required) Hub Subnets 
   # Default Subnets, Service Endpoints
   # This is the default subnet with required configuration, check README.md for more details
-  # subnet name will be set as per Azure NoOps naming convention by defaut. expected value here is: <App or project name>
+  # subnet name will be set as per Azure NoOps naming convention by default. expected value here is: <App or project name>
   hub_subnets = var.hub_subnets
 
   # Enable Flow Logs
@@ -83,7 +83,7 @@ module "mod_vnet_hub" {
 
   # Private DNS Zone Settings
   # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
-  # If you do want to create addtional Private DNS Zones, 
+  # If you do want to create additional Private DNS Zones, 
   # add in the list of private_dns_zones to be created.
   # else, remove the private_dns_zones argument.
   private_dns_zones = var.hub_private_dns_zones

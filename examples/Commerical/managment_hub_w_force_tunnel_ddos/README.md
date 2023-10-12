@@ -1,6 +1,6 @@
 # Azure NoOps Management Hub with all features
 
-This example is to create a Azure NoOps Management Hub, with Forced Tunnel, DDOS Proection, Logging Solutions and other additional features.
+This example is to create a Azure NoOps Management Hub, with Forced Tunnel, DDOS Protection, Logging Solutions and other additional features.
 
 ```hcl
 # Azure Provider configuration
@@ -56,7 +56,7 @@ module "mod_vnet_hub" {
   # (Required) Hub Subnets 
   # Default Subnets, Service Endpoints
   # This is the default subnet with required configuration, check README.md for more details
-  # subnet name will be set as per Azure NoOps naming convention by defaut. expected value here is: <App or project name>
+  # subnet name will be set as per Azure NoOps naming convention by default. expected value here is: <App or project name>
   hub_subnets = var.hub_subnets
 
   # Enable Flow Logs
@@ -89,7 +89,7 @@ module "mod_vnet_hub" {
 
   # Private DNS Zone Settings
   # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
-  # If you do want to create addtional Private DNS Zones, 
+  # If you do want to create additional Private DNS Zones, 
   # add in the list of private_dns_zones to be created.
   # else, remove the private_dns_zones argument.
   private_dns_zones = var.hub_private_dns_zones
@@ -162,11 +162,11 @@ create_ddos_plan = true
 # First address ranges from VNet Address space reserved for Firewall Subnets. 
 # First three address ranges from VNet Address space reserved for Gateway, AMPLS And Firewall Subnets. 
 # ex.: For 10.8.4.0/23 address space, usable address range start from "10.8.4.224/27" for all subnets.
-# default subnet name will be set as per Azure NoOps naming convention by defaut.
+# default subnet name will be set as per Azure NoOps naming convention by default.
 # Multiple Subnets, Service delegation, Service Endpoints, Network security groups
 # These are default subnets with required configuration, check README.md for more details
 # NSG association to be added automatically for all subnets listed here.
-# subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
+# subnet name will be set as per Azure naming convention by default. expected value here is: <App or project name>
 hub_subnets = {
   default = {
     name                                       = "hub-core"
@@ -276,7 +276,7 @@ firewall_application_rules = [
 
 # Private DNS Zone Settings
 # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
-# If you do want to create addtional Private DNS Zones, 
+# If you do want to create additional Private DNS Zones, 
 # add in the list of private_dns_zones to be created.
 # else, remove the private_dns_zones argument.
 hub_private_dns_zones = []
