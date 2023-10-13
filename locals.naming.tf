@@ -13,8 +13,8 @@ locals {
   hub_firewall_policy_name     = coalesce(var.hub_firewall_policy_custom_name, "${data.azurenoopsutils_resource_name.firewall_policy.result}")
   hub_firewall_client_pip_name = coalesce(var.hub_firewall_client_pip_custom_name, "${data.azurenoopsutils_resource_name.firewall_client_pub_ip.result}")
   hub_firewall_mgt_pip_name    = coalesce(var.hub_firewall_mgt_pip_custom_name, "${data.azurenoopsutils_resource_name.firewall_mgt_pub_ip.result}")
-  hub_rt_name                  = coalesce(var.hub_routtable_custom_name, "${data.azurenoopsutils_resource_name.rt.result}")
-  hub_afw_rt_name              = coalesce(var.hub_routtable_custom_name, "${data.azurenoopsutils_resource_name.afw_rt.result}")
+  hub_rt_name                  = coalesce(var.hub_routetable_custom_name, "${data.azurenoopsutils_resource_name.rt.result}")
+  hub_afw_rt_name              = coalesce(var.hub_routetable_custom_name, "${data.azurenoopsutils_resource_name.afw_rt.result}")
   hub_sa_name                  = coalesce(var.hub_sa_custom_name, data.azurenoopsutils_resource_name.st.result)
   
   # DDOS Protection Plan

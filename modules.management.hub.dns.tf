@@ -5,7 +5,7 @@
 SUMMARY: Module Example to deploy an Private DNS Zones and Azure Monitor Private DNS Zones
 DESCRIPTION: The following components will be options in this deployment
             * Bastion Host with Jumpboxes    
-AUTHOR/S: jspinella
+AUTHOR/S: jrspinella
 */
 
 #----------------------------------------

@@ -11,7 +11,7 @@ DESCRIPTION: The following components will be options in this deployment
                     * Network Rule Collection Group
                     * Network Rule Collection
                         * Network Rule             
-AUTHOR/S: jspinella
+AUTHOR/S: jrspinella
 */
 
 #----------------------------------------------

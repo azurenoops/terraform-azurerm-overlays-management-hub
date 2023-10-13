@@ -5,7 +5,7 @@
 SUMMARY: Terraform Module to deploy the Network Watcher Flog Logs for Hub Network based on the Azure Mission Landing Zone conceptual architecture
 DESCRIPTION: The following components will be options in this deployment              
               * Network Watcher         
-AUTHOR/S: jspinella
+AUTHOR/S: jrspinella
 */
 
 #-----------------------------------------

@@ -129,12 +129,12 @@ output "storage_account_name" {
 
 output "log_analytics_workspace_name" {
   description = "Specifies the name of the Log Analytics Workspace"
-  value       = module.mod_vnet_hub.managmement_logging_log_analytics_name
+  value       = module.mod_vnet_hub.management_logging_log_analytics_name
 }
 
 output "log_analytics_workspace_id" {
   description = "Specifies the name of the Log Analytics Workspace"
-  value       = module.mod_vnet_hub.managmement_logging_log_analytics_id
+  value       = module.mod_vnet_hub.management_logging_log_analytics_id
 }
 
 output "public_ip_prefix_id" {

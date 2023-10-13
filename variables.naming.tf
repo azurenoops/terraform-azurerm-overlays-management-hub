@@ -77,7 +77,7 @@ variable "hub_firewall_mgt_pip_custom_name" {
   default     = null
 }
 
-variable "hub_routtable_custom_name" {
+variable "hub_routetable_custom_name" {
   description = "The name of the custom virtual network route table to create. If not set, the name will be generated using the 'name_prefix' and 'name_suffix' variables. If set, the 'name_prefix' and 'name_suffix' variables will be ignored."
   type        = string
   default     = null

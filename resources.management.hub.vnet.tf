@@ -7,7 +7,7 @@ DESCRIPTION: The following components will be options in this deployment
               * Hub Network Virtual Network    
               * Ddos Protection Plan
               * Network Watcher         
-AUTHOR/S: jspinella
+AUTHOR/S: jrspinella
 */
 
 #-------------------------------------
