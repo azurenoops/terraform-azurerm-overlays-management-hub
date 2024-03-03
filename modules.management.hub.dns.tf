@@ -22,16 +22,3 @@ module "mod_pdz" {
   add_tags = merge({ "ResourceName" = format("%s", lower(each.key)) }, local.default_tags, var.add_tags, )
 }
 
-#----------------------------------------
-# AMPLS Private DNS Zone
-#----------------------------------------
-module "mod_ampls_pdz" {
-  source                = "./modules/private_dns_zone"
-  for_each              = toset(local.ample_dns_zones)
-  private_dns_zone_name = each.key
-  resource_group_name   = local.resource_group_name
-  private_dns_zone_vnets_ids = [
-    azurerm_virtual_network.hub_vnet.id
-  ]
-  add_tags = merge({ "ResourceName" = format("%s", lower(each.key)) }, local.default_tags, var.add_tags, )
-}

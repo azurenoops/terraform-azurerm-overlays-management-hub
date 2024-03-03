@@ -34,6 +34,12 @@ variable "log_analytics_storage_account_replication_type" {
   type        = string
   default     = "GRS"
 }
+
+variable "ampls_subnet_address_prefix" {
+  description = "The address prefix to use for the ampls private endpoint subnet"
+  type = list(string)
+  default     = null
+}
   
 #####################################
 # Log Solutions Configuration     ##
