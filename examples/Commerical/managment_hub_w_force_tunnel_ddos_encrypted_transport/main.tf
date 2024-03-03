@@ -31,7 +31,6 @@ module "mod_vnet_hub" {
 
   # Logging Solutions
   # All solutions are enabled (true) by default
-  enable_sentinel              = var.enable_sentinel
   enable_azure_activity_log    = var.enable_azure_activity_log
   enable_vm_insights           = var.enable_vm_insights
   enable_azure_security_center = var.enable_azure_security_center

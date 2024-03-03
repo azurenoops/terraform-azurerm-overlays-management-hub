@@ -50,7 +50,13 @@ variable "lock_level" {
 # Management Logging  ###
 #########################
 
-variable "ampls_subnet_address_prefixes" {
+variable "enable_ampls" {
+  description = "Enables Azure Monitor Private Link Scope"
+  type        = bool
+  default     = true
+}
+
+variable "ampls_subnet_address_prefix" {
   description = "A name for the ops logging. It defaults to ops-logging-core."
   type        = list(string)
   default     = ["10.8.5.160/27"]
@@ -71,12 +77,6 @@ variable "log_analytics_logs_retention_in_days" {
 #####################################
 # Log Solutions Configuration     ##
 #####################################
-
-variable "enable_sentinel" {
-  description = "Controls if Sentinel should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
 
 variable "enable_azure_activity_log" {
   description = "Controls if Azure Activity Log should be enabled. Default is true."

@@ -32,7 +32,6 @@ enable_traffic_analytics = true
 # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
 hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters  
 fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters  
-ampls_subnet_address_prefix       = ["10.8.5.160/27"] # (Required)  AMPLS Subnet Parameter
 fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed. 
 
 # (Required) DDOS Protection Plan
@@ -71,6 +70,10 @@ hub_subnets = {
 ########################################
 # 05a Management OperationL Logging  ###
 ########################################
+
+# Enable Azure Montior Private Link Scope
+enable_ampls = true
+ampls_subnet_address_prefix         = ["10.8.5.160/27"] # (Optional)  AMPLS Subnet Parameter
 
 # Log Analytics Workspace Settings
 log_analytics_workspace_sku          = "PerGB2018"

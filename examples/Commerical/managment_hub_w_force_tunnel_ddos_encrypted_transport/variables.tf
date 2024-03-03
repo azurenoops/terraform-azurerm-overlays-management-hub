@@ -50,6 +50,12 @@ variable "lock_level" {
 # Management Logging  ###
 #########################
 
+variable "enable_ampls" {
+  description = "Enables Azure Monitor Private Link Scope"
+  type        = bool
+  default     = true
+}
+
 variable "ampls_subnet_address_prefix" {
   description = "A name for the ops logging. It defaults to ops-logging-core."
   type        = list(string)
