@@ -66,7 +66,7 @@ Please note that some of the resource providers may not  be available in Azure G
 
 This module is be SCCA compliant and can be used in a SCCA compliant Network. Enable SCCA compliant network rules to make it SCCA compliant.
 
-For more information, please read the [SCCA documentation]("https://www.cisa.gov/secure-cloud-computing-architecture").
+For more information, please read the [SCCA documentation](https://www.cisa.gov/secure-cloud-computing-architecture).
 
 ## Contributing
 
