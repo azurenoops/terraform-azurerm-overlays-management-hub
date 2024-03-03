@@ -72,8 +72,7 @@ hub_subnets = {
 ########################################
 
 # Enable Azure Montior Private Link Scope
-enable_ampls = true
-ampls_subnet_address_prefix         = ["10.8.5.160/27"] # (Optional)  AMPLS Subnet Parameter
+enable_ampls = false
 
 # Log Analytics Workspace Settings
 log_analytics_workspace_sku          = "PerGB2018"

@@ -30,7 +30,7 @@ module "mod_vnet_hub" {
   log_analytics_logs_retention_in_days = var.log_analytics_logs_retention_in_days
 
   # Logging Solutions
-  # All solutions are enabled (true) by default
+  # All solutions are enabled (true) by default  
   enable_azure_activity_log    = var.enable_azure_activity_log
   enable_vm_insights           = var.enable_vm_insights
   enable_azure_security_center = var.enable_azure_security_center
@@ -51,12 +51,6 @@ module "mod_vnet_hub" {
   # This is the default subnet with required configuration, check README.md for more details
   # subnet name will be set as per Azure NoOps naming convention by default. expected value here is: <App or project name>
   hub_subnets = var.hub_subnets
-
-  # Enable Encrypted Transport
-  enable_encrypted_transport = var.enable_encrypted_transport
-  encrypted_transport_address_prefix = var.encrypted_transport_address_prefix
-  encrypted_transport_next_hop_in_ip_address = var.encrypted_transport_next_hop_in_ip_address
-  encrypted_transport_next_hop_type = var.encrypted_transport_next_hop_type
 
   # Enable Flow Logs
   # By default, this will enable flow logs for all subnets.
