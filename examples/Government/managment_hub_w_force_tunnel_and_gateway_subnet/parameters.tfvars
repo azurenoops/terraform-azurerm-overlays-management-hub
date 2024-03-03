@@ -6,8 +6,8 @@
 ###########################
 
 # The prefixes to use for all resources in this deployment
-org_name           = "anoa"         # This Prefix will be used on most deployed resources.  10 Characters max.
-deploy_environment = "dev"          # dev | test | prod
+org_name           = "anoa"   # This Prefix will be used on most deployed resources.  10 Characters max.
+deploy_environment = "dev"    # dev | test | prod
 environment        = "usgovernment" # public | usgovernment
 
 # The default region to deploy to
@@ -32,7 +32,6 @@ enable_traffic_analytics = true
 # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
 hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters  
 fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters  
-ampls_subnet_address_prefix         = ["10.8.5.160/27"] # (Required)  AMPLS Subnet Parameter
 fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed. 
 
 # (Required) DDOS Protection Plan
@@ -62,18 +61,13 @@ hub_subnets = {
   },
 }
 
-# Enable Encrypted Transport
-enable_encrypted_transport                 = true
-encrypted_transport_address_prefix         = "10.8.4.0/23" # (Optional)  Encrypted Transport Subnet Parameters. If not provided, encrypted transport is not needed.
-encrypted_transport_next_hop_in_ip_address = "10.8.4.0/23" # (Optional)  Encrypted Transport Subnet Parameters. If not provided, encrypted transport is not needed.
-encrypted_transport_next_hop_type          = "VirtualAppliance"
-
 ########################################
 # 05a Management OperationL Logging  ###
 ########################################
 
 # Enable Azure Montior Private Link Scope
-enable_ampls = false
+enable_ampls = true
+ampls_subnet_address_prefix         = ["10.8.5.160/27"] # (Optional)  AMPLS Subnet Parameter
 
 # Log Analytics Workspace Settings
 log_analytics_workspace_sku          = "PerGB2018"
@@ -81,7 +75,6 @@ log_analytics_logs_retention_in_days = 30
 
 # Azure Monitor Settings
 # All solutions are enabled (true) by default
-enable_sentinel              = true
 enable_azure_activity_log    = true
 enable_vm_insights           = true
 enable_azure_security_center = true

@@ -34,16 +34,16 @@ variable "log_analytics_storage_account_replication_type" {
   type        = string
   default     = "GRS"
 }
+
+variable "ampls_subnet_address_prefix" {
+  description = "The address prefix to use for the ampls private endpoint subnet"
+  type = list(string)
+  default     = null
+}
   
 #####################################
 # Log Solutions Configuration     ##
 #####################################
-
-variable "enable_sentinel" {
-  description = "Controls if Sentinel should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
 
 variable "enable_azure_activity_log" {
   description = "Controls if Azure Activity Log should be enabled. Default is true."
@@ -77,6 +77,16 @@ variable "enable_container_insights" {
 
 variable "enable_key_vault_analytics" {
   description = "Controls if Key Vault Analytics should be enabled. Default is true."
+  type        = bool
+  default     = true
+}
+
+####################################
+# Azure Montior Private Link Scope
+####################################
+
+variable "enable_ampls" {
+  description = "Controls if Azure Monitor Private Link Scope should be enabled. Default is true."
   type        = bool
   default     = true
 }

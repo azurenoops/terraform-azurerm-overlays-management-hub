@@ -66,7 +66,7 @@ Please note that some of the resource providers may not  be available in Azure G
 
 This module is be SCCA compliant and can be used in a SCCA compliant Network. Enable SCCA compliant network rules to make it SCCA compliant.
 
-For more information, please read the [SCCA documentation]("https://www.cisa.gov/secure-cloud-computing-architecture").
+For more information, please read the [SCCA documentation](https://www.cisa.gov/secure-cloud-computing-architecture).
 
 ## Contributing
 
@@ -128,10 +128,28 @@ module "mod_vnet_hub" {
   environment           = "public"
   workload_name         = "hub-core"
 
+  # Logging  
+  # Enable Azure Montior Private Link Scope
+  enable_ampls = var.enable_ampls
+  # (Optional)  AMPLS Subnet Parameter
+  ampls_subnet_address_prefix = var.ampls_subnet_address_prefix
+
+  # By default, Azure NoOps will create a Log Analytics Workspace in Hub VNet.
+  log_analytics_workspace_sku = var.log_analytics_workspace_sku
+  log_analytics_logs_retention_in_days = var.log_analytics_logs_retention_in_days
+
+  # Logging Solutions
+  # All solutions are enabled (true) by default
+  enable_azure_activity_log    = var.enable_azure_activity_log
+  enable_vm_insights           = var.enable_vm_insights
+  enable_azure_security_center = var.enable_azure_security_center
+  enable_container_insights    = var.enable_container_insights
+  enable_key_vault_analytics   = var.enable_key_vault_analytics
+  enable_service_map           = var.enable_service_map
+
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
   virtual_network_address_space           = ["10.0.0.0/16"]     # (Required)  Hub Virtual Network Parameters  
   firewall_subnet_address_prefix          = ["10.0.100.0/26"]   # (Required)  Hub Firewall Subnet Parameters  
-  ampls_subnet_address_prefix             = ["10.0.125.0/26"]   # (Required)  AMPLS Subnet Parameters
   firewall_management_snet_address_prefix = ["10.0.100.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters
   gateway_subnet_address_prefix           = ["10.0.100.192/27"] # (Optional)  Hub Gateway Subnet Parameters
 

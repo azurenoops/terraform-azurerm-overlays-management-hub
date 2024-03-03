@@ -4,10 +4,21 @@
 #---------------------------------
 # Operations Management Logging
 #---------------------------------
+resource "azurerm_subnet" "pe_snet" {
+  count                                         = var.enable_ampls ? 1 : 0
+  name                                          = format("%s-%s-ampls-%s-snet", var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : local.location, var.deploy_environment)
+  resource_group_name                           = local.resource_group_name
+  virtual_network_name                          = azurerm_virtual_network.hub_vnet.name
+  address_prefixes                              = var.ampls_subnet_address_prefix
+  private_endpoint_network_policies_enabled     = true
+  private_link_service_network_policies_enabled = true
+}
+
 module "mod_ops_logging" {
-  providers = { azurerm = azurerm.ops_network }
-  source    = "azurenoops/overlays-management-logging/azurerm"
-  version   = "~> 1.0"
+  providers  = { azurerm = azurerm.ops_network }
+  source     = "azurenoops/overlays-management-logging/azurerm"
+  version    = "~> 2.0"
+  depends_on = [azurerm_subnet.pe_snet]
 
   #####################################
   ## Global Settings Configuration  ###
@@ -18,7 +29,7 @@ module "mod_ops_logging" {
   deploy_environment    = var.deploy_environment
   org_name              = var.org_name
   environment           = var.environment
-  workload_name         = "ops-mgt-logging"
+  workload_name         = "ops-logging"
 
   #############################
   ## Logging Configuration  ###
@@ -26,7 +37,7 @@ module "mod_ops_logging" {
 
   # (Optional) Logging Solutions
   # All solutions are enabled (true) by default
-  enable_sentinel              = var.enable_sentinel
+  enable_sentinel              = false
   enable_azure_activity_log    = var.enable_azure_activity_log
   enable_vm_insights           = var.enable_vm_insights
   enable_azure_security_center = var.enable_azure_security_center
@@ -46,6 +57,14 @@ module "mod_ops_logging" {
   #############################
   ## Misc Configuration     ###
   #############################
+
+  # Enable Azure Monitor Private Link Scope
+  enable_ampls = var.enable_ampls
+
+  # AMPLS Network Configuration
+  existing_network_resource_group_name = local.resource_group_name
+  existing_virtual_network_name        = azurerm_virtual_network.hub_vnet.name
+  existing_private_subnet_name         = azurerm_subnet.pe_snet.0.name
 
   # By default, this will apply resource locks to all resources created by this module.
   # To disable resource locks, set the argument to `enable_resource_locks = false`.

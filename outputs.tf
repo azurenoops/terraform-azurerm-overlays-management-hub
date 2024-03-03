@@ -35,12 +35,12 @@ output "virtual_network_address_space" {
 
 output "ampls_subnet_id" {
   description = "Name of ampls subnet id"
-  value       = azurerm_subnet.pe_snet.id
+  value       = azurerm_subnet.pe_snet.0.id
 }
 
 output "ampls_subnet_name" {
   description = "Name of ampls subnet"
-  value       = azurerm_subnet.pe_snet.name
+  value       = azurerm_subnet.pe_snet.0.name
 }
 
 output "gateway_subnet_id" {
@@ -91,7 +91,7 @@ output "subnet_names" {
 
 output "subnet_address_prefixes" {
   description = "List of address prefix for subnets"
-  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [azurerm_subnet.pe_snet.address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.address_prefixes : null], [azurerm_subnet.firewall_client_snet.0.address_prefixes], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.address_prefixes : null]))
+  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [azurerm_subnet.pe_snet.0.address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.address_prefixes : null], [azurerm_subnet.firewall_client_snet.0.address_prefixes], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet.0.address_prefixes : null]))
 }
 
 # Network Security group ids
@@ -135,17 +135,17 @@ output "route_table_id" {
 
 output "private_dns_zone_names" {
   description = "The name of the Private DNS zones within Azure DNS"
-  value       = [for s in module.mod_ampls_pdz : s.private_dns_zone_name]
+  value       = [for s in module.mod_pdz : s.private_dns_zone_name]
 }
 
 output "private_dns_zone_ids" {
   description = "The resource id of Private DNS zones within Azure DNS"
-  value       = [for s in module.mod_ampls_pdz : s.private_dns_zone_id]
+  value       = [for s in module.mod_pdz : s.private_dns_zone_id]
 }
 
-output "ampls_private_dns_zone_ids" {
-  description = "The name of the Private DNS zones within Azure DNS"
-  value       = module.mod_ampls_main_private_endpoint.private_dns_zones_ids
+output "ampls_laws_private_link_scope_id" {
+  description = "The ID of the Private Link Scope within Azure Monitor"
+  value       = module.mod_ops_logging.laws_private_link_scope_id
 }
 
 output "storage_account_id" {
