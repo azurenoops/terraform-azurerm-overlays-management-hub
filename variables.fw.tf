@@ -105,11 +105,11 @@ variable "firewall_zones" {
 }
 
 variable "dns_servers" {
-  description = "List of dns servers to use for virtual network"
+  description = "List of dns servers IPs to use for virtual network"
   default     = []
 }
 
-variable "virtual_hub" {
+variable "firewall_virtual_hub" {
   description = "An Azure Virtual WAN Hub with associated security and routing policies configured by Azure Firewall Manager. Use secured virtual hubs to easily create hub-and-spoke and transitive architectures with native security services for traffic governance and protection."
   type = object({
     virtual_hub_id  = string
