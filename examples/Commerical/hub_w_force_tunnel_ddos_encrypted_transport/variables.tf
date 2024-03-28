@@ -50,6 +50,12 @@ variable "lock_level" {
 # Management Logging  ###
 #########################
 
+variable "enable_ampls" {
+  description = "Enables Azure Monitor Private Link Scope"
+  type        = bool
+  default     = true
+}
+
 variable "ampls_subnet_address_prefix" {
   description = "A name for the ops logging. It defaults to ops-logging-core."
   type        = list(string)
@@ -218,12 +224,6 @@ variable "azure_bastion_host_sku" {
 
 variable "azure_bastion_subnet_address_prefix" {
   description = "The address prefix of the Azure Bastion Host subnet."
-  type        = list(string)
-  default     = null
-}
-
-variable "gateway_vnet_address_space" {
-  description = "The address space of the gateway virtual network."
   type        = list(string)
   default     = null
 }

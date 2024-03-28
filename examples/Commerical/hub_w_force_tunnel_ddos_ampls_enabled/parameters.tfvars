@@ -6,12 +6,12 @@
 ###########################
 
 # The prefixes to use for all resources in this deployment
-org_name           = "anoa"         # This Prefix will be used on most deployed resources.  10 Characters max.
-deploy_environment = "dev"          # dev | test | prod
-environment        = "usgovernment" # public | usgovernment
+org_name           = "anoa"   # This Prefix will be used on most deployed resources.  10 Characters max.
+deploy_environment = "dev"    # dev | test | prod
+environment        = "public" # public | usgovernment
 
 # The default region to deploy to
-default_location = "usgovvirginia"
+default_location = "eastus"
 
 # Enable locks on resources
 enable_resource_locks = false # true | false
@@ -32,7 +32,6 @@ enable_traffic_analytics = true
 # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.
 hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters
 fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters
-ampls_subnet_address_prefix         = ["10.8.5.160/27"] # (Required)  AMPLS Subnet Parameter
 fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed.
 
 # (Required) DDOS Protection Plan
@@ -80,13 +79,16 @@ hub_subnets = {
 # 05a Management OperationL Logging  ###
 ########################################
 
+# Enable Azure Montior Private Link Scope
+enable_ampls                = true
+ampls_subnet_address_prefix = ["10.8.5.160/27"] # (Optional)  AMPLS Subnet Parameter
+
 # Log Analytics Workspace Settings
 log_analytics_workspace_sku          = "PerGB2018"
 log_analytics_logs_retention_in_days = 30
 
 # Azure Monitor Settings
 # All solutions are enabled (true) by default
-enable_sentinel              = true
 enable_azure_activity_log    = true
 enable_vm_insights           = true
 enable_azure_security_center = true
@@ -124,7 +126,7 @@ firewall_network_rules = [
     name     = "AllowAzureCloud"
     priority = "100"
     action   = "Allow"
-    rules = [
+    rule = [
       {
         name                  = "AzureCloud"
         protocols             = ["Any"]
@@ -138,7 +140,7 @@ firewall_network_rules = [
     name     = "AllowTrafficBetweenSpokes"
     priority = "200"
     action   = "Allow"
-    rules = [
+    rule = [
       {
         name                  = "AllSpokeTraffic"
         protocols             = ["Any"]
@@ -157,15 +159,17 @@ firewall_application_rules = [
     name     = "AzureAuth"
     priority = "110"
     action   = "Allow"
-    rules = [
+    rule = [
       {
         name              = "msftauth"
         source_addresses  = ["*"]
         destination_fqdns = ["aadcdn.msftauth.net", "aadcdn.msauth.net"]
-        protocols = {
-          type = "Https"
-          port = 443
-        }
+        protocols = [
+          {
+            type = "Https"
+            port = 443
+          }
+        ]
       }
     ]
   }
@@ -176,11 +180,13 @@ firewall_application_rules = [
 #######################################
 
 # Private DNS Zone Settings
-# By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
+# By default, Azure NoOps will create Private DNS Zones for Azure Monitor in Hub VNet.
+# To create default Private DNS Zones, set enable_default_private_dns_zones to true.
 # If you do want to create additional Private DNS Zones,
-# add in the list of private_dns_zones to be created.
-# else, remove the private_dns_zones argument.
-hub_private_dns_zones = []
+# add in the list of hub_private_dns_zones to be created.
+# else, remove the hub_private_dns_zones argument.
+enable_default_private_dns_zones = false
+hub_private_dns_zones            = []
 
 # By default, this module will create a bastion host,
 # and set the argument to `enable_bastion_host = false`, to disable the bastion host.

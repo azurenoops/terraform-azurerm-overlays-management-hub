@@ -46,75 +46,6 @@ variable "lock_level" {
 # Landing Zone Configuration  ##
 ################################
 
-#########################
-# Management Logging  ###
-#########################
-
-variable "ampls_subnet_address_prefix" {
-  description = "A name for the ops logging. It defaults to ops-logging-core."
-  type        = list(string)
-  default     = ["10.8.5.160/27"]
-}
-
-variable "log_analytics_workspace_sku" {
-  description = "The SKU of the Log Analytics Workspace. Possible values are PerGB2018 and Free. Default is PerGB2018."
-  type        = string
-  default     = null
-}
-
-variable "log_analytics_logs_retention_in_days" {
-  description = "The number of days to retain logs for. Possible values are between 30 and 730. Default is 30."
-  type        = number
-  default     = null
-}
-
-#####################################
-# Log Solutions Configuration     ##
-#####################################
-
-variable "enable_sentinel" {
-  description = "Controls if Sentinel should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_azure_activity_log" {
-  description = "Controls if Azure Activity Log should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_vm_insights" {
-  description = "Controls if VM Insights should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_azure_security_center" {
-  description = "Controls if Azure Security Center should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_service_map" {
-  description = "Controls if Service Map should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_container_insights" {
-  description = "Controls if Container Insights should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_key_vault_analytics" {
-  description = "Controls if Key Vault Analytics should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-
 ##########
 # Hub  ###
 ##########
@@ -148,10 +79,16 @@ variable "enable_traffic_analytics" {
   default     = false
 }
 
+variable "enable_default_private_dns_zones" {
+  type = bool
+  default = false
+  description = "Enable default Private DNS Zones. Default is false."
+}
+
 variable "hub_private_dns_zones" {
   description = "The private DNS zones of the hub virtual network."
-  type        = list(string)
-  default     = []
+  type        = any
+  default     = {}
 }
 
 variable "firewall_supernet_IP_address" {
@@ -185,17 +122,20 @@ variable "enable_firewall" {
 
 variable "firewall_application_rules" {
   description = "List of application rules to apply to firewall."
-  default     = {}
+  type = any
+  default     = []
 }
 
 variable "firewall_network_rules" {
   description = "List of network rules to apply to firewall."
-  default     = {}
+  type = any
+  default     = []
 }
 
 variable "firewall_nat_rules" {
   description = "List of nat rules to apply to firewall."
-  default     = {}
+  type = any
+  default     = []
 }
 
 variable "enable_forced_tunneling" {
@@ -219,39 +159,5 @@ variable "azure_bastion_host_sku" {
 variable "azure_bastion_subnet_address_prefix" {
   description = "The address prefix of the Azure Bastion Host subnet."
   type        = list(string)
-  default     = null
-}
-
-variable "gateway_vnet_address_space" {
-  description = "The address space of the gateway virtual network."
-  type        = list(string)
-  default     = null
-}
-
-#######################################
-# Encrypted Transport Configuration  ##
-#######################################
-
-variable "enable_encrypted_transport" {
-  description = "Enables encrypted transport for the hub virtual network. Default is false."
-  type        = bool
-  default     = false
-}
-
-variable "encrypted_transport_address_prefix" {
-  description = "The address prefix of the encrypted transport subnet."
-  type        = string
-  default     = null
-}
-
-variable "encrypted_transport_next_hop_in_ip_address" {
-  description = "The next hop in IP address of the encrypted transport subnet."
-  type        = string
-  default     = null
-}
-
-variable "encrypted_transport_next_hop_type" {
-  description = "The next hop type of the encrypted transport subnet. Valid values are VirtualAppliance and VnetLocal."
-  type        = string
   default     = null
 }

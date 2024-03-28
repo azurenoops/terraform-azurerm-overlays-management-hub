@@ -6,12 +6,12 @@
 ###########################
 
 # The prefixes to use for all resources in this deployment
-org_name           = "anoa"         # This Prefix will be used on most deployed resources.  10 Characters max.
-deploy_environment = "dev"          # dev | test | prod
-environment        = "usgovernment" # public | usgovernment
+org_name           = "anoa"   # This Prefix will be used on most deployed resources.  10 Characters max.
+deploy_environment = "dev"    # dev | test | prod
+environment        = "public" # public | usgovernment
 
 # The default region to deploy to
-default_location = "usgovvirginia"
+default_location = "eastus"
 
 # Enable locks on resources
 enable_resource_locks = false # true | false
@@ -32,7 +32,6 @@ enable_traffic_analytics = true
 # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.
 hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters
 fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters
-ampls_subnet_address_prefix         = ["10.8.5.160/27"] # (Required)  AMPLS Subnet Parameter
 fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed.
 
 # (Required) DDOS Protection Plan
@@ -59,26 +58,21 @@ hub_subnets = {
     service_endpoints                          = ["Microsoft.Storage"]
     private_endpoint_network_policies_enabled  = false
     private_endpoint_service_endpoints_enabled = true
-    nsg_subnet_rules = [
-      {
-        name                       = "allow-443",
-        description                = "Allow access to port 443",
-        priority                   = 100,
-        direction                  = "Inbound",
-        access                     = "Allow",
-        protocol                   = "*",
-        source_port_range          = "*",
-        destination_port_range     = "443",
-        source_address_prefix      = "*",
-        destination_address_prefix = "*"
-      }
-    ]
   },
 }
+
+ # Enable Encrypted Transport
+  enable_encrypted_transport = true
+  encrypted_transport_address_prefix = "" # (Optional)  Encrypted Transport Subnet Parameters. If not provided, encrypted transport is not needed.
+  encrypted_transport_next_hop_in_ip_address = "" # (Optional)  Encrypted Transport Subnet Parameters. If not provided, encrypted transport is not needed.
+  encrypted_transport_next_hop_type = "VirtualAppliance"
 
 ########################################
 # 05a Management OperationL Logging  ###
 ########################################
+
+# Enable Azure Montior Private Link Scope
+enable_ampls = false
 
 # Log Analytics Workspace Settings
 log_analytics_workspace_sku          = "PerGB2018"
@@ -113,8 +107,6 @@ enable_forced_tunneling = true
 # (Optional) To enable the availability zones for firewall.
 # Availability Zones can only be configured during deployment
 # You can't modify an existing firewall to include Availability Zones
-# In Azure Government, Availability Zones are only supported in the
-#following regions: usgovvirginia, usgovtexas, usgovarizona
 firewall_zones = []
 
 # # (Optional) specify the Network rules for Azure Firewall l
