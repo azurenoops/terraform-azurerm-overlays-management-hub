@@ -126,9 +126,9 @@ variable "enable_key_vault_analytics" {
 ##########
 
 variable "hub_name" {
-  description = "Name of the hub network name. This will be used to name the resources deployed by this module. default is 'hub-core'"
+  description = "Name of the hub network name. This will be used to name the resources deployed by this module. default is 'hub'"
   type        = string
-  default     = "hub-core"
+  default     = "hub"
 }
 
 variable "hub_vnet_address_space" {

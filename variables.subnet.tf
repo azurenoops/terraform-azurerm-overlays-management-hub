@@ -67,4 +67,3 @@ variable "gateway_private_link_service_network_policies_enabled" {
   description = "Whether or not to enable link service network policies on the private link service gateway subnet"
   default     = null
 }
- 

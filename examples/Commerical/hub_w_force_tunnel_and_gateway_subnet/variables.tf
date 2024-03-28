@@ -46,89 +46,14 @@ variable "lock_level" {
 # Landing Zone Configuration  ##
 ################################
 
-#########################
-# Management Logging  ###
-#########################
-
-variable "enable_ampls" {
-  description = "Enables Azure Monitor Private Link Scope"
-  type        = bool
-  default     = true
-}
-
-variable "ampls_subnet_address_prefix" {
-  description = "The address prefix to use for the ampls private endpoint subnet"
-  type = list(string)
-  default     = null
-}
-
-variable "log_analytics_workspace_sku" {
-  description = "The SKU of the Log Analytics Workspace. Possible values are PerGB2018 and Free. Default is PerGB2018."
-  type        = string
-  default     = null
-}
-
-variable "log_analytics_logs_retention_in_days" {
-  description = "The number of days to retain logs for. Possible values are between 30 and 730. Default is 30."
-  type        = number
-  default     = null
-}
-
-#####################################
-# Log Solutions Configuration     ##
-#####################################
-
-variable "enable_sentinel" {
-  description = "Controls if Sentinel should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_azure_activity_log" {
-  description = "Controls if Azure Activity Log should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_vm_insights" {
-  description = "Controls if VM Insights should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_azure_security_center" {
-  description = "Controls if Azure Security Center should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_service_map" {
-  description = "Controls if Service Map should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_container_insights" {
-  description = "Controls if Container Insights should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_key_vault_analytics" {
-  description = "Controls if Key Vault Analytics should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-
 ##########
 # Hub  ###
 ##########
 
 variable "hub_name" {
-  description = "Name of the hub network name. This will be used to name the resources deployed by this module. default is 'hub-core'"
+  description = "Name of the hub network name. This will be used to name the resources deployed by this module. default is 'hub'"
   type        = string
-  default     = "hub-core"
+  default     = "hub"
 }
 
 variable "hub_vnet_address_space" {
@@ -154,10 +79,16 @@ variable "enable_traffic_analytics" {
   default     = false
 }
 
+variable "enable_default_private_dns_zones" {
+  type = bool
+  default = false
+  description = "Enable default Private DNS Zones. Default is false."
+}
+
 variable "hub_private_dns_zones" {
   description = "The private DNS zones of the hub virtual network."
-  type        = list(string)
-  default     = []
+  type        = any
+  default     = {}
 }
 
 variable "firewall_supernet_IP_address" {
@@ -178,6 +109,12 @@ variable "fw_management_snet_address_prefixes" {
   default     = ["10.8.4.128/26"]
 }
 
+variable "gateway_subnet_address_prefixes" {
+  description = "The address prefix of the gateway subnet."
+  type        = list(string)
+  default     = ["10.8.4.0/27"]
+}
+
 variable "firewall_zones" {
   description = "The zones of the firewall. Valid values are 1, 2, and 3."
   default     = null
@@ -191,17 +128,20 @@ variable "enable_firewall" {
 
 variable "firewall_application_rules" {
   description = "List of application rules to apply to firewall."
-  default     = {}
+  type = any
+  default     = []
 }
 
 variable "firewall_network_rules" {
   description = "List of network rules to apply to firewall."
-  default     = {}
+  type = any
+  default     = []
 }
 
 variable "firewall_nat_rules" {
   description = "List of nat rules to apply to firewall."
-  default     = {}
+  type = any
+  default     = []
 }
 
 variable "enable_forced_tunneling" {

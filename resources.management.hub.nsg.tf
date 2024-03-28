@@ -1,6 +1,9 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+#----------------------------------------------
+# Azure Network Security Group / Rules
+#----------------------------------------------
 resource "azurerm_network_security_group" "nsg" {
   for_each            = var.hub_subnets
   name                = var.hub_nsg_custom_name != null ? "${var.hub_nsg_custom_name}_${each.key}" : "${data.azurenoopsutils_resource_name.nsg[each.key].result}"

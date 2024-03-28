@@ -14,7 +14,7 @@ output "resource_group_location" {
   value       = module.mod_vnet_hub.resource_group_location
 }
 
-#VNet and Subnets 
+#VNet and Subnets
 output "virtual_network_name" {
   description = "The name of the virtual network"
   value       = module.mod_vnet_hub.virtual_network_name
@@ -145,11 +145,6 @@ output "public_ip_prefix_id" {
 output "firewall_client_public_ip" {
   description = "the public ip of firewall."
   value       = module.mod_vnet_hub.firewall_client_public_ip
-}
-
-output "firewall_client_public_ip_fqdn" {
-  description = "Fully qualified domain name of the A DNS record associated with the public IP."
-  value       = module.mod_vnet_hub.firewall_client_public_ip_fqdn
 }
 
 output "firewall_private_ip" {

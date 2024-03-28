@@ -28,12 +28,12 @@ enable_traffic_analytics = true
 # 05 Management Hub Virtual Network  ##
 #######################################
 
-# (Required)  Hub Virtual Network Parameters   
-# Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
-hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters  
-fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters  
+# (Required)  Hub Virtual Network Parameters
+# Provide valid VNet Address space and specify valid domain name for Private DNS Zone.
+hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters
+fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters
 ampls_subnet_address_prefix         = ["10.8.5.160/27"] # (Required)  AMPLS Subnet Parameter
-fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed. 
+fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed.
 
 # (Required) DDOS Protection Plan
 # By default, Azure NoOps will create DDOS Protection Plan in Hub VNet.
@@ -41,11 +41,11 @@ fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewa
 # set create_ddos_plan to false.
 create_ddos_plan = true
 
-# (Required) Hub Subnets 
+# (Required) Hub Subnets
 # Default Subnets, Service Endpoints
 # This is the default subnet with required configuration, check README.md for more details
-# First address ranges from VNet Address space reserved for Firewall Subnets. 
-# First three address ranges from VNet Address space reserved for Gateway, AMPLS And Firewall Subnets. 
+# First address ranges from VNet Address space reserved for Firewall Subnets.
+# First three address ranges from VNet Address space reserved for Gateway, AMPLS And Firewall Subnets.
 # ex.: For 10.8.4.0/23 address space, usable address range start from "10.8.4.224/27" for all subnets.
 # default subnet name will be set as per Azure NoOps naming convention by default.
 # Multiple Subnets, Service delegation, Service Endpoints, Network security groups
@@ -54,7 +54,7 @@ create_ddos_plan = true
 # subnet name will be set as per Azure naming convention by default. expected value here is: <App or project name>
 hub_subnets = {
   default = {
-    name                                       = "hub-core"
+    name                                       = "hub"
     address_prefixes                           = ["10.8.4.224/27"]
     service_endpoints                          = ["Microsoft.Storage"]
     private_endpoint_network_policies_enabled  = false
@@ -94,19 +94,19 @@ enable_service_map           = true
 #################################
 
 # Firewall Settings
-# By default, Azure NoOps will create Azure Firewall in Hub VNet. 
-# If you do not want to create Azure Firewall, 
-# set enable_firewall to false. This will allow different firewall products to be used (Example: F5).  
+# By default, Azure NoOps will create Azure Firewall in Hub VNet.
+# If you do not want to create Azure Firewall,
+# set enable_firewall to false. This will allow different firewall products to be used (Example: F5).
 enable_firewall = true
 
 # By default, forced tunneling is enabled for Azure Firewall.
-# If you do not want to enable forced tunneling, 
+# If you do not want to enable forced tunneling,
 # set enable_forced_tunneling to false.
 enable_forced_tunneling = true
 
 
-# (Optional) To enable the availability zones for firewall. 
-# Availability Zones can only be configured during deployment 
+# (Optional) To enable the availability zones for firewall.
+# Availability Zones can only be configured during deployment
 # You can't modify an existing firewall to include Availability Zones
 firewall_zones = []
 
@@ -170,12 +170,12 @@ firewall_application_rules = [
 
 # Private DNS Zone Settings
 # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
-# If you do want to create additional Private DNS Zones, 
+# If you do want to create additional Private DNS Zones,
 # add in the list of private_dns_zones to be created.
 # else, remove the private_dns_zones argument.
 hub_private_dns_zones = []
 
-# By default, this module will create a bastion host, 
+# By default, this module will create a bastion host,
 # and set the argument to `enable_bastion_host = false`, to disable the bastion host.
 enable_bastion_host                 = true
 azure_bastion_host_sku              = "Standard"

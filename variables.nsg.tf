@@ -119,26 +119,19 @@ variable "load_balancer_rules_enabled" {
 
 variable "nsg_additional_rules" {
   description = "Additional network security group rules to add. For arguments please refer to https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule#argument-reference"
-  type = list(object({
-    priority  = number
-    name      = string
-    direction = optional(string, "Inbound")
-    access    = optional(string, "Allow")
-    protocol  = optional(string, "Tcp")
-
-    source_port_range  = optional(string)
-    source_port_ranges = optional(list(string))
-
-    destination_port_range  = optional(string)
-    destination_port_ranges = optional(list(string))
-
-    source_address_prefix   = optional(string)
-    source_address_prefixes = optional(list(string))
-
-    destination_address_prefix   = optional(string)
-    destination_address_prefixes = optional(list(string))
-  }))
-  default = []
+  type = map(object(
+    {
+      nsg_rule_priority                   = number # (Required) NSG rule priority.
+      nsg_rule_direction                  = string # (Required) NSG rule direction. Possible values are `Inbound` and `Outbound`.
+      nsg_rule_access                     = string # (Required) NSG rule access. Possible values are `Allow` and `Deny`.
+      nsg_rule_protocol                   = string # (Required) NSG rule protocol. Possible values are `Tcp`, `Udp`, `Icmp`, `Esp`, `Asterisk`.
+      nsg_rule_source_port_range          = string # (Required) NSG rule source port range.
+      nsg_rule_destination_port_range     = string # (Required) NSG rule destination port range.
+      nsg_rule_source_address_prefix      = string # (Required) NSG rule source address prefix.
+      nsg_rule_destination_address_prefix = string # (Required) NSG rule destination address prefix.
+    }
+  ))
+  default = {}
 }
 
 variable "nfs_inbound_allowed" {

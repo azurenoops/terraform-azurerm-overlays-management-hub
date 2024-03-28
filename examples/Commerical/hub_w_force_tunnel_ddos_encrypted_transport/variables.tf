@@ -78,6 +78,12 @@ variable "log_analytics_logs_retention_in_days" {
 # Log Solutions Configuration     ##
 #####################################
 
+variable "enable_sentinel" {
+  description = "Controls if Sentinel should be enabled. Default is true."
+  type        = bool
+  default     = true
+}
+
 variable "enable_azure_activity_log" {
   description = "Controls if Azure Activity Log should be enabled. Default is true."
   type        = bool
@@ -120,9 +126,9 @@ variable "enable_key_vault_analytics" {
 ##########
 
 variable "hub_name" {
-  description = "Name of the hub network name. This will be used to name the resources deployed by this module. default is 'hub-core'"
+  description = "Name of the hub network name. This will be used to name the resources deployed by this module. default is 'hub'"
   type        = string
-  default     = "hub-core"
+  default     = "hub"
 }
 
 variable "hub_vnet_address_space" {
@@ -219,5 +225,33 @@ variable "azure_bastion_host_sku" {
 variable "azure_bastion_subnet_address_prefix" {
   description = "The address prefix of the Azure Bastion Host subnet."
   type        = list(string)
+  default     = null
+}
+
+#######################################
+# Encrypted Transport Configuration  ##
+#######################################
+
+variable "enable_encrypted_transport" {
+  description = "Enables encrypted transport for the hub virtual network. Default is false."
+  type        = bool
+  default     = false
+}
+
+variable "encrypted_transport_address_prefix" {
+  description = "The address prefix of the encrypted transport subnet."
+  type        = string
+  default     = null
+}
+
+variable "encrypted_transport_next_hop_in_ip_address" {
+  description = "The next hop in IP address of the encrypted transport subnet."
+  type        = string
+  default     = null
+}
+
+variable "encrypted_transport_next_hop_type" {
+  description = "The next hop type of the encrypted transport subnet. Valid values are VirtualAppliance and VnetLocal."
+  type        = string
   default     = null
 }

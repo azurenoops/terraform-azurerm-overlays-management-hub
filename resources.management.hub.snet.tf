@@ -4,7 +4,7 @@
 /*
 SUMMARY: Module to deploy a subnet in the Hub Network based on the Azure Mission Landing Zone conceptual architecture
 DESCRIPTION: The following components will be options in this deployment
-              * Subnets      
+              * Subnets
 AUTHOR/S: jrspinella
 */
 
@@ -16,7 +16,7 @@ resource "azurerm_subnet" "gw_snet" {
   count                                         = var.gateway_subnet_address_prefix != null ? 1 : 0
   name                                          = "GatewaySubnet"
   resource_group_name                           = local.resource_group_name
-  virtual_network_name                          = azurerm_virtual_network.hub_vnet.name
+  virtual_network_name                          = module.hub_vnet.vnet_resource.name
   address_prefixes                              = var.gateway_subnet_address_prefix
   service_endpoints                             = var.gateway_service_endpoints
   private_endpoint_network_policies_enabled     = var.gateway_private_endpoint_network_policies_enabled
@@ -27,10 +27,10 @@ resource "azurerm_subnet" "default_snet" {
   for_each             = var.hub_subnets
   name                 = var.hub_snet_custom_name != null ? "${var.hub_snet_custom_name}_${each.key}" : "${data.azurenoopsutils_resource_name.snet[each.key].result}"
   resource_group_name  = local.resource_group_name
-  virtual_network_name = azurerm_virtual_network.hub_vnet.name
+  virtual_network_name = module.hub_vnet.vnet_resource.name
   address_prefixes     = each.value.address_prefixes
   service_endpoints    = lookup(each.value, "service_endpoints", [])
-  # Applicable to the subnets which used for Private link endpoints or services 
+  # Applicable to the subnets which used for Private link endpoints or services
   private_endpoint_network_policies_enabled     = lookup(each.value, "private_endpoint_network_policies_enabled", null)
   private_link_service_network_policies_enabled = lookup(each.value, "private_link_service_network_policies_enabled", null)
 
