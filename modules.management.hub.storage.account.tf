@@ -4,7 +4,7 @@
 #---------------------------------------------------------
 # Hub Logging Storage Account Creation
 #----------------------------------------------------------
-module "mgt_sa" {
+module "hub_st" {
   depends_on                   = [module.mod_scaffold_rg]
   source                       = "azurenoops/overlays-storage-account/azurerm"
   version                      = "~> 1.0"
