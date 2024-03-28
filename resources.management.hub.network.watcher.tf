@@ -3,8 +3,8 @@
 
 /*
 SUMMARY: Terraform Module to deploy the Network Watcher Flog Logs for Hub Network based on the Azure Mission Landing Zone conceptual architecture
-DESCRIPTION: The following components will be options in this deployment              
-              * Network Watcher         
+DESCRIPTION: The following components will be options in this deployment
+              * Network Watcher
 AUTHOR/S: jrspinella
 */
 
@@ -17,7 +17,7 @@ resource "azurerm_network_watcher_flow_log" "nwflog" {
   network_watcher_name      = data.azurerm_network_watcher.nwatcher.name
   resource_group_name       = data.azurerm_resource_group.netwatch.name # Must provide Netwatcher resource Group
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
-  storage_account_id        = module.mgt_sa.storage_account_id
+  storage_account_id        = module.hub_st.storage_account_id
   enabled                   = true
   version                   = 2
   retention_policy {

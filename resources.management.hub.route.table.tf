@@ -6,7 +6,7 @@ SUMMARY: Module to deploy a route table in the Hub Network based on the Azure Mi
 DESCRIPTION: The following components will be options in this deployment
               * Route Table
                 * Route Table Association
-                * Route     
+                * Route
 AUTHOR/S: jrspinella
 */
 
@@ -70,6 +70,6 @@ resource "azurerm_route" "afw_route" {
   address_prefix         = var.encrypted_transport_address_prefix
   next_hop_type          = var.encrypted_transport_next_hop_type
   next_hop_in_ip_address = var.encrypted_transport_next_hop_in_ip_address
-  
+
   count = var.enable_encrypted_transport ? 1 : 0
 }
