@@ -19,7 +19,7 @@ provider "azurerm" {
 module "overlays-management-spoke" {
   source  = "azurenoops/overlays-management-spoke/azurerm"
   version = "2.0.0"
-  
+
   location = "usgovvirginia"
   environment = "usgovernment"
   ...
@@ -90,7 +90,6 @@ Source: [Microsoft Azure Hub-Spoke Topology Documentation](https://docs.microsof
 - [Subnets](https://www.terraform.io/docs/providers/azurerm/r/subnet.html)
 - [Subnet Service Delegation](https://www.terraform.io/docs/providers/azurerm/r/subnet.html#delegation)
 - [Virtual Network service endpoints](https://www.terraform.io/docs/providers/azurerm/r/subnet.html#service_endpoints)
-- [Private Link service/Endpoint network policies on Subnet](https://www.terraform.io/docs/providers/azurerm/r/subnet.html#enforce_private_link_endpoint_network_policies)
 - [AzureNetwork DDoS Protection Plan](https://www.terraform.io/docs/providers/azurerm/r/network_ddos_protection_plan.html)
 - [Network Security Groups](https://www.terraform.io/docs/providers/azurerm/r/network_security_group.html)
 - [Azure Firewall](https://www.terraform.io/docs/providers/azurerm/r/firewall.html)
@@ -100,8 +99,6 @@ Source: [Microsoft Azure Hub-Spoke Topology Documentation](https://docs.microsof
 - [Route Table](https://www.terraform.io/docs/providers/azurerm/r/route_table.html)
 - [Role Assignment for Peering](https://www.terraform.io/docs/providers/azurerm/r/role_assignment.html)
 - [Storage Account for Log Archive](https://www.terraform.io/docs/providers/azurerm/r/storage_account.html)
-- [Log Analytics Workspace](https://www.terraform.io/docs/providers/azurerm/r/log_analytics_workspace.html)
-- [Azure Monitoring Diagnostics](https://www.terraform.io/docs/providers/azurerm/r/monitor_diagnostic_setting.html)
 - [Network Watcher](https://www.terraform.io/docs/providers/azurerm/r/network_watcher.html)
 - [Network Watcher Workflow Logs](https://www.terraform.io/docs/providers/azurerm/r/network_watcher_flow_log.html)
 - [Private DNS Zone](https://www.terraform.io/docs/providers/azurerm/r/private_dns_zone.html)
@@ -119,55 +116,36 @@ module "mod_vnet_hub" {
   version = "x.x.x"
 
   # By default, this module will create a resource group, provide the name here
-  # To use an existing resource group, specify the existing resource group name, 
+  # To use an existing resource group, specify the existing resource group name,
   # and set the argument to `create_hub_resource_group = false`. Location will be same as existing RG.
   create_hub_resource_group = true
   location              = "eastus"
   deploy_environment    = "dev"
   org_name              = "anoa"
   environment           = "public"
-  workload_name         = "hub-core"
+  workload_name         = "hub"
 
-  # Logging  
-  # Enable Azure Montior Private Link Scope
-  enable_ampls = var.enable_ampls
-  # (Optional)  AMPLS Subnet Parameter
-  ampls_subnet_address_prefix = var.ampls_subnet_address_prefix
-
-  # By default, Azure NoOps will create a Log Analytics Workspace in Hub VNet.
-  log_analytics_workspace_sku = var.log_analytics_workspace_sku
-  log_analytics_logs_retention_in_days = var.log_analytics_logs_retention_in_days
-
-  # Logging Solutions
-  # All solutions are enabled (true) by default
-  enable_azure_activity_log    = var.enable_azure_activity_log
-  enable_vm_insights           = var.enable_vm_insights
-  enable_azure_security_center = var.enable_azure_security_center
-  enable_container_insights    = var.enable_container_insights
-  enable_key_vault_analytics   = var.enable_key_vault_analytics
-  enable_service_map           = var.enable_service_map
-
-  # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
-  virtual_network_address_space           = ["10.0.0.0/16"]     # (Required)  Hub Virtual Network Parameters  
-  firewall_subnet_address_prefix          = ["10.0.100.0/26"]   # (Required)  Hub Firewall Subnet Parameters  
+  # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.
+  virtual_network_address_space           = ["10.0.0.0/16"]     # (Required)  Hub Virtual Network Parameters
+  firewall_subnet_address_prefix          = ["10.0.100.0/26"]   # (Required)  Hub Firewall Subnet Parameters
   firewall_management_snet_address_prefix = ["10.0.100.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters
   gateway_subnet_address_prefix           = ["10.0.100.192/27"] # (Optional)  Hub Gateway Subnet Parameters
 
-  # (Required) Hub Subnets 
+  # (Required) Hub Subnets
   # Default Subnets, Service Endpoints
   # This is the default subnet with required configuration, check README.md for more details
-  # First address ranges from VNet Address space reserved for Firewall Subnets. 
+  # First address ranges from VNet Address space reserved for Firewall Subnets.
   # ex.: For 10.0.100.128/27 address space, usable address range start from 10.0.100.0/24 for all subnets.
   # default subnet name will be set as per Azure NoOps naming convention by default.
   # Multiple Subnets, Service delegation, Service Endpoints, Network security groups
   # These are default subnets with required configuration, check README.md for more details
   # NSG association to be added automatically for all subnets listed here.
-  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets. 
+  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets.
   # ex.: For 10.1.0.0/16 address space, usable address range start from 10.1.2.0/24 for all subnets.
   # subnet name will be set as per Azure naming convention by default. expected value here is: <App or project name>
   hub_subnets = {
     default = {
-      name                                       = "hub-core"
+      name                                       = "hub"
       address_prefixes                           = ["10.0.100.64/26"]
       service_endpoints                          = ["Microsoft.Storage"]
       private_endpoint_network_policies_enabled  = false
@@ -205,23 +183,23 @@ module "mod_vnet_hub" {
         source_address_prefix      = "0.0.0.0/0",
         destination_address_prefix = "*"
       }
-    ]      
+    ]
     }
   }
 
   # Firewall Settings
-  # By default, Azure NoOps will create Azure Firewall in Hub VNet. 
-  # If you do not want to create Azure Firewall, 
-  # set enable_firewall to false. This will allow different firewall products to be used (Example: F5).  
+  # By default, Azure NoOps will create Azure Firewall in Hub VNet.
+  # If you do not want to create Azure Firewall,
+  # set enable_firewall to false. This will allow different firewall products to be used (Example: F5).
   enable_firewall = true
 
   # By default, forced tunneling is enabled for Azure Firewall.
-  # If you do not want to enable forced tunneling, 
+  # If you do not want to enable forced tunneling,
   # set enable_forced_tunneling to false.
   enable_forced_tunneling = true
 
-  # (Optional) To enable the availability zones for firewall. 
-  # Availability Zones can only be configured during deployment 
+  # (Optional) To enable the availability zones for firewall.
+  # Availability Zones can only be configured during deployment
   # You can't modify an existing firewall to include Availability Zones
   firewall_zones = [1, 2, 3]
 
@@ -281,12 +259,12 @@ module "mod_vnet_hub" {
 
   # Private DNS Zone Settings
   # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
-  # If you do want to create additional Private DNS Zones, 
+  # If you do want to create additional Private DNS Zones,
   # add in the list of private_dns_zones to be created.
   # else, remove the private_dns_zones argument.
   private_dns_zones = ["privatelink.file.core.windows.net"]
 
-  # By default, this module will create a bastion host, 
+  # By default, this module will create a bastion host,
   # and set the argument to `enable_bastion_host = false`, to disable the bastion host.
   enable_bastion_host                 = true
   azure_bastion_host_sku              = "Standard"
@@ -319,7 +297,7 @@ Parameter name | Location | Default Value | Description
 
 ## Subnets
 
-This module handles the creation and a list of address spaces for subnets. This module uses `for_each` to create subnets and corresponding service endpoints, service delegation, and network security groups. This module associates the subnets to network security groups as well with additional user-defined NSG rules.  
+This module handles the creation and a list of address spaces for subnets. This module uses `for_each` to create subnets and corresponding service endpoints, service delegation, and network security groups. This module associates the subnets to network security groups as well with additional user-defined NSG rules.
 
 This module creates 4 subnets by default: Gateway Subnet, AzureFirewallSubnet, AzureFirewallManagementSubnet and AzureBastionSubnet.
 
@@ -352,7 +330,7 @@ module "vnet-hub" {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
 
-      service_endpoints     = ["Microsoft.Storage"]  
+      service_endpoints     = ["Microsoft.Storage"]
     }
   }
 
@@ -421,8 +399,8 @@ module "vnet-hub" {
   }
 
 # ....omitted
-  
-  } 
+
+  }
 ```
 
 ## `private_link_service_network_policies_enabled` - private link service on the subnet
@@ -479,7 +457,7 @@ The default firewall configured for Management Virtual Network Hub Overlay is [A
 
 >### Firewall Availability Zones
 
-Azure Firewall can be configured during deployment to span multiple Availability Zones for increased availability. With Availability Zones, your availability increases to 99.99% uptime.  
+Azure Firewall can be configured during deployment to span multiple Availability Zones for increased availability. With Availability Zones, your availability increases to 99.99% uptime.
 
 To specifies the availability zones in which the Azure Firewall should be created, set the argument `firewall_zones = [1, 2, 3]`.  This is by default is not enabled and set to `none`. There's no additional cost for a firewall deployed in an Availability Zone. However, there are additional costs for inbound and outbound data transfers associated with Availability Zones.
 
@@ -600,43 +578,6 @@ module "vnet-hub" {
 ## Peering
 
 To peer spoke networks to the hub networks requires the service principal that performs the peering has `Network Contributor` role on hub network. Linking the Spoke to Hub DNS zones, the service principal also needs the `Private DNS Zone Contributor` role on hub network.
-
-## Management Operations Logging
-
-This module enables diagnostic settings for Azure resources that emit platform logs. The diagnostic settings are configured to send platform logs to a Log Analytics workspace. The workspace is created in the same resource group as the hub virtual network and it is configured to retain data for 30 days. The Log Analytics workspace is configured to use the Standard pricing tier.
-
-As part of SCCA compliance, Management Operations Logging is enabled.
-
-Diagnostic settings are controlled trough Policy. Policy will create a policy assignment to enable diagnostic settings for all resources in the resource group.
-
-The following Azure resources can be configured to send platform logs to the Log Analytics workspace:
-
-- Azure Firewall
-- Azure Storage
-- Azure Key Vault
-- Azure Application Gateway
-- Azure Load Balancer
-- Azure Network Security Group
-- Azure Virtual Network Gateway
-- Azure Virtual Network
-
-> **NOTE:**  Please review the [Mission Enclave Policy Starter](https://github.com/azurenoops/ref-scca-enclave-policy-starter) reference implementation for more information.
-
-## AMPLS for Azure Monitoring (Azure Managed Private Link Service)
-
-Azure Monitor Private Link Scope connects a Private Endpoint to a set of Azure Monitor resources as [Azure Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-overview). It is a managed service that is deployed and managed by Microsoft. It is not a service that you deploy and manage yourself. It is a service that you deploy into a VNet and then connect to other Azure Monitor services.
-
-By default, this module deploys AMPLS for Azure Monitoring into the privateEndpoint subnet. It creates private dns zone for Azure Monitor services and links the private dns zone to the privateEndpoint subnet. subnet. It also creates a private endpoint for Azure Monitor services and links the private endpoint to the private dns zone.
-
-DNS Zones:
-
-- `privatelink.monitor.azure.com`
-- `privatelink.ods.opinsights.azure.com`
-- `privatelink.oms.opinsights.azure.com`
-- `privatelink.blob.core.windows.net`
-- `privatelink.agentsvc.azure-automation.net`
-
-> **Note:** *`privatelink.blob.core.windows.net` is deployed thru AMPLS make that you do not add this to private dns zones variable. This will cause a conflict, if deployed again to the Management Hub Overlay.*
 
 ## Optional Features
 

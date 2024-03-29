@@ -24,25 +24,6 @@ module "mod_vnet_hub" {
   environment               = var.environment
   workload_name             = var.hub_name
 
-  # Logging
-  # Enable Azure Montior Private Link Scope
-  enable_ampls = var.enable_ampls
-  # (Optional)  AMPLS Subnet Parameter
-  ampls_subnet_address_prefix = var.ampls_subnet_address_prefix
-
-  # By default, Azure NoOps will create a Log Analytics Workspace in Hub VNet.
-  log_analytics_workspace_sku          = var.log_analytics_workspace_sku
-  log_analytics_logs_retention_in_days = var.log_analytics_logs_retention_in_days
-
-  # Logging Solutions
-  # All solutions are enabled (true) by default
-  enable_azure_activity_log    = var.enable_azure_activity_log
-  enable_vm_insights           = var.enable_vm_insights
-  enable_azure_security_center = var.enable_azure_security_center
-  enable_container_insights    = var.enable_container_insights
-  enable_key_vault_analytics   = var.enable_key_vault_analytics
-  enable_service_map           = var.enable_service_map
-
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.
   virtual_network_address_space           = var.hub_vnet_address_space              # (Required)  Hub Virtual Network Parameters
   firewall_subnet_address_prefix          = var.fw_client_snet_address_prefixes     # (Required)  Hub Firewall Subnet Parameters
