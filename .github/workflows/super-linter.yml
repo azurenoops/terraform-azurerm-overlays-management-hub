@@ -45,6 +45,8 @@
               VALIDATE_POWERSHELL: true
               VALIDATE_TERRAFORM_TFLINT: true
               VALIDATE_YAML: true
+              FILTER_REGEX_EXCLUDE: ".github/dependabot.yml"
+              
               # Additional settings:
               # If a shell script is not executable, the bash-exec
               # linter will report an error when set to true
