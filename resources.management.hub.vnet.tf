@@ -40,7 +40,7 @@ module "hub_vnet" {
   diagnostic_settings = {
     vnet_dia = {
       name                           = format("%s-diag", local.hub_vnet_name)
-      storage_account_resource_id    = module.hub_st.storage_account_id
+      storage_account_resource_id    = module.hub_st.id
       workspace_resource_id          = module.mod_ops_logging.laws_resource_id
       log_analytics_destination_type = "AzureDiagnostics"
     }

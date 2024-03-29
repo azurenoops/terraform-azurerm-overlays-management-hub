@@ -150,12 +150,12 @@ output "ampls_laws_private_link_scope_id" {
 
 output "storage_account_id" {
   description = "The ID of the storage account."
-  value       = module.hub_st.storage_account_id
+  value       = module.hub_st.id
 }
 
 output "storage_account_name" {
   description = "The name of the storage account."
-  value       = module.hub_st.storage_account_name
+  value       = module.hub_st.name
 }
 
 output "public_ip_prefix_id" {
