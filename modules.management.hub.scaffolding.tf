@@ -40,3 +40,23 @@ module "mod_scaffold_rg" {
   add_tags = merge(local.default_tags, var.add_tags, )
 }
 
+#----------------------------------------
+# Private DNS Zone RG
+#----------------------------------------
+module "mod_dns_rg" {
+  source  = "azurenoops/overlays-resource-group/azurerm"
+  version = "~> 1.0"
+
+  count = length(local.if_default_private_dns_zones_enabled) > 0 ? 1 : 0
+
+  location                = module.mod_azregions.location_cli
+  use_location_short_name = var.use_location_short_name # Use the short location name in the resource group name
+  org_name                = var.org_name
+  environment             = var.deploy_environment
+  workload_name           = "dns"
+  custom_rg_name          = var.custom_hub_resource_group_name != null ? var.custom_hub_resource_group_name : null
+
+  // Tags
+  add_tags = merge(local.default_tags, var.add_tags, )
+}
+
