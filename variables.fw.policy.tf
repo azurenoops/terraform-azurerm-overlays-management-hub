@@ -100,7 +100,7 @@ variable "firewall_network_rules_collection" {
 EOT
 }
 
-variable "firewall_nat_rule_collections" {
+variable "firewall_nat_rule_collection" {
   type = list(object({
     action   = string
     name     = string

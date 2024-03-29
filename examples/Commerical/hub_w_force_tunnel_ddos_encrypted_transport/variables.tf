@@ -46,81 +46,6 @@ variable "lock_level" {
 # Landing Zone Configuration  ##
 ################################
 
-#########################
-# Management Logging  ###
-#########################
-
-variable "enable_ampls" {
-  description = "Enables Azure Monitor Private Link Scope"
-  type        = bool
-  default     = true
-}
-
-variable "ampls_subnet_address_prefix" {
-  description = "A name for the ops logging. It defaults to ops-logging-core."
-  type        = list(string)
-  default     = ["10.8.5.160/27"]
-}
-
-variable "log_analytics_workspace_sku" {
-  description = "The SKU of the Log Analytics Workspace. Possible values are PerGB2018 and Free. Default is PerGB2018."
-  type        = string
-  default     = null
-}
-
-variable "log_analytics_logs_retention_in_days" {
-  description = "The number of days to retain logs for. Possible values are between 30 and 730. Default is 30."
-  type        = number
-  default     = null
-}
-
-#####################################
-# Log Solutions Configuration     ##
-#####################################
-
-variable "enable_sentinel" {
-  description = "Controls if Sentinel should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_azure_activity_log" {
-  description = "Controls if Azure Activity Log should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_vm_insights" {
-  description = "Controls if VM Insights should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_azure_security_center" {
-  description = "Controls if Azure Security Center should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_service_map" {
-  description = "Controls if Service Map should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_container_insights" {
-  description = "Controls if Container Insights should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-variable "enable_key_vault_analytics" {
-  description = "Controls if Key Vault Analytics should be enabled. Default is true."
-  type        = bool
-  default     = true
-}
-
-
 ##########
 # Hub  ###
 ##########
@@ -139,6 +64,43 @@ variable "hub_vnet_address_space" {
 
 variable "hub_subnets" {
   description = "The subnets of the hub virtual network."
+  type = map(object({
+    #Basic info for the subnet
+    name                                       = string
+    address_prefixes                           = list(string)
+    service_endpoints                          = list(string)
+    private_endpoint_network_policies_enabled  = bool
+    private_endpoint_service_endpoints_enabled = bool
+
+    # Delegation block - see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet#delegation
+    delegation = optional(object({
+      name = string
+      service_delegation = object({
+        name    = string
+        actions = list(string)
+      })
+    }))
+
+    #Subnet NSG rules - see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group#security_rule
+    nsg_subnet_rules = optional(list(object({
+      name                                       = string
+      description                                = string
+      priority                                   = number
+      direction                                  = string
+      access                                     = string
+      protocol                                   = string
+      source_port_range                          = optional(string)
+      source_port_ranges                         = optional(list(string))
+      destination_port_range                     = optional(string)
+      destination_port_ranges                    = optional(list(string))
+      source_address_prefix                      = optional(string)
+      source_address_prefixes                    = optional(list(string))
+      source_application_security_group_ids      = optional(list(string))
+      destination_address_prefix                 = optional(string)
+      destination_address_prefixes               = optional(list(string))
+      destination_application_security_group_ids = optional(list(string))
+    })))
+  }))
   default     = {}
 }
 
@@ -160,12 +122,6 @@ variable "hub_private_dns_zones" {
   default     = []
 }
 
-variable "firewall_supernet_IP_address" {
-  description = "The IP address of the firewall supernet."
-  type        = string
-  default     = "10.0.96.0/19"
-}
-
 variable "fw_client_snet_address_prefixes" {
   description = "The address prefix of the firewall subnet."
   type        = list(string)
@@ -179,7 +135,8 @@ variable "fw_management_snet_address_prefixes" {
 }
 
 variable "firewall_zones" {
-  description = "The zones of the firewall. Valid values are 1, 2, and 3."
+  description = "A collection of availability zones to spread the Firewall over"
+  type        = list(string)
   default     = null
 }
 
@@ -191,17 +148,20 @@ variable "enable_firewall" {
 
 variable "firewall_application_rules" {
   description = "List of application rules to apply to firewall."
-  default     = {}
+  type = any
+  default     = []
 }
 
 variable "firewall_network_rules" {
   description = "List of network rules to apply to firewall."
-  default     = {}
+  type = any
+  default     = []
 }
 
 variable "firewall_nat_rules" {
   description = "List of nat rules to apply to firewall."
-  default     = {}
+  type = any
+  default     = []
 }
 
 variable "enable_forced_tunneling" {

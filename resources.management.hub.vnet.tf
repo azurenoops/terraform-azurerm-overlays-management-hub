@@ -49,7 +49,7 @@ module "hub_vnet" {
   # Resource Lock
   lock = var.enable_resource_locks ? {
     name = "${local.hub_vnet_name}-${var.lock_level}-lock"
-    kind = var.lock_level
+    kind = "${var.lock_level}"
   } : null
 
   # telemtry

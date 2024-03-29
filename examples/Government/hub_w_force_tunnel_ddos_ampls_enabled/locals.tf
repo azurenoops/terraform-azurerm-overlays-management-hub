@@ -2,6 +2,6 @@ locals {
   tags = {    
     Module  = "overlays-management-hub"
     Toolkit = "Terraform"
-    Example = "Management Hub with force tunneling and AMPLS enabled"
+    Example = "Management Hub with force tunneling"
   }
 }

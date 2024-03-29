@@ -449,13 +449,13 @@ All network traffic is directed through the firewall residing in the Management 
 
 |Name         |Address prefix| Next hop type| Next hop IP address|
 |-------------|--------------|-----------------|-----------------|
-|default_route| 0.0.0.0/0    |Virtual Appliance|10.0.100.4*       |
+|default_route| 0.0.0.0/0    |Virtual Appliance|10.0.100.4*      |
 
 *-example IP for firewall
 
 The default firewall configured for Management Virtual Network Hub Overlay is [Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features). Firewall Premium is the only version that meets SCCA compliance as it can break-and-inspect traffic whereas Firewall Standard can not.
 
->### Firewall Availability Zones
+### Firewall Availability Zones
 
 Azure Firewall can be configured during deployment to span multiple Availability Zones for increased availability. With Availability Zones, your availability increases to 99.99% uptime.
 
@@ -463,7 +463,7 @@ To specifies the availability zones in which the Azure Firewall should be create
 
 >Note: Availability Zones can only be configured during deployment. You can't modify an existing firewall to include Availability Zones
 
->### Firewall Rules
+### Firewall Rules
 
 This module centrally create allow or deny network filtering rules by source and destination IP address, port, and protocol. Azure Firewall is fully stateful, so it can distinguish legitimate packets for different types of connections. Rules are enforced and logged across multiple subscriptions and virtual networks.
 

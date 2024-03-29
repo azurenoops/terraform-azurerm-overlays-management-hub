@@ -37,7 +37,7 @@ module "hub_firewall_policy" {
   # Resource Lock
   lock = var.enable_resource_locks ? {
     name = "${local.hub_firewall_policy_name}-${var.lock_level}-lock"
-    kind = var.lock_level
+    kind = "${var.lock_level}"
   } : null
 
    # telemtry
@@ -67,7 +67,7 @@ module "hub_fw_nat_rule_collection_group" {
   firewall_policy_rule_collection_group_priority           = "110"
 
   # Rule Collections
-  firewall_policy_rule_collection_group_nat_rule_collection = var.firewall_nat_rule_collections
+  firewall_policy_rule_collection_group_nat_rule_collection = var.firewall_nat_rule_collection
 }
 
 module "hub_fw_nw_rule_collection_group" {

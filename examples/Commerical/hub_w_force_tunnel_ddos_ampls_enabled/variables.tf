@@ -64,6 +64,43 @@ variable "hub_vnet_address_space" {
 
 variable "hub_subnets" {
   description = "The subnets of the hub virtual network."
+  type = map(object({
+    #Basic info for the subnet
+    name                                       = string
+    address_prefixes                           = list(string)
+    service_endpoints                          = list(string)
+    private_endpoint_network_policies_enabled  = bool
+    private_endpoint_service_endpoints_enabled = bool
+
+    # Delegation block - see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet#delegation
+    delegation = optional(object({
+      name = string
+      service_delegation = object({
+        name    = string
+        actions = list(string)
+      })
+    }))
+
+    #Subnet NSG rules - see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group#security_rule
+    nsg_subnet_rules = optional(list(object({
+      name                                       = string
+      description                                = string
+      priority                                   = number
+      direction                                  = string
+      access                                     = string
+      protocol                                   = string
+      source_port_range                          = optional(string)
+      source_port_ranges                         = optional(list(string))
+      destination_port_range                     = optional(string)
+      destination_port_ranges                    = optional(list(string))
+      source_address_prefix                      = optional(string)
+      source_address_prefixes                    = optional(list(string))
+      source_application_security_group_ids      = optional(list(string))
+      destination_address_prefix                 = optional(string)
+      destination_address_prefixes               = optional(list(string))
+      destination_application_security_group_ids = optional(list(string))
+    })))
+  }))
   default     = {}
 }
 
@@ -91,12 +128,6 @@ variable "hub_private_dns_zones" {
   default     = {}
 }
 
-variable "firewall_supernet_IP_address" {
-  description = "The IP address of the firewall supernet."
-  type        = string
-  default     = "10.0.96.0/19"
-}
-
 variable "fw_client_snet_address_prefixes" {
   description = "The address prefix of the firewall subnet."
   type        = list(string)
@@ -110,7 +141,8 @@ variable "fw_management_snet_address_prefixes" {
 }
 
 variable "firewall_zones" {
-  description = "The zones of the firewall. Valid values are 1, 2, and 3."
+  description = "A collection of availability zones to spread the Firewall over"
+  type        = list(string)
   default     = null
 }
 

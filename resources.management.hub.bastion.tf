@@ -90,7 +90,7 @@ module "hub_bastion_host" {
   # Resource Lock
   lock = var.enable_resource_locks ? {
     name = "${local.bastion_name}-${var.lock_level}-lock"
-    kind = var.lock_level
+    kind = "${var.lock_level}"
   } : null
 
   # telemtry
