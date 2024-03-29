@@ -48,17 +48,17 @@ module "hub_bastion_pip" {
   sku                 = var.azure_bastion_public_ip_sku
   domain_name_label   = var.domain_name_label != null ? var.domain_name_label : format("gw%s%s", lower(replace(local.bastion_pip_name, "/[[:^alnum:]]/", "")), random_string.str.result)
 
-   # Resource Lock
+  # Resource Lock
   lock = var.enable_resource_locks ? {
-    name = "${local.bastion_name}-${var.lock_level}-lock"
+    name = format("%s-%s-lock", local.bastion_pip_name, var.lock_level)
     kind = var.lock_level
   } : null
-  
+
   # telemtry
   enable_telemetry = var.disable_telemetry
 
   # Tags
-  tags                = merge({ "ResourceName" = local.bastion_pip_name }, local.default_tags, var.add_tags, )
+  tags = merge({ "ResourceName" = local.bastion_pip_name }, local.default_tags, var.add_tags, )
 }
 
 #---------------------------------------------
@@ -95,7 +95,7 @@ module "hub_bastion_host" {
 
   # Resource Lock
   lock = var.enable_resource_locks ? {
-    name = "${local.bastion_name}-${var.lock_level}-lock"
+    name = format("%s-%s-lock", local.bastion_name, var.lock_level)
     kind = var.lock_level
   } : null
 

@@ -25,7 +25,7 @@ resource "azurerm_subnet_route_table_association" "rtassoc" {
 }
 
 resource "azurerm_route" "force_internet_tunneling" {
-  name                   = lower("route-to-firewall-${local.hub_vnet_name}-${local.location}")
+  name                   = lower(format("route-to-firewall-%s", local.hub_vnet_name))
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.routetable.name
   address_prefix         = "0.0.0.0/0"
@@ -55,7 +55,7 @@ resource "azurerm_subnet_route_table_association" "afw_rtassoc" {
 
 resource "azurerm_route" "route" {
   for_each               = var.route_table_routes
-  name                   = lower("route-to-firewall-${each.value.route_name}-${local.location}")
+  name                   = lower(format("route-to-firewall-%s", each.value.route_name))
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.routetable.name
   address_prefix         = each.value.address_prefix
@@ -64,7 +64,7 @@ resource "azurerm_route" "route" {
 }
 
 resource "azurerm_route" "afw_route" {
-  name                   = lower("route-to-afw-subnet-${local.location}")
+  name                   = lower(format("route-to-afw-subnet-%s",local.location))
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.afw_routetable[0].name
   address_prefix         = var.encrypted_transport_address_prefix

@@ -10,7 +10,7 @@ data "azurerm_resource_group" "netwatch" {
 }
 
 data "azurerm_network_watcher" "nwatcher" {
-  depends_on = [ module.hub_vnet ]
+  depends_on          = [module.hub_vnet]
   name                = "NetworkWatcher_${local.location}"
   resource_group_name = data.azurerm_resource_group.netwatch.name
 }

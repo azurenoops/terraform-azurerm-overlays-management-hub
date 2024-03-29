@@ -23,9 +23,9 @@ terraform {
 # Azure Provider Alias for Peering
 #-------------------------------------
 provider "azurerm" {
-  alias           = "ops_network"
-  subscription_id = coalesce(var.ops_subscription_id, data.azurerm_client_config.current.subscription_id)
-  environment     = var.environment
+  alias                      = "ops_network"
+  subscription_id            = coalesce(var.ops_subscription_id, data.azurerm_client_config.current.subscription_id)
+  environment                = var.environment
   skip_provider_registration = var.environment == "usgovernment" ? true : false # Terraform auto registers more providers need by this module. Please see list of provider that are needed.
   features {}
 }

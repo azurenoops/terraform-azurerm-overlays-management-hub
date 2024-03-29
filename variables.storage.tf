@@ -3,8 +3,8 @@
 
 variable "hub_storage_account_kind" {
   description = "The Kind of storage account to create. Valid options are Storage, StorageV2, BlobStorage, FileStorage, BlockBlobStorage. Default is StorageV2."
-  type         = string
-  default      = "StorageV2"
+  type        = string
+  default     = "StorageV2"
 }
 
 variable "hub_storage_account_tier" {

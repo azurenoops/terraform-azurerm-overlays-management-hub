@@ -75,7 +75,7 @@ module "hub_vnet_ddos" {
     kind = var.lock_level
   } : null
 
-   # telemtry
+  # telemtry
   enable_telemetry = var.disable_telemetry
 
   tags = merge({ "ResourceName" = format("%s", local.ddos_plan_name) }, local.default_tags, var.add_tags, )
