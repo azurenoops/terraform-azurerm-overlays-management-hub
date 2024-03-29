@@ -29,7 +29,7 @@ resource "azurerm_route" "force_internet_tunneling" {
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.routetable.name
   address_prefix         = "0.0.0.0/0"
-  next_hop_in_ip_address = azurerm_firewall.fw.0.ip_configuration.0.private_ip_address
+  next_hop_in_ip_address = azurerm_firewall.fw[0].ip_configuration[0].private_ip_address
   next_hop_type          = "VirtualAppliance"
 
   count = var.enable_forced_tunneling ? 1 : 0
@@ -47,8 +47,8 @@ resource "azurerm_route_table" "afw_routetable" {
 }
 
 resource "azurerm_subnet_route_table_association" "afw_rtassoc" {
-  subnet_id      = azurerm_subnet.firewall_client_snet.0.id
-  route_table_id = azurerm_route_table.afw_routetable.0.id
+  subnet_id      = azurerm_subnet.firewall_client_snet[0].id
+  route_table_id = azurerm_route_table.afw_routetable[0].id
 
   count = var.enable_encrypted_transport ? 1 : 0
 }
@@ -66,7 +66,7 @@ resource "azurerm_route" "route" {
 resource "azurerm_route" "afw_route" {
   name                   = lower("route-to-afw-subnet-${local.location}")
   resource_group_name    = local.resource_group_name
-  route_table_name       = azurerm_route_table.afw_routetable.0.name
+  route_table_name       = azurerm_route_table.afw_routetable[0].name
   address_prefix         = var.encrypted_transport_address_prefix
   next_hop_type          = var.encrypted_transport_next_hop_type
   next_hop_in_ip_address = var.encrypted_transport_next_hop_in_ip_address

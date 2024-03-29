@@ -48,6 +48,12 @@ module "hub_bastion_pip" {
   sku                 = var.azure_bastion_public_ip_sku
   domain_name_label   = var.domain_name_label != null ? var.domain_name_label : format("gw%s%s", lower(replace(local.bastion_pip_name, "/[[:^alnum:]]/", "")), random_string.str.result)
 
+   # Resource Lock
+  lock = var.enable_resource_locks ? {
+    name = "${local.bastion_name}-${var.lock_level}-lock"
+    kind = var.lock_level
+  } : null
+  
   # telemtry
   enable_telemetry = var.disable_telemetry
 
@@ -77,8 +83,8 @@ module "hub_bastion_host" {
     sku                 = var.azure_bastion_host_sku
     ip_configuration = {
       name                 = "${lower(local.bastion_name)}-ipconfig"
-      subnet_id            = azurerm_subnet.abs_snet.0.id
-      public_ip_address_id = module.hub_bastion_pip.0.public_ip_id
+      subnet_id            = azurerm_subnet.abs_snet[0].id
+      public_ip_address_id = module.hub_bastion_pip[0].public_ip_id
     }
     ip_connect_enabled     = var.enable_ip_connect
     scale_units            = var.azure_bastion_host_sku == "Standard" ? var.scale_units : 2
@@ -90,7 +96,7 @@ module "hub_bastion_host" {
   # Resource Lock
   lock = var.enable_resource_locks ? {
     name = "${local.bastion_name}-${var.lock_level}-lock"
-    kind = "${var.lock_level}"
+    kind = var.lock_level
   } : null
 
   # telemtry

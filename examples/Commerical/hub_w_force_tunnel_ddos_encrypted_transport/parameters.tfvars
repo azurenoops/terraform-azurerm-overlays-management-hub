@@ -25,7 +25,7 @@ enable_traffic_analytics = true
 ################################
 
 #######################################
-# 05 Management Hub Virtual Network  ##
+# 01 Management Hub Virtual Network  ##
 #######################################
 
 # (Required)  Hub Virtual Network Parameters
@@ -33,7 +33,7 @@ enable_traffic_analytics = true
 hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters
 fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters
 fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed.
-
+gateway_subnet_address_prefixes     = ["10.8.4.0/27"]   # (Optional)  Hub Gateway Subnet Parameters. If not provided, force_tunneling is not needed.
 # (Required) DDOS Protection Plan
 # By default, Azure NoOps will create DDOS Protection Plan in Hub VNet.
 # If you do not want to create DDOS Protection Plan,
@@ -58,38 +58,31 @@ hub_subnets = {
     service_endpoints                          = ["Microsoft.Storage"]
     private_endpoint_network_policies_enabled  = false
     private_endpoint_service_endpoints_enabled = true
+    nsg_subnet_rules = [
+      {
+        name                       = "allow-443",
+        description                = "Allow access to port 443",
+        priority                   = 100,
+        direction                  = "Inbound",
+        access                     = "Allow",
+        protocol                   = "*",
+        source_port_range          = "*",
+        destination_port_range     = "443",
+        source_address_prefix      = "*",
+        destination_address_prefix = "*"
+      }
+    ]
   },
 }
 
- # Enable Encrypted Transport
-  enable_encrypted_transport = true
-  encrypted_transport_address_prefix = "" # (Optional)  Encrypted Transport Subnet Parameters. If not provided, encrypted transport is not needed.
-  encrypted_transport_next_hop_in_ip_address = "" # (Optional)  Encrypted Transport Subnet Parameters. If not provided, encrypted transport is not needed.
-  encrypted_transport_next_hop_type = "VirtualAppliance"
-
-########################################
-# 05a Management OperationL Logging  ###
-########################################
-
-# Enable Azure Montior Private Link Scope
-enable_ampls = false
-
-# Log Analytics Workspace Settings
-log_analytics_workspace_sku          = "PerGB2018"
-log_analytics_logs_retention_in_days = 30
-
-# Azure Monitor Settings
-# All solutions are enabled (true) by default
-enable_sentinel              = true
-enable_azure_activity_log    = true
-enable_vm_insights           = true
-enable_azure_security_center = true
-enable_container_insights    = true
-enable_key_vault_analytics   = true
-enable_service_map           = true
+# Enable Encrypted Transport
+enable_encrypted_transport                 = true
+encrypted_transport_address_prefix         = "" # (Optional)  Encrypted Transport Subnet Parameters. If not provided, encrypted transport is not needed.
+encrypted_transport_next_hop_in_ip_address = "" # (Optional)  Encrypted Transport Subnet Parameters. If not provided, encrypted transport is not needed.
+encrypted_transport_next_hop_type          = "VirtualAppliance"
 
 #################################
-# 05b Management Hub Firewall ###
+# 02 Management Hub Firewall ###
 #################################
 
 # Firewall Settings
@@ -107,6 +100,8 @@ enable_forced_tunneling = true
 # (Optional) To enable the availability zones for firewall.
 # Availability Zones can only be configured during deployment
 # You can't modify an existing firewall to include Availability Zones
+# In Azure Government, Availability Zones are only supported in the
+#following regions: usgovvirginia, usgovtexas, usgovarizona
 firewall_zones = []
 
 # # (Optional) specify the Network rules for Azure Firewall l
@@ -116,7 +111,7 @@ firewall_network_rules = [
     name     = "AllowAzureCloud"
     priority = "100"
     action   = "Allow"
-    rules = [
+    rule = [
       {
         name                  = "AzureCloud"
         protocols             = ["Any"]
@@ -130,7 +125,7 @@ firewall_network_rules = [
     name     = "AllowTrafficBetweenSpokes"
     priority = "200"
     action   = "Allow"
-    rules = [
+    rule = [
       {
         name                  = "AllSpokeTraffic"
         protocols             = ["Any"]
@@ -149,30 +144,52 @@ firewall_application_rules = [
     name     = "AzureAuth"
     priority = "110"
     action   = "Allow"
-    rules = [
+    rule = [
       {
         name              = "msftauth"
         source_addresses  = ["*"]
         destination_fqdns = ["aadcdn.msftauth.net", "aadcdn.msauth.net"]
-        protocols = {
-          type = "Https"
-          port = 443
-        }
+        protocols = [
+          {
+            type = "Https"
+            port = 443
+          }
+        ]
+      }
+    ]
+  },
+  {
+    name     = "AzureAuth2"
+    priority = "130"
+    action   = "Allow"
+    rule = [
+      {
+        name              = "msftauth"
+        source_addresses  = ["*"]
+        destination_fqdns = ["aadcdn.msftauth.net", "aadcdn.msauth.net"]
+        protocols = [
+          {
+            type = "Https"
+            port = 443
+          }
+        ]
       }
     ]
   }
 ]
 
 #######################################
-# 05c Bastion/Hub Private DNS Zones ###
+# 03 Bastion/Hub Private DNS Zones ###
 #######################################
 
 # Private DNS Zone Settings
-# By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
+# By default, Azure NoOps will create Private DNS Zones for Azure Monitor in Hub VNet.
+# To create default Private DNS Zones, set enable_default_private_dns_zones to true.
 # If you do want to create additional Private DNS Zones,
-# add in the list of private_dns_zones to be created.
-# else, remove the private_dns_zones argument.
-hub_private_dns_zones = []
+# add in the list of hub_private_dns_zones to be created.
+# else, remove the hub_private_dns_zones argument.
+enable_default_private_dns_zones = false
+hub_private_dns_zones            = []
 
 # By default, this module will create a bastion host,
 # and set the argument to `enable_bastion_host = false`, to disable the bastion host.

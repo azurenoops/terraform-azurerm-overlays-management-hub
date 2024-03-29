@@ -2,26 +2,6 @@
 # Licensed under the MIT License.
 
 #---------------------------------
-# Local declarations
-#---------------------------------
-# The following block of locals are used to avoid using
-# empty object types in the code
-locals {
-  empty_list   = []
-  empty_map    = tomap({})
-  empty_string = ""
-}
-
-# Convert the input vars to locals, applying any required
-# logic needed before they are used in the module.
-# No vars should be referenced elsewhere in the module.
-# NOTE: Need to catch error for resource_suffix when
-# no value for subscription_id is provided.
-locals {
-  settings      = var.private_dns_zones
-}
-
-#---------------------------------
 # Random ID
 #---------------------------------
 resource "random_id" "uniqueString" {
@@ -31,10 +11,6 @@ resource "random_id" "uniqueString" {
     subid      = var.workload_name
   }
   byte_length = 5
-}
-
-locals {
-  if_ddos_enabled = var.create_ddos_plan ? [{}] : []
 }
 
 # Configuration settings for resource type:

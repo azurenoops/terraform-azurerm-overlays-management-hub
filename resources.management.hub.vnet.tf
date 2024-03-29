@@ -33,7 +33,7 @@ module "hub_vnet" {
   # Ddos protection plan - Default is "false"
   virtual_network_ddos_protection_plan = var.create_ddos_plan ? {
     enable = true
-    id     = module.hub_vnet_ddos.0.resource.id
+    id     = module.hub_vnet_ddos[0].resource.id
   } : null
 
   # Diagnostic Settings
@@ -49,7 +49,7 @@ module "hub_vnet" {
   # Resource Lock
   lock = var.enable_resource_locks ? {
     name = "${local.hub_vnet_name}-${var.lock_level}-lock"
-    kind = "${var.lock_level}"
+    kind = var.lock_level
   } : null
 
   # telemtry

@@ -25,7 +25,7 @@ enable_traffic_analytics = true
 ################################
 
 #######################################
-# 05 Management Hub Virtual Network  ##
+# 01 Management Hub Virtual Network  ##
 #######################################
 
 # (Required)  Hub Virtual Network Parameters
@@ -33,7 +33,7 @@ enable_traffic_analytics = true
 hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters
 fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters
 fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed.
-
+gateway_subnet_address_prefixes     = ["10.8.4.0/27"]   # (Optional)  Hub Gateway Subnet Parameters. If not provided, force_tunneling is not needed.
 # (Required) DDOS Protection Plan
 # By default, Azure NoOps will create DDOS Protection Plan in Hub VNet.
 # If you do not want to create DDOS Protection Plan,
@@ -75,29 +75,8 @@ hub_subnets = {
   },
 }
 
-########################################
-# 05a Management OperationL Logging  ###
-########################################
-
-# Enable Azure Montior Private Link Scope
-enable_ampls                = true
-ampls_subnet_address_prefix = ["10.8.5.160/27"] # (Optional)  AMPLS Subnet Parameter
-
-# Log Analytics Workspace Settings
-log_analytics_workspace_sku          = "PerGB2018"
-log_analytics_logs_retention_in_days = 30
-
-# Azure Monitor Settings
-# All solutions are enabled (true) by default
-enable_azure_activity_log    = true
-enable_vm_insights           = true
-enable_azure_security_center = true
-enable_container_insights    = true
-enable_key_vault_analytics   = true
-enable_service_map           = true
-
 #################################
-# 05b Management Hub Firewall ###
+# 02 Management Hub Firewall ###
 #################################
 
 # Firewall Settings
@@ -172,11 +151,29 @@ firewall_application_rules = [
         ]
       }
     ]
+  },
+  {
+    name     = "AzureAuth2"
+    priority = "130"
+    action   = "Allow"
+    rule = [
+      {
+        name              = "msftauth"
+        source_addresses  = ["*"]
+        destination_fqdns = ["aadcdn.msftauth.net", "aadcdn.msauth.net"]
+        protocols = [
+          {
+            type = "Https"
+            port = 443
+          }
+        ]
+      }
+    ]
   }
 ]
 
 #######################################
-# 05c Bastion/Hub Private DNS Zones ###
+# 03 Bastion/Hub Private DNS Zones ###
 #######################################
 
 # Private DNS Zone Settings

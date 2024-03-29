@@ -37,7 +37,7 @@ module "hub_firewall_policy" {
   # Resource Lock
   lock = var.enable_resource_locks ? {
     name = "${local.hub_firewall_policy_name}-${var.lock_level}-lock"
-    kind = "${var.lock_level}"
+    kind = var.lock_level
   } : null
 
    # telemtry
@@ -50,7 +50,7 @@ module "hub_fw_app_rule_collection_group" {
   version = "~> 0.1"
 
   firewall_policy_rule_collection_group_name               = "${local.hub_firewall_policy_name}-default-arcg"
-  firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy.0.resource.id
+  firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy[0].resource.id
   firewall_policy_rule_collection_group_priority           = "300"
 
   # Rule Collections
@@ -63,7 +63,7 @@ module "hub_fw_nat_rule_collection_group" {
   version = "~> 0.1"
 
   firewall_policy_rule_collection_group_name               = "${local.hub_firewall_policy_name}-default-natrcg"
-  firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy.0.resource.id
+  firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy[0].resource.id
   firewall_policy_rule_collection_group_priority           = "110"
 
   # Rule Collections
@@ -76,7 +76,7 @@ module "hub_fw_nw_rule_collection_group" {
   version = "~> 0.1"
 
   firewall_policy_rule_collection_group_name               = "${local.hub_firewall_policy_name}-default-nwrcg"
-  firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy.0.resource.id
+  firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy[0].resource.id
   firewall_policy_rule_collection_group_priority           = "100"
 
   # Rule Collections

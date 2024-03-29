@@ -59,7 +59,7 @@ module "hub_firewall_client_pip" {
   allocation_method   = var.firewall_pip_allocation_method
   sku                 = var.firewall_pip_sku
   zones               = var.firewall_zones != null ? var.firewall_zones : null
-  public_ip_prefix_id = azurerm_public_ip_prefix.firewall_pref.0.id
+  public_ip_prefix_id = azurerm_public_ip_prefix.firewall_pref[0].id
   tags                = var.add_tags
 
   # Resource Lock
@@ -83,13 +83,13 @@ module "hub_firewall_management_pip" {
   allocation_method   = var.firewall_pip_allocation_method
   sku                 = var.firewall_pip_sku
   zones               = var.firewall_zones != null ? var.firewall_zones : null
-  public_ip_prefix_id = azurerm_public_ip_prefix.firewall_pref.0.id
+  public_ip_prefix_id = azurerm_public_ip_prefix.firewall_pref[0].id
   tags                = var.add_tags
 
   # Resource Lock
   lock = var.enable_resource_locks ? {
     name = "${local.hub_firewall_mgt_pip_name}-${var.lock_level}-lock"
-    kind = "${var.lock_level}"
+    kind = var.lock_level
   } : null
 
    # telemtry
@@ -106,14 +106,14 @@ resource "azurerm_firewall" "fw" {
   location            = local.location
   sku_name            = var.firewall_sku_name
   sku_tier            = var.firewall_sku_tier
-  firewall_policy_id  = module.hub_firewall_policy.0.resource.id
+  firewall_policy_id  = module.hub_firewall_policy[0].resource.id
   threat_intel_mode   = var.firewall_threat_intelligence_mode
   zones               = var.firewall_zones != null ? var.firewall_zones : null
   tags                = merge({ "ResourceName" = format("%s", local.hub_firewall_name) }, local.default_tags, var.add_tags, )
 
   ip_configuration {
     name                 = lower("${local.hub_firewall_name}-ipconfig")
-    subnet_id            = azurerm_subnet.firewall_client_snet.0.id
+    subnet_id            = azurerm_subnet.firewall_client_snet[0].id
     public_ip_address_id = module.hub_firewall_client_pip[0].public_ip_id
   }
 
@@ -121,7 +121,7 @@ resource "azurerm_firewall" "fw" {
     for_each = var.enable_forced_tunneling ? [1] : []
     content {
       name                 = lower("${local.hub_firewall_name}-forced-tunnel-ipconfig")
-      subnet_id            = azurerm_subnet.firewall_management_snet.0.id
+      subnet_id            = azurerm_subnet.firewall_management_snet[0].id
       public_ip_address_id = module.hub_firewall_management_pip[0].public_ip_id
     }
   }
@@ -147,14 +147,14 @@ resource "azurerm_firewall" "fw" {
   firewall_sku_name          = var.firewall_sku_name
   firewall_sku_tier          = var.firewall_sku_tier
   firewall_threat_intel_mode = var.firewall_threat_intelligence_mode
-  firewall_policy_id         = module.hub_firewall_policy.0.resource.id
+  firewall_policy_id         = module.hub_firewall_policy[0].resource.id
   firewall_zones             = var.firewall_zones != null ? var.firewall_zones : null
 
   # Firewall Subnet
   firewall_ip_configuration = [
     {
       name                 = lower("${local.hub_firewall_name}-ipconfig")
-      subnet_id            = azurerm_subnet.firewall_client_snet.0.id
+      subnet_id            = azurerm_subnet.firewall_client_snet[0].id
       public_ip_address_id = module.hub_firewall_client_pip[0].public_ip_id
     }
   ]
@@ -162,7 +162,7 @@ resource "azurerm_firewall" "fw" {
   # Management IP Configuration
   firewall_management_ip_configuration = var.enable_forced_tunneling ? {
     name                 = lower("${local.hub_firewall_name}-forced-tunnel-ipconfig")
-    subnet_id            = azurerm_subnet.firewall_management_snet.0.id
+    subnet_id            = azurerm_subnet.firewall_management_snet[0].id
     public_ip_address_id = module.hub_firewall_management_pip[0].public_ip_id
   } : {}
 
