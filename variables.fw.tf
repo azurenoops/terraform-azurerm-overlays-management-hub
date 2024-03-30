@@ -7,21 +7,25 @@
 
 variable "enable_firewall" {
   description = "Controls if Azure Firewall resources should be created for the Azure subscription"
+  type        = bool
   default     = true
 }
 
 variable "enable_forced_tunneling" {
   description = "Route all Internet-bound traffic to a designated next hop instead of going directly to the Internet"
+  type        = bool
   default     = true
 }
 
 variable "firewall_subnet_address_prefix" {
   description = "The address prefix to use for the Firewall subnet"
+  type        = list(string)
   default     = []
 }
 
 variable "firewall_management_snet_address_prefix" {
   description = "The address prefix to use for Firewall management subnet to enable forced tunnelling. The Management Subnet used for the Firewall must have the name `AzureFirewallManagementSubnet` and the subnet mask must be at least a `/26`."
+  type        = list(string)
   default     = null
 }
 
@@ -63,6 +67,7 @@ variable "firewall_management_snet_private_link_service_network_policies_enabled
 
 variable "firewall_intrusion_detection_mode" {
   description = "Controls if Azure Firewall Intrusion Detection System (IDS) should be enabled for the Azure subscription"
+  type        = string
   default     = "Alert"
 
   validation {
@@ -73,6 +78,7 @@ variable "firewall_intrusion_detection_mode" {
 
 variable "firewall_threat_intelligence_mode" {
   description = "Controls if Azure Firewall Threat Intelligence should be enabled for the Azure subscription"
+  type        = string
   default     = "Alert"
 
   validation {
@@ -83,6 +89,7 @@ variable "firewall_threat_intelligence_mode" {
 
 variable "base_policy_id" {
   description = "The ID of the base policy to use for the Azure Firewall. This is used to create a new policy based on the base policy."
+  type        = string
   default     = null
 }
 
@@ -106,6 +113,7 @@ variable "firewall_zones" {
 
 variable "dns_servers" {
   description = "List of dns servers IPs to use for virtual network"
+  type        = list(string)
   default     = []
 }
 

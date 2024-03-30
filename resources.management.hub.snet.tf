@@ -25,7 +25,7 @@ resource "azurerm_subnet" "gw_snet" {
 
 resource "azurerm_subnet" "default_snet" {
   for_each             = var.hub_subnets
-  name                 = var.hub_snet_custom_name != null ? format("%s-%s", var.hub_snet_custom_name, each.key) : "${data.azurenoopsutils_resource_name.snet[each.key].result}"
+  name                 = var.hub_snet_custom_name != null ? format("%s-%s", var.hub_snet_custom_name, each.key) : data.azurenoopsutils_resource_name.snet[each.key].result
   resource_group_name  = local.resource_group_name
   virtual_network_name = module.hub_vnet.vnet_resource.name
   address_prefixes     = each.value.address_prefixes

@@ -6,7 +6,7 @@
 #----------------------------------------------
 resource "azurerm_network_security_group" "nsg" {
   for_each            = var.hub_subnets
-  name                = var.hub_nsg_custom_name != null ? format("%s_%s", var.hub_nsg_custom_name, each.key) : "${data.azurenoopsutils_resource_name.nsg[each.key].result}"
+  name                = var.hub_nsg_custom_name != null ? format("%s_%s", var.hub_nsg_custom_name, each.key) : data.azurenoopsutils_resource_name.nsg[each.key].result
   resource_group_name = local.resource_group_name
   location            = local.location
   tags                = merge({ "ResourceName" = lower("nsg_${each.key}") }, local.default_tags, var.add_tags, )

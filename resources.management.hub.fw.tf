@@ -65,7 +65,7 @@ module "hub_firewall_client_pip" {
   # Resource Lock
   lock = var.enable_resource_locks ? {
     name = format("%s-%s-lock", local.hub_firewall_client_pip_name, var.lock_level)
-    kind = "${var.lock_level}"
+    kind = var.lock_level
   } : null
 
   # telemtry
