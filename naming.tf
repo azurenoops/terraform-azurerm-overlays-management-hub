@@ -41,7 +41,7 @@ data "azurenoopsutils_resource_name" "snet" {
   name          = var.workload_name
   resource_type = "azurerm_subnet"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
-  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, each.key, local.name_suffix, var.use_naming ? "" : "snet"])
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, each.value.name, local.name_suffix, var.use_naming ? "" : "snet"])
   use_slug      = var.use_naming
   clean_input   = true
   separator     = "-"
@@ -72,7 +72,7 @@ data "azurenoopsutils_resource_name" "nsg" {
   name          = var.workload_name
   resource_type = "azurerm_network_security_group"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
-  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, each.key, local.name_suffix, var.use_naming ? "" : "nsg"])
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, each.value.name, local.name_suffix, var.use_naming ? "" : "nsg"])
   use_slug      = var.use_naming
   clean_input   = true
   separator     = "-"
