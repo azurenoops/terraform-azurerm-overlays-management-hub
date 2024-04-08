@@ -30,26 +30,6 @@ output "virtual_network_address_space" {
   value       = module.mod_vnet_hub.virtual_network_address_space
 }
 
-output "ampls_subnet_id" {
-  description = "Name of ampls subnet id"
-  value       = module.mod_vnet_hub.ampls_subnet_id
-}
-
-output "ampls_subnet_name" {
-  description = "Name of ampls subnet"
-  value       = module.mod_vnet_hub.ampls_subnet_name
-}
-
-output "gateway_subnet_id" {
-  description = "Name of gateway subnet id"
-  value       = module.mod_vnet_hub.gateway_subnet_id
-}
-
-output "gateway_subnet_name" {
-  description = "Name of gateway subnet"
-  value       = module.mod_vnet_hub.gateway_subnet_name
-}
-
 output "firewall_client_subnet_id" {
   description = "Name of firewall client subnet id"
   value       = module.mod_vnet_hub.firewall_client_subnet_id
@@ -107,6 +87,7 @@ output "network_watcher_id" {
   value       = module.mod_vnet_hub.network_watcher_id
 }
 
+# Route Table
 output "route_table_name" {
   description = "The name of the route table"
   value       = module.mod_vnet_hub.route_table_name
@@ -117,31 +98,24 @@ output "route_table_id" {
   value       = module.mod_vnet_hub.route_table_id
 }
 
+# Storage Account
 output "storage_account_id" {
   description = "The ID of the storage account."
-  value       = module.mod_vnet_hub.storage_account_id
+  value       = module.mod_vnet_hub.hub_storage_account_id
 }
 
 output "storage_account_name" {
   description = "The name of the storage account."
-  value       = module.mod_vnet_hub.storage_account_name
+  value       = module.mod_vnet_hub.hub_storage_account_name
 }
 
-output "log_analytics_workspace_name" {
-  description = "Specifies the name of the Log Analytics Workspace"
-  value       = module.mod_vnet_hub.management_logging_log_analytics_name
-}
-
-output "log_analytics_workspace_id" {
-  description = "Specifies the name of the Log Analytics Workspace"
-  value       = module.mod_vnet_hub.management_logging_log_analytics_id
-}
-
+# Public IP Prefix
 output "public_ip_prefix_id" {
   description = "The id of the Public IP Prefix resource"
   value       = module.mod_vnet_hub.public_ip_prefix_id
 }
 
+# Firewall
 output "firewall_client_public_ip" {
   description = "the public ip of firewall."
   value       = module.mod_vnet_hub.firewall_client_public_ip

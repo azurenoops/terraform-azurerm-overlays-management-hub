@@ -7,7 +7,6 @@
 variable "environment" {
   description = "Name of the environment. This will be used to name the private endpoint resources deployed by this module. default is 'public'"
   type        = string
-  default = "usgovernment"
 }
 
 variable "deploy_environment" {
@@ -24,7 +23,7 @@ variable "org_name" {
 variable "default_location" {
   type        = string
   description = "If specified, will set the Azure region in which region bound resources will be deployed. Please see: https://azure.microsoft.com/en-gb/global-infrastructure/geographies/"
-  default     = "usgovvirginia"
+  default     = "eastus"
 }
 
 #################################

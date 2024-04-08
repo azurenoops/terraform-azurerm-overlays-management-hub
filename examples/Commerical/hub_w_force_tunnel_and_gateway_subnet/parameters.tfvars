@@ -6,7 +6,7 @@
 ###########################
 
 # The prefixes to use for all resources in this deployment
-org_name           = "anoa"   # This Prefix will be used on most deployed resources.  10 Characters max.
+org_name           = "an2"   # This Prefix will be used on most deployed resources.  10 Characters max.
 deploy_environment = "dev"    # dev | test | prod
 environment        = "public" # public | usgovernment
 
@@ -34,6 +34,7 @@ hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtua
 fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters
 fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed.
 gateway_subnet_address_prefixes     = ["10.8.4.0/27"]   # (Optional)  Hub Gateway Subnet Parameters. If not provided, force_tunneling is not needed.
+
 # (Required) DDOS Protection Plan
 # By default, Azure NoOps will create DDOS Protection Plan in Hub VNet.
 # If you do not want to create DDOS Protection Plan,
@@ -178,11 +179,9 @@ firewall_application_rules = [
 
 # Private DNS Zone Settings
 # By default, Azure NoOps will create Private DNS Zones for Azure Monitor in Hub VNet.
-# To create default Private DNS Zones, set enable_default_private_dns_zones to true.
 # If you do want to create additional Private DNS Zones,
 # add in the list of hub_private_dns_zones to be created.
 # else, remove the hub_private_dns_zones argument.
-enable_default_private_dns_zones = false
 hub_private_dns_zones            = []
 
 # By default, this module will create a bastion host,
