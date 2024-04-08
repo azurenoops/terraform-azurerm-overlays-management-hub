@@ -20,7 +20,7 @@ module "hub_st" {
   network_rules = {
     bypass                     = ["AzureServices"]
     default_action             = "Deny"
-    ip_rules                   = var.storage_bypass_ip_cidr
+    ip_rules                   = var.hub_storage_bypass_ip_cidr
     virtual_network_subnet_ids = toset([azurerm_subnet.default_snet["default"].id])
   }
 
