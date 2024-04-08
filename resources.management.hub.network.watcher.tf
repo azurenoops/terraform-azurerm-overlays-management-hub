@@ -2,15 +2,12 @@
 # Licensed under the MIT License.
 
 /*
-SUMMARY: Terraform Module to deploy the Network Watcher Flog Logs for Hub Network based on the Azure Mission Landing Zone conceptual architecture
+SUMMARY: This module deploys a Network Watcher flow log for each subnet and NSG in the hub vnet
 DESCRIPTION: The following components will be options in this deployment
               * Network Watcher
 AUTHOR/S: jrspinella
 */
 
-#-----------------------------------------
-# Network flow logs for subnet and NSG
-#-----------------------------------------
 resource "azurerm_network_watcher_flow_log" "nwflog" {
   for_each                  = var.hub_subnets
   name                      = lower(format("network-watcher-flow-log-%s", each.value.name))
@@ -27,9 +24,9 @@ resource "azurerm_network_watcher_flow_log" "nwflog" {
 
   traffic_analytics {
     enabled               = var.enable_traffic_analytics
-    workspace_id          = module.mod_ops_logging.laws_workspace_id
+    workspace_id          = data.azurerm_log_analytics_workspace.laws.workspace_id
     workspace_region      = local.location
-    workspace_resource_id = module.mod_ops_logging.laws_resource_id
+    workspace_resource_id = data.azurerm_log_analytics_workspace.laws.id
     interval_in_minutes   = 10
   }
 }

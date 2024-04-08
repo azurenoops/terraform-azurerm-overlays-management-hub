@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 /*
-SUMMARY: Terraform Module to deploy the Hub Network based on the Azure Mission Landing Zone conceptual architecture
+SUMMARY: This module will deploy a Hub Virtual Network in Azure.
 DESCRIPTION: The following components will be options in this deployment
               * Hub Network Virtual Network
               * Ddos Protection Plan
@@ -10,9 +10,6 @@ DESCRIPTION: The following components will be options in this deployment
 AUTHOR/S: jrspinella
 */
 
-#-------------------------------------
-# VNET Creation - Default is "true"
-#-------------------------------------
 module "hub_vnet" {
   source  = "azure/avm-res-network-virtualnetwork/azurerm"
   version = "~> 0.1"
@@ -35,16 +32,6 @@ module "hub_vnet" {
     enable = true
     id     = module.hub_vnet_ddos[0].resource.id
   } : null
-
-  # Diagnostic Settings
-  diagnostic_settings = {
-    vnet_dia = {
-      name                           = format("%s-diag", local.hub_vnet_name)
-      storage_account_resource_id    = module.hub_st.id
-      workspace_resource_id          = module.mod_ops_logging.laws_resource_id
-      log_analytics_destination_type = "AzureDiagnostics"
-    }
-  }
 
   # Resource Lock
   lock = var.enable_resource_locks ? {

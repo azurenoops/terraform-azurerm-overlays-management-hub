@@ -14,3 +14,14 @@ data "azurerm_network_watcher" "nwatcher" {
   name                = "NetworkWatcher_${local.location}"
   resource_group_name = data.azurerm_resource_group.netwatch.name
 }
+
+data "azurerm_log_analytics_workspace" "laws" {
+  name                = var.laws_workspace_name
+  resource_group_name = var.laws_resource_group_name
+}
+
+data "azurerm_private_dns_zone" "blob" {
+  depends_on          = [module.mod_default_pdz]
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = module.mod_dns_rg[0].resource_group_name
+}

@@ -32,7 +32,15 @@ variable "firewall_management_snet_address_prefix" {
 variable "firewall_snet_service_endpoints" {
   description = "Service endpoints to add to the firewall client subnet"
   type        = list(string)
-  default     = []
+  default = [
+    "Microsoft.AzureActiveDirectory",
+    "Microsoft.AzureCosmosDB",
+    "Microsoft.EventHub",
+    "Microsoft.KeyVault",
+    "Microsoft.ServiceBus",
+    "Microsoft.Sql",
+    "Microsoft.Storage",
+  ]
 }
 
 variable "firewall_snet_private_endpoint_network_policies_enabled" {

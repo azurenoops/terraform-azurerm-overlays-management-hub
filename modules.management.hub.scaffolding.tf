@@ -47,7 +47,7 @@ module "mod_dns_rg" {
   source  = "azurenoops/overlays-resource-group/azurerm"
   version = "~> 1.0"
 
-  count = length(local.if_default_private_dns_zones_enabled) > 0 ? 1 : 0
+  count = length(local.if_default_private_dns_zones_enabled) > 0 || length(var.private_dns_zones) > 0 ? 1 : 0
 
   location                = module.mod_azregions.location_cli
   use_location_short_name = var.use_location_short_name # Use the short location name in the resource group name

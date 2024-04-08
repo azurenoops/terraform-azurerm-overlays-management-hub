@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 /*
-SUMMARY: Module to deploy a firewall in the Hub Network based on the Azure Mission Landing Zone conceptual architecture
+SUMMARY: Module to deploy Azure Firewall in the hub vnet
 DESCRIPTION: The following components will be options in this deployment
               * Firewall
 AUTHOR/S: jrspinella

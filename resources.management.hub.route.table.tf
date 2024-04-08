@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 /*
-SUMMARY: Module to deploy a route table in the Hub Network based on the Azure Mission Landing Zone conceptual architecture
+SUMMARY: Module to deploy a route table and associated routes
 DESCRIPTION: The following components will be options in this deployment
               * Route Table
                 * Route Table Association

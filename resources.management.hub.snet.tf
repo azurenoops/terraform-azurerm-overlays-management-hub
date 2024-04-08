@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 /*
-SUMMARY: Module to deploy a subnet in the Hub Network based on the Azure Mission Landing Zone conceptual architecture
+SUMMARY: Module to create subnets in the hub vnet
 DESCRIPTION: The following components will be options in this deployment
               * Subnets
 AUTHOR/S: jrspinella

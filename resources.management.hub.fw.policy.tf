@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 /*
-SUMMARY: Module to deploy a firewall policy in the Hub Network based on the Azure Mission Landing Zone conceptual architecture
+SUMMARY: Module to deploy an Azure Firewall Policy with optional rule collections
 DESCRIPTION: The following components will be options in this deployment
               * Firewall Policy
                   * Application Rule Collection Group

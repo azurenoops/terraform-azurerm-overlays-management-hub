@@ -33,16 +33,6 @@ output "virtual_network_address_space" {
   value       = module.hub_vnet.vnet_resource.address_space
 }
 
-output "ampls_subnet_id" {
-  description = "Name of ampls subnet id"
-  value       = azurerm_subnet.pe_snet[0].id
-}
-
-output "ampls_subnet_name" {
-  description = "Name of ampls subnet"
-  value       = azurerm_subnet.pe_snet[0].name
-}
-
 output "gateway_subnet_id" {
   description = "Name of gateway subnet id"
   value       = var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet[0].id : null
@@ -91,7 +81,7 @@ output "subnet_names" {
 
 output "subnet_address_prefixes" {
   description = "List of address prefix for subnets"
-  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [azurerm_subnet.pe_snet[0].address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet[0].address_prefixes : null], [azurerm_subnet.firewall_client_snet[0].address_prefixes], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet[0].address_prefixes : null]))
+  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet[0].address_prefixes : null], [azurerm_subnet.firewall_client_snet[0].address_prefixes], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet[0].address_prefixes : null]))
 }
 
 # Network Security group ids
@@ -135,25 +125,20 @@ output "route_table_id" {
 
 output "private_dns_zone_names" {
   description = "The name of the Private DNS zones within Azure DNS"
-  value       = [for s in module.mod_pdz : s.private_dns_zone_name]
+  value       = [for s in module.mod_default_pdz : s.private_dns_zone_name]
 }
 
 output "private_dns_zone_ids" {
   description = "The resource id of Private DNS zones within Azure DNS"
-  value       = [for s in module.mod_pdz : s.private_dns_zone_id]
+  value       = [for s in module.mod_default_pdz : s.private_dns_zone_id]
 }
 
-output "ampls_laws_private_link_scope_id" {
-  description = "The ID of the Private Link Scope within Azure Monitor"
-  value       = module.mod_ops_logging.laws_private_link_scope_id
-}
-
-output "storage_account_id" {
+output "hub_storage_account_id" {
   description = "The ID of the storage account."
   value       = module.hub_st.id
 }
 
-output "storage_account_name" {
+output "hub_storage_account_name" {
   description = "The name of the storage account."
   value       = module.hub_st.name
 }
@@ -201,44 +186,4 @@ output "azure_bastion_public_ip" {
 output "azure_bastion_host_id" {
   description = "The resource ID of the Bastion Host"
   value       = var.enable_bastion_host ? module.hub_bastion_host[0].bastion_resource.id : null
-}
-
-output "management_logging_log_analytics_id" {
-  description = "The resource ID of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_resource_id
-}
-
-output "management_logging_log_analytics_name" {
-  description = "The name of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_name
-}
-
-output "management_logging_log_analytics_resource_group" {
-  description = "The rg of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_rgname
-}
-
-output "management_logging_log_analytics_workspace_id" {
-  description = "The rg of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_workspace_id
-}
-
-output "management_logging_log_analytics_primary_shared_key" {
-  description = "The rg of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_primary_shared_key
-}
-
-output "management_logging_storage_account_id" {
-  description = "The resource ID of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_storage_account_id
-}
-
-output "management_logging_storage_account_name" {
-  description = "The name of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_storage_account_name
-}
-
-output "management_logging_storage_account_resource_group" {
-  description = "The rg of the management logging log analytics workspace"
-  value       = module.mod_ops_logging.laws_storage_account_rgname
 }

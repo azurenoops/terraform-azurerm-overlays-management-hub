@@ -8,12 +8,12 @@ DESCRIPTION: The following components will be options in this deployment
 AUTHOR/S: jrspinella
 */
 
-module "mod_pdz" {
+module "mod_default_pdz" {
   source     = "azurenoops/overlays-private-dns-zone/azurerm"
   version    = "~> 1.0"
   depends_on = [module.mod_dns_rg]
 
-  for_each = toset(local.if_default_private_dns_zones_enabled)
+  for_each = toset(concat(local.if_default_private_dns_zones_enabled, var.private_dns_zones))
 
   # Resource Group
   location                = module.mod_azregions.location_cli

@@ -40,7 +40,7 @@ variable "ops_subscription_id" {
 variable "disable_telemetry" {
   description = "If set to true, will disable the telemetry sent as part of the module."
   type        = string
-  default     = false
+  default     = true
 }
 
 #######################
@@ -63,4 +63,20 @@ variable "existing_resource_group_name" {
   description = "The name of the existing resource group to use. If not set, the name will be generated using the `org_name`, `workload_name`, `deploy_environment` and `environment` variables."
   type        = string
   default     = null
+}
+
+#######################
+# LAW Configuration  ##
+#######################
+
+variable "laws_workspace_name" {
+  description = "Name of the Log Analytics Workspace"
+  type        = string
+  default = null
+}
+
+variable "laws_resource_group_name" {
+  description = "Name of the Log Analytics Workspace Resource Group"
+  type        = string
+  default = null
 }

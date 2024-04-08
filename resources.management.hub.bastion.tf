@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 /*
-SUMMARY: Module Example to deploy an Bastion Host with Jumpboxes to the Hub Virtual Network
+SUMMARY: Module to deploy Azure Bastion Host
 DESCRIPTION: The following components will be options in this deployment
             * Bastion Host with Jumpboxes
 AUTHOR/S: jrspinella

@@ -1,9 +1,13 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-#----------------------------------------------
-# Azure Network Security Group / Rules
-#----------------------------------------------
+/*
+SUMMARY: This module deploys a Network Security Group (NSG) to the specified hub subnets
+DESCRIPTION: The following components will be options in this deployment
+              * Network Watcher
+AUTHOR/S: jrspinella
+*/
+
 resource "azurerm_network_security_group" "nsg" {
   for_each            = var.hub_subnets
   name                = var.hub_nsg_custom_name != null ? format("%s_%s", var.hub_nsg_custom_name, each.key) : data.azurenoopsutils_resource_name.nsg[each.key].result
