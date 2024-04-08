@@ -19,7 +19,7 @@ variable "hub_storage_account_replication_type" {
   default     = "GRS"
 }
 
-variable "storage_bypass_ip_cidr" {
+variable "hub_storage_bypass_ip_cidr" {
   description = "List of IP CIDRs that are allowed to bypass the network rules for the Hub Storage Account. Default is empty."
   type        = list(string)
   default     = []

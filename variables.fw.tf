@@ -134,56 +134,6 @@ variable "firewall_virtual_hub" {
   default = null
 }
 
-variable "firewall_application_rules" {
-  description = "List of application rules to apply to firewall."
-  type = list(object({
-    name             = string
-    description      = optional(string)
-    action           = string
-    source_addresses = optional(list(string))
-    source_ip_groups = optional(list(string))
-    fqdn_tags        = optional(list(string))
-    target_fqdns     = optional(list(string))
-    protocol = optional(object({
-      type = string
-      port = string
-    }))
-  }))
-  default = []
-}
-
-variable "firewall_network_rules" {
-  description = "List of network rules to apply to firewall."
-  type = list(object({
-    name                  = string
-    description           = optional(string)
-    action                = string
-    source_addresses      = optional(list(string))
-    destination_ports     = list(string)
-    destination_addresses = optional(list(string))
-    destination_fqdns     = optional(list(string))
-    protocols             = list(string)
-  }))
-  default = []
-}
-
-variable "firewall_nat_rules" {
-  description = "List of nat rules to apply to firewall."
-  type = list(object({
-    name                  = string
-    description           = optional(string)
-    action                = string
-    source_addresses      = optional(list(string))
-    destination_ports     = list(string)
-    destination_addresses = list(string)
-    protocols             = list(string)
-    translated_address    = string
-    translated_port       = string
-  }))
-  default = []
-}
-
-
 ##################################
 # Firewall PIP Configuration    ##
 ##################################

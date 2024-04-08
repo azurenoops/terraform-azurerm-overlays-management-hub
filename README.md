@@ -6,7 +6,9 @@ This Terraform module deploys a Management Virtual Network Hub Overlay using the
 
 ## Using Azure Clouds
 
-Since this module is built for both public and us government clouds. The `environment` variable defaults to `public` for Azure Cloud. When using this module with the Azure Government Cloud, you must set the `environment` variable to `usgovernment`. You will also need to set the azurerm provider `environment` variable to the proper cloud as well. This will ensure that the correct Azure Government Cloud endpoints are used. You will also need to set the `location` variable to a valid Azure Government Cloud location.
+Since this module is built for both public and us government clouds. The `environment` variable defaults to `public` for Azure Cloud. When using this module with the Azure Government Cloud, you must set the `environment` variable to `usgovernment`.
+
+You will also need to set the azurerm provider `environment` variable to the proper cloud as well. This will ensure that the correct Azure Government Cloud endpoints are used. You will also need to set the `location` variable to a valid Azure Government Cloud location.
 
 Example Usage for Azure Government Cloud:
 
@@ -76,7 +78,9 @@ More details are available in the [CONTRIBUTING.md](./CONTRIBUTING.md#pull-reque
 
 ## Management Hub Overlay Architecture
 
-The following reference architecture shows how to implement a SCCA compliant hub-spoke topology in Azure. The Management Hub Overlay is a virtual network in Azure that acts as a central point of connectivity to an optional on-premises network. The spokes are virtual networks that peer with the Management Hub Overlay and can be used to isolate workloads. Traffic flows between the on-premises datacenter and the hub can be achieved through an ExpressRoute or VPN gateway connection.
+The following reference architecture shows how to implement a SCCA compliant hub-spoke topology in Azure. The Management Hub Overlay is a virtual network in Azure that acts as a central point of connectivity to an optional on-premises network.
+
+The spokes are virtual networks that peer with the Management Hub Overlay and can be used to isolate workloads. Traffic flows between the on-premises datacenter and the hub can be achieved through an ExpressRoute or VPN gateway connection.
 
 AzureFirewallSubnet and GatewaySubnet will not contain any UDR (User Defined Route) or NSG/Rules (Network Security Group). Management and DMZ subnets will route all outgoing traffic through firewall instance.
 
@@ -315,7 +319,9 @@ Both Gateway Subnet and AzureFirewallSubnet allow traffic out and can have publi
 
 Service Endpoints allows connecting certain platform services into virtual networks.  With this option, Azure virtual machines can interact with Azure SQL and Azure Storage accounts, as if they’re part of the same virtual network, rather than Azure virtual machines accessing them over the public endpoint.
 
-This module supports enabling the service endpoint of your choosing under the virtual network and with the specified subnet. The list of Service endpoints to associate with the subnet values include: `Microsoft.AzureActiveDirectory`, `Microsoft.AzureCosmosDB`, `Microsoft.ContainerRegistry`, `Microsoft.EventHub`, `Microsoft.KeyVault`, `Microsoft.ServiceBus`, `Microsoft.Sql`, `Microsoft.Storage` and `Microsoft.Web`.
+This module supports enabling the service endpoint of your choosing under the virtual network and with the specified subnet. The list of Service endpoints to associate with the subnet values includes:
+
+`Microsoft.AzureActiveDirectory`, `Microsoft.AzureCosmosDB`, `Microsoft.ContainerRegistry`, `Microsoft.EventHub`, `Microsoft.KeyVault`, `Microsoft.ServiceBus`, `Microsoft.Sql`, `Microsoft.Storage` and `Microsoft.Web`.
 
 ```hcl
 module "vnet-hub" {
@@ -375,7 +381,9 @@ module "vnet-hub" {
 
 ## `private_endpoint_network_policies_enabled` - Private Link Endpoint on the subnet
 
-Network policies, like network security groups (NSG), are not supported for Private Link Endpoints. In order to deploy a Private Link Endpoint on a given subnet, you must set the `private_endpoint_network_policies_enabled` attribute to `true`. This setting is only applicable for the Private Link Endpoint, for all other resources in the subnet access is controlled based via the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
+Network policies, like network security groups (NSG), are not supported for Private Link Endpoints. In order to deploy a Private Link Endpoint on a given subnet, you must set the `private_endpoint_network_policies_enabled` attribute to `true`.
+
+This setting is only applicable for the Private Link Endpoint, for all other resources in the subnet access is controlled based via the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
 
 This module Enable or Disable network policies for the private link endpoint on the subnet. The default value is `false`. If you are enabling the Private Link Endpoints on the subnet you shouldn't use Private Link Services as it's conflicts.
 
@@ -605,7 +613,9 @@ By default, this module will not create a force tunnel on the firewall. You can 
 
 ## Enable Encrypted Transport Add-On
 
-"The Encrypted Transport Add-on [Encrypted Transport Add-On](https://github.com/azurenoops/ref-scca-encrypted-transport-native-starter) requires modifications to the Firewall in the form of a new Route Table on the AzureFirewallSubnet as well as a new route. If you decide to use the Encrypted Transport Add-on then set the `enable_encrypted_transport` argument to `true`." Addition to enabling Encrypted Transport, you will need to add `encrypted_transport_address_prefix`, `encrypted_transport_next_hop_in_ip_address` and `encrypted_transport_next_hop_type` arguments.
+"The Encrypted Transport Add-on [Encrypted Transport Add-On](https://github.com/azurenoops/ref-scca-encrypted-transport-native-starter) requires modifications to the Firewall in the form of a new Route Table on the AzureFirewallSubnet as well as a new route. If you decide to use the Encrypted Transport Add-on then set the `enable_encrypted_transport` argument to `true`."
+
+Addition to enabling Encrypted Transport, you will need to add `encrypted_transport_address_prefix`, `encrypted_transport_next_hop_in_ip_address` and `encrypted_transport_next_hop_type` arguments.
 
 ```hcl
 module "vnet-hub" {
@@ -639,7 +649,9 @@ If you would like to create a jumpbox VM in the network, you can use the [Azure 
 
 ## Azure Firewall Premium
 
-By default, Management Hub Overlay deploys **[Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features). Not all regions support Azure Firewall Premium.** Check here to [see if the region you're deploying to supports Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features#supported-regions). If necessary you can set a different firewall SKU or location.
+By default, Management Hub Overlay deploys **[Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features). Not all regions support Azure Firewall Premium.**
+
+Check here to [see if the region you're deploying to supports Azure Firewall Premium](https://docs.microsoft.com/en-us/azure/firewall/premium-features#supported-regions). If necessary you can set a different firewall SKU or location.
 
 You can manually specify which SKU of Azure Firewall to use for your deployment by specifying the `firewallSkuTier` parameter. This parameter only accepts values of `Standard` or `Premium`.
 
