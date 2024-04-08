@@ -32,7 +32,17 @@ resource "azurerm_route" "force_internet_tunneling" {
   next_hop_in_ip_address = azurerm_firewall.fw[0].ip_configuration[0].private_ip_address
   next_hop_type          = "VirtualAppliance"
 
-  count = var.enable_forced_tunneling ? 1 : 0
+  count = var.enable_firewall && var.enable_forced_tunneling ? 1 : 0
+}
+
+resource "azurerm_route" "route" {
+  for_each               = var.route_table_routes
+  name                   = lower(format("route-to-firewall-%s", each.value.route_name))
+  resource_group_name    = local.resource_group_name
+  route_table_name       = azurerm_route_table.routetable.name
+  address_prefix         = each.value.address_prefix
+  next_hop_type          = each.value.next_hop_type
+  next_hop_in_ip_address = each.value.next_hop_in_ip_address
 }
 
 # Encrypted Transport Route Table
@@ -51,16 +61,6 @@ resource "azurerm_subnet_route_table_association" "afw_rtassoc" {
   route_table_id = azurerm_route_table.afw_routetable[0].id
 
   count = var.enable_encrypted_transport ? 1 : 0
-}
-
-resource "azurerm_route" "route" {
-  for_each               = var.route_table_routes
-  name                   = lower(format("route-to-firewall-%s", each.value.route_name))
-  resource_group_name    = local.resource_group_name
-  route_table_name       = azurerm_route_table.routetable.name
-  address_prefix         = each.value.address_prefix
-  next_hop_type          = each.value.next_hop_type
-  next_hop_in_ip_address = each.value.next_hop_in_ip_address
 }
 
 resource "azurerm_route" "afw_route" {

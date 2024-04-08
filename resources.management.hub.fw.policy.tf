@@ -49,6 +49,8 @@ module "hub_fw_app_rule_collection_group" {
   source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
   version    = "~> 0.1"
 
+  count = var.enable_firewall ? 1 : 0
+
   firewall_policy_rule_collection_group_name               = format("%s-default-arcg", local.hub_firewall_policy_name)
   firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy[0].resource.id
   firewall_policy_rule_collection_group_priority           = "300"
@@ -62,6 +64,8 @@ module "hub_fw_nat_rule_collection_group" {
   source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
   version    = "~> 0.1"
 
+  count = var.enable_firewall ? 1 : 0
+
   firewall_policy_rule_collection_group_name               = format("%s-default-nrcg", local.hub_firewall_policy_name)
   firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy[0].resource.id
   firewall_policy_rule_collection_group_priority           = "110"
@@ -74,6 +78,8 @@ module "hub_fw_nw_rule_collection_group" {
   depends_on = [module.hub_firewall_policy]
   source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
   version    = "~> 0.1"
+
+  count = var.enable_firewall ? 1 : 0
 
   firewall_policy_rule_collection_group_name               = format("%s-default-nwrcg", local.hub_firewall_policy_name)
   firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy[0].resource.id

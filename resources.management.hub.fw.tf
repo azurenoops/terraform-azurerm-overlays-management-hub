@@ -26,7 +26,7 @@ resource "azurerm_subnet" "firewall_client_snet" {
 # Firewall Management Subnet Creation
 #----------------------------------------------------------
 resource "azurerm_subnet" "firewall_management_snet" {
-  count                                         = (var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? 1 : 0
+  count                                         = (var.enable_firewall && var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? 1 : 0
   name                                          = "AzureFirewallManagementSubnet"
   resource_group_name                           = local.resource_group_name
   virtual_network_name                          = module.hub_vnet.vnet_resource.name
@@ -76,7 +76,7 @@ module "hub_firewall_management_pip" {
   source  = "azure/avm-res-network-publicipaddress/azurerm"
   version = "~> 0.1"
 
-  count               = var.enable_forced_tunneling ? 1 : 0
+  count               = var.enable_firewall && var.enable_forced_tunneling ? 1 : 0
   name                = local.hub_firewall_mgt_pip_name
   resource_group_name = local.resource_group_name
   location            = local.location

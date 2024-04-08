@@ -50,6 +50,8 @@ module "mod_fw_diagnostic_settings" {
   source  = "azurenoops/overlays-diagnostic-settings/azurerm"
   version = "1.0.0"
 
+  count = var.enable_firewall ? 1 : 0
+
   # Resource Group, location, VNet and Subnet details
   location           = var.location
   deploy_environment = var.deploy_environment

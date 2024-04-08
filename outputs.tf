@@ -145,32 +145,32 @@ output "hub_storage_account_name" {
 
 output "public_ip_prefix_id" {
   description = "The id of the Public IP Prefix resource"
-  value       = azurerm_public_ip_prefix.firewall_pref[0].id
+  value       = var.enable_firewall ? azurerm_public_ip_prefix.firewall_pref[0].id : null
 }
 
 output "firewall_client_public_ip" {
   description = "the public ip of firewall."
-  value       = element(concat([for ip in module.hub_firewall_client_pip : ip.public_ip_address], [""]), 0)
+  value       = var.enable_firewall ? element(concat([for ip in module.hub_firewall_client_pip : ip.public_ip_address], [""]), 0) : null
 }
 
 output "firewall_management_public_ip" {
   description = "the public ip of firewall."
-  value       = element(concat([for ip in module.hub_firewall_management_pip : ip.public_ip_address], [""]), 0)
+  value       = var.enable_firewall && var.enable_forced_tunneling ? element(concat([for ip in module.hub_firewall_management_pip : ip.public_ip_address], [""]), 0) : null
 }
 
 output "firewall_private_ip" {
   description = "The private ip of firewall."
-  value       = azurerm_firewall.fw[0].ip_configuration[0].private_ip_address
+  value       = var.enable_firewall ? azurerm_firewall.fw[0].ip_configuration[0].private_ip_address : null
 }
 
 output "firewall_id" {
   description = "The Resource ID of the Azure Firewall."
-  value       = azurerm_firewall.fw[0].id
+  value       = var.enable_firewall ? azurerm_firewall.fw[0].id : null
 }
 
 output "firewall_name" {
   description = "The name of the Azure Firewall."
-  value       = azurerm_firewall.fw[0].name
+  value       = var.enable_firewall ? azurerm_firewall.fw[0].name : null
 }
 
 output "azure_bastion_subnet_id" {
