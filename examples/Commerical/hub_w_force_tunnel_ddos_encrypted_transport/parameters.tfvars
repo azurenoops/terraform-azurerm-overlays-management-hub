@@ -184,11 +184,9 @@ firewall_application_rules = [
 
 # Private DNS Zone Settings
 # By default, Azure NoOps will create Private DNS Zones for Azure Monitor in Hub VNet.
-# To create default Private DNS Zones, set enable_default_private_dns_zones to true.
 # If you do want to create additional Private DNS Zones,
 # add in the list of hub_private_dns_zones to be created.
 # else, remove the hub_private_dns_zones argument.
-enable_default_private_dns_zones = false
 hub_private_dns_zones            = []
 
 # By default, this module will create a bastion host,

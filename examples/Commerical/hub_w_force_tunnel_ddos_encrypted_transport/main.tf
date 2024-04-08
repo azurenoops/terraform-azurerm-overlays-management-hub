@@ -75,11 +75,8 @@ module "mod_vnet_hub" {
   # This is default values, do not need this if keeping default values
   firewall_nat_rule_collection = var.firewall_nat_rules
 
-  # Private DNS Zone Settings
-  # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
-  # If you want to create default Private DNS Zones,
-  # set enable_default_private_dns_zones to true.
-  enable_default_private_dns_zones = var.enable_default_private_dns_zones
+  # (Optional) Private DNS Zone Settings
+  # By default, Azure NoOps will create Private DNS Zones in Hub VNet.
   # If you do want to create additional Private DNS Zones,
   # add in the list of private_dns_zones to be created.
   # else, remove the private_dns_zones argument.
