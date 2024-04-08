@@ -116,12 +116,6 @@ variable "enable_traffic_analytics" {
   default     = false
 }
 
-variable "enable_default_private_dns_zones" {
-  type = bool
-  default = false
-  description = "Enable default Private DNS Zones. Default is false."
-}
-
 variable "hub_private_dns_zones" {
   description = "The private DNS zones of the hub virtual network."
   type        = list(string)

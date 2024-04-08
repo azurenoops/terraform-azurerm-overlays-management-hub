@@ -116,12 +116,6 @@ variable "enable_traffic_analytics" {
   default     = false
 }
 
-variable "enable_default_private_dns_zones" {
-  type = bool
-  default = false
-  description = "Enable default Private DNS Zones. Default is false."
-}
-
 variable "hub_private_dns_zones" {
   description = "The private DNS zones of the hub virtual network."
   type        = any
@@ -138,12 +132,6 @@ variable "fw_management_snet_address_prefixes" {
   description = "The address prefix of the firewall subnet."
   type        = list(string)
   default     = ["10.8.4.128/26"]
-}
-
-variable "gateway_subnet_address_prefixes" {
-  description = "The address prefix of the gateway subnet."
-  type        = list(string)
-  default     = ["10.8.4.0/27"]
 }
 
 variable "firewall_zones" {
