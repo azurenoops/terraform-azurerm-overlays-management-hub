@@ -66,6 +66,8 @@ module "mod_fw_pip_diagnostic_settings" {
   source  = "azurenoops/overlays-diagnostic-settings/azurerm"
   version = "1.0.0"
 
+  count = var.enable_firewall ? 1 : 0
+
   # Resource Group, location, VNet and Subnet details
   location           = var.location
   deploy_environment = var.deploy_environment
@@ -79,6 +81,8 @@ module "mod_fw_pip_diagnostic_settings" {
 module "mod_bastion_diagnostic_settings" {
   source  = "azurenoops/overlays-diagnostic-settings/azurerm"
   version = "1.0.0"
+
+  count = var.enable_bastion_host ? 1 : 0
 
   # Resource Group, location, VNet and Subnet details
   location           = var.location

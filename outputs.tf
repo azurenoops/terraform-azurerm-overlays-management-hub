@@ -45,12 +45,12 @@ output "gateway_subnet_name" {
 
 output "firewall_client_subnet_id" {
   description = "Name of firewall client subnet id"
-  value       = azurerm_subnet.firewall_client_snet[0].id
+  value       = var.enable_firewall ? azurerm_subnet.firewall_client_snet[0].id : null
 }
 
 output "firewall_client_subnet_name" {
   description = "Name of gateway subnet"
-  value       = azurerm_subnet.firewall_client_snet[0].name
+  value       = var.enable_firewall ? azurerm_subnet.firewall_client_snet[0].name : null
 }
 
 output "firewall_management_subnet_id" {
@@ -81,7 +81,7 @@ output "subnet_names" {
 
 output "subnet_address_prefixes" {
   description = "List of address prefix for subnets"
-  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet[0].address_prefixes : null], [azurerm_subnet.firewall_client_snet[0].address_prefixes], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet[0].address_prefixes : null]))
+  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet[0].address_prefixes : null], [(var.enable_firewall) ? azurerm_subnet.firewall_client_snet[0].address_prefixes : null], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet[0].address_prefixes : null]))
 }
 
 # Network Security group ids
