@@ -23,12 +23,6 @@ variable "key_name" {
   default = null
 }
 
-variable "key_version" {
-  type        = string
-  description = "The version of the key in the Key Vault for Customer Managed Key for Hub Storage Account."
-  default = null
-}
-
 variable "user_assigned_identity_id" {
   type        = string
   description = "The ID of the User Assigned Identity to use for Key Vault access for Customer Managed Key for Hub Storage Account."
