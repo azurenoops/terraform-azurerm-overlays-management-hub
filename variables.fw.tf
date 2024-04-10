@@ -7,28 +7,40 @@
 
 variable "enable_firewall" {
   description = "Controls if Azure Firewall resources should be created for the Azure subscription"
+  type        = bool
   default     = true
 }
 
 variable "enable_forced_tunneling" {
   description = "Route all Internet-bound traffic to a designated next hop instead of going directly to the Internet"
+  type        = bool
   default     = true
 }
 
 variable "firewall_subnet_address_prefix" {
   description = "The address prefix to use for the Firewall subnet"
+  type        = list(string)
   default     = []
 }
 
 variable "firewall_management_snet_address_prefix" {
   description = "The address prefix to use for Firewall management subnet to enable forced tunnelling. The Management Subnet used for the Firewall must have the name `AzureFirewallManagementSubnet` and the subnet mask must be at least a `/26`."
+  type        = list(string)
   default     = null
 }
 
 variable "firewall_snet_service_endpoints" {
   description = "Service endpoints to add to the firewall client subnet"
   type        = list(string)
-  default = []
+  default = [
+    "Microsoft.AzureActiveDirectory",
+    "Microsoft.AzureCosmosDB",
+    "Microsoft.EventHub",
+    "Microsoft.KeyVault",
+    "Microsoft.ServiceBus",
+    "Microsoft.Sql",
+    "Microsoft.Storage",
+  ]
 }
 
 variable "firewall_snet_private_endpoint_network_policies_enabled" {
@@ -63,6 +75,7 @@ variable "firewall_management_snet_private_link_service_network_policies_enabled
 
 variable "firewall_intrusion_detection_mode" {
   description = "Controls if Azure Firewall Intrusion Detection System (IDS) should be enabled for the Azure subscription"
+  type        = string
   default     = "Alert"
 
   validation {
@@ -73,6 +86,7 @@ variable "firewall_intrusion_detection_mode" {
 
 variable "firewall_threat_intelligence_mode" {
   description = "Controls if Azure Firewall Threat Intelligence should be enabled for the Azure subscription"
+  type        = string
   default     = "Alert"
 
   validation {
@@ -83,6 +97,7 @@ variable "firewall_threat_intelligence_mode" {
 
 variable "base_policy_id" {
   description = "The ID of the base policy to use for the Azure Firewall. This is used to create a new policy based on the base policy."
+  type        = string
   default     = null
 }
 
@@ -105,11 +120,12 @@ variable "firewall_zones" {
 }
 
 variable "dns_servers" {
-  description = "List of dns servers to use for virtual network"
+  description = "List of dns servers IPs to use for virtual network"
+  type        = list(string)
   default     = []
 }
 
-variable "virtual_hub" {
+variable "firewall_virtual_hub" {
   description = "An Azure Virtual WAN Hub with associated security and routing policies configured by Azure Firewall Manager. Use secured virtual hubs to easily create hub-and-spoke and transitive architectures with native security services for traffic governance and protection."
   type = object({
     virtual_hub_id  = string
@@ -117,56 +133,6 @@ variable "virtual_hub" {
   })
   default = null
 }
-
-variable "firewall_application_rules" {
-  description = "List of application rules to apply to firewall."
-  type = list(object({
-    name             = string
-    description      = optional(string)
-    action           = string
-    source_addresses = optional(list(string))
-    source_ip_groups = optional(list(string))
-    fqdn_tags        = optional(list(string))
-    target_fqdns     = optional(list(string))
-    protocol = optional(object({
-      type = string
-      port = string
-    }))
-  }))
-  default = []
-}
-
-variable "firewall_network_rules" {
-  description = "List of network rules to apply to firewall."
-  type = list(object({
-    name                  = string
-    description           = optional(string)
-    action                = string
-    source_addresses      = optional(list(string))
-    destination_ports     = list(string)
-    destination_addresses = optional(list(string))
-    destination_fqdns     = optional(list(string))
-    protocols             = list(string)
-  }))
-  default = []
-}
-
-variable "firewall_nat_rules" {
-  description = "List of nat rules to apply to firewall."
-  type = list(object({
-    name                  = string
-    description           = optional(string)
-    action                = string
-    source_addresses      = optional(list(string))
-    destination_ports     = list(string)
-    destination_addresses = list(string)
-    protocols             = list(string)
-    translated_address    = string
-    translated_port       = string
-  }))
-  default = []
-}
-
 
 ##################################
 # Firewall PIP Configuration    ##

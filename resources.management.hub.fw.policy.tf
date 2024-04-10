@@ -2,118 +2,89 @@
 # Licensed under the MIT License.
 
 /*
-SUMMARY: Module to deploy a firewall policy in the Hub Network based on the Azure Mission Landing Zone conceptual architecture
+SUMMARY: Module to deploy an Azure Firewall Policy with optional rule collections
 DESCRIPTION: The following components will be options in this deployment
-              * Firewall Policy 
+              * Firewall Policy
                   * Application Rule Collection Group
                     * Application Rule Collection
                         * Application Rule
                     * Network Rule Collection Group
                     * Network Rule Collection
-                        * Network Rule             
+                        * Network Rule
 AUTHOR/S: jrspinella
 */
 
 #----------------------------------------------
-# Azure Firewall Policy / Rules 
+# Azure Firewall Policy / Rules
 #----------------------------------------------
-resource "azurerm_firewall_policy" "firewallpolicy" {
-  name                     = local.hub_firewall_policy_name
-  resource_group_name      = local.resource_group_name
-  location                 = local.location
-  sku                      = var.firewall_sku_tier
-  base_policy_id           = var.base_policy_id == null ? null : var.base_policy_id
-  threat_intelligence_mode = var.firewall_threat_intelligence_mode
-  dynamic "intrusion_detection" {
-    for_each = var.firewall_sku_tier == "Premium" ? [1] : []
-    content {
-      mode = var.firewall_intrusion_detection_mode
-    }
-  }
+module "hub_firewall_policy" {
+  source  = "azure/avm-res-network-firewallpolicy/azurerm"
+  version = "~> 0.1"
+  count   = var.enable_firewall ? 1 : 0
+
+  # Resource Group
+  name                                     = local.hub_firewall_policy_name
+  resource_group_name                      = local.resource_group_name
+  location                                 = local.location
+  firewall_policy_sku                      = var.firewall_sku_tier
+  firewall_policy_base_policy_id           = var.base_policy_id == null ? null : var.base_policy_id
+  firewall_policy_threat_intelligence_mode = var.firewall_threat_intelligence_mode
+
+  firewall_policy_intrusion_detection = var.firewall_sku_tier == "Premium" ? {
+    mode = var.firewall_intrusion_detection_mode
+  } : null
+
+  # Resource Lock
+  lock = var.enable_resource_locks ? {
+    name = format("%s-%s-lock", local.hub_firewall_policy_name, var.lock_level)
+    kind = var.lock_level
+  } : null
+
+  # telemtry
+  enable_telemetry = var.disable_telemetry
 }
 
-resource "azurerm_firewall_policy_rule_collection_group" "app_rule_collection_group" {
-  name               = "${local.hub_firewall_policy_name}-default-arcg"
-  firewall_policy_id = azurerm_firewall_policy.firewallpolicy.id
-  priority           = "300"
+module "hub_fw_app_rule_collection_group" {
+  depends_on = [module.hub_firewall_policy]
+  source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
+  version    = "~> 0.1"
 
-  dynamic "application_rule_collection" {
-    for_each = var.firewall_application_rule_collection
-    content {
-      name     = application_rule_collection.value.name
-      priority = application_rule_collection.value.priority
-      action   = application_rule_collection.value.action
+  count = var.enable_firewall ? 1 : 0
 
-      dynamic "rule" {
-        for_each = application_rule_collection.value.rules
-        content {
-          name = rule.value.name
-          protocols {
-            type = rule.value.protocols.type
-            port = rule.value.protocols.port
-          }                                                                         # list  
-          source_addresses      = lookup(rule.value, "source_addresses", null)      # list
-          source_ip_groups      = lookup(rule.value, "source_ip_groups", null)      # list Specifies a list of source IP groups.
-          destination_addresses = lookup(rule.value, "destination_addresses", null) # list - ["192.168.1.1", "192.168.1.2"]
-          destination_fqdns     = lookup(rule.value, "destination_fqdns", null)     # list of destination IP groups.
-        }
-      }
-    }
-  }
+  firewall_policy_rule_collection_group_name               = format("%s-default-arcg", local.hub_firewall_policy_name)
+  firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy[0].resource.id
+  firewall_policy_rule_collection_group_priority           = "300"
+
+  # Rule Collections
+  firewall_policy_rule_collection_group_application_rule_collection = var.firewall_application_rule_collection
 }
 
-resource "azurerm_firewall_policy_rule_collection_group" "nw_rule_collection_group" {
-  name               = "${local.hub_firewall_policy_name}-default-nwrcg"
-  firewall_policy_id = azurerm_firewall_policy.firewallpolicy.id
-  priority           = "100"
+module "hub_fw_nat_rule_collection_group" {
+  depends_on = [module.hub_firewall_policy]
+  source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
+  version    = "~> 0.1"
 
-  dynamic "network_rule_collection" {
-    for_each = var.firewall_network_rules_collection
-    content {
-      name     = network_rule_collection.value.name
-      priority = network_rule_collection.value.priority
-      action   = network_rule_collection.value.action
+  count = var.enable_firewall ? 1 : 0
 
-      dynamic "rule" {
-        for_each = network_rule_collection.value.rules
-        content {
-          name                  = rule.value.name
-          protocols             = rule.value.protocols                              # list
-          source_addresses      = lookup(rule.value, "source_addresses", null)      # list
-          source_ip_groups      = lookup(rule.value, "source_ip_groups", null)      # list Specifies a list of source IP groups.
-          destination_addresses = lookup(rule.value, "destination_addresses", null) # list - ["192.168.1.1", "192.168.1.2"]
-          destination_ip_groups = lookup(rule.value, "destination_ip_groups", null) # list of destination IP groups.
-          destination_ports     = lookup(rule.value, "destination_ports", null)     # list of destination ports.
-        }
-      }
-    }
-  }
+  firewall_policy_rule_collection_group_name               = format("%s-default-nrcg", local.hub_firewall_policy_name)
+  firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy[0].resource.id
+  firewall_policy_rule_collection_group_priority           = "110"
+
+  # Rule Collections
+  firewall_policy_rule_collection_group_nat_rule_collection = var.firewall_nat_rule_collection
 }
 
-resource "azurerm_firewall_policy_rule_collection_group" "nat_rule_collection_group" {
-  name               = "${local.hub_firewall_policy_name}-default-natrcg"
-  firewall_policy_id = azurerm_firewall_policy.firewallpolicy.id
-  priority           = "110"
+module "hub_fw_nw_rule_collection_group" {
+  depends_on = [module.hub_firewall_policy]
+  source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
+  version    = "~> 0.1"
 
-  dynamic "nat_rule_collection" {
-    for_each = var.firewall_nat_rule_collections
-    content {
-      name     = nat_rule_collection.value.name
-      priority = nat_rule_collection.value.priority
-      action   = nat_rule_collection.value.action
+  count = var.enable_firewall ? 1 : 0
 
-      dynamic "rule" {
-        for_each = nat_rule_collection.value.rules
-        content {
-          name                = rule.value.name
-          protocols           = rule.value.protocols                            # list
-          destination_ports   = rule.value.destination_ports                    # list - Required
-          source_addresses    = lookup(rule.value, "source_addresses", null)    # list
-          source_ip_groups    = lookup(rule.value, "source_ip_groups", null)    # list Specifies a list of source IP groups.
-          destination_address = lookup(rule.value, "destination_address", null) # string - "192.168.1.1"
-          translated_port     = lookup(rule.value, "translated_port", null)     # string - "8080"
-        }
-      }
-    }
-  }
+  firewall_policy_rule_collection_group_name               = format("%s-default-nwrcg", local.hub_firewall_policy_name)
+  firewall_policy_rule_collection_group_firewall_policy_id = module.hub_firewall_policy[0].resource.id
+  firewall_policy_rule_collection_group_priority           = "100"
+
+  # Rule Collections
+  firewall_policy_rule_collection_group_network_rule_collection = var.firewall_network_rules_collection
 }

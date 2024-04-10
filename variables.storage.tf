@@ -3,8 +3,8 @@
 
 variable "hub_storage_account_kind" {
   description = "The Kind of storage account to create. Valid options are Storage, StorageV2, BlobStorage, FileStorage, BlockBlobStorage. Default is StorageV2."
-  type         = string
-  default      = "StorageV2"
+  type        = string
+  default     = "StorageV2"
 }
 
 variable "hub_storage_account_tier" {
@@ -17,4 +17,10 @@ variable "hub_storage_account_replication_type" {
   description = "The Replication Type of storage account to create. Valid options are LRS, GRS, RAGRS, ZRS, GZRS, RAGZRS. Default is LRS."
   type        = string
   default     = "GRS"
+}
+
+variable "hub_storage_bypass_ip_cidr" {
+  description = "List of IP CIDRs that are allowed to bypass the network rules for the Hub Storage Account. Default is empty."
+  type        = list(string)
+  default     = []
 }
