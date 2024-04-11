@@ -133,6 +133,11 @@ output "route_table_id" {
   value       = azurerm_route_table.routetable.id
 }
 
+output "private_dns_zone_resource_group_name" {
+  description = "The name of the Private DNS zones resource group within Azure DNS"
+  value       = module.mod_dns_rg.resource_group_name
+}
+
 output "private_dns_zone_names" {
   description = "The name of the Private DNS zones within Azure DNS"
   value       = [for s in module.mod_pdz : s.private_dns_zone_name]
