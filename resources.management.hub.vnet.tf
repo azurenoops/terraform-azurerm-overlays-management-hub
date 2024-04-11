@@ -2,44 +2,69 @@
 # Licensed under the MIT License.
 
 /*
-SUMMARY: Terraform Module to deploy the Hub Network based on the Azure Mission Landing Zone conceptual architecture
+SUMMARY: This module will deploy a Hub Virtual Network in Azure.
 DESCRIPTION: The following components will be options in this deployment
-              * Hub Network Virtual Network    
+              * Hub Network Virtual Network
               * Ddos Protection Plan
-              * Network Watcher         
+              * Network Watcher
 AUTHOR/S: jrspinella
 */
 
-#-------------------------------------
-# VNET Creation - Default is "true"
-#-------------------------------------
-resource "azurerm_virtual_network" "hub_vnet" {
+module "hub_vnet" {
+  source  = "azure/avm-res-network-virtualnetwork/azurerm"
+  version = "~> 0.1"
+
+  # Resource Group
   name                = local.hub_vnet_name
   resource_group_name = local.resource_group_name
   location            = local.location
-  address_space       = var.virtual_network_address_space
-  dns_servers         = var.dns_servers
-  tags                = merge({ "ResourceName" = format("%s", local.hub_vnet_name) }, local.default_tags, var.add_tags, )
 
-  dynamic "ddos_protection_plan" {
-    for_each = local.if_ddos_enabled
-
-    content {
-      id     = azurerm_network_ddos_protection_plan.ddos[0].id
-      enable = true
-    }
+  # Virtual Network DNS Servers
+  virtual_network_dns_servers = {
+    dns_servers = var.dns_servers
   }
+
+  # Virtual Network Address Space
+  virtual_network_address_space = var.virtual_network_address_space
+
+  # Ddos protection plan - Default is "false"
+  virtual_network_ddos_protection_plan = var.create_ddos_plan ? {
+    enable = true
+    id     = module.hub_vnet_ddos[0].resource.id
+  } : null
+
+  # Resource Lock
+  lock = var.enable_resource_locks ? {
+    name = "${local.hub_vnet_name}-${var.lock_level}-lock"
+    kind = var.lock_level
+  } : null
+
+  # telemtry
+  enable_telemetry = var.disable_telemetry
+
+  tags = merge({ "ResourceName" = format("%s", local.hub_vnet_name) }, local.default_tags, var.add_tags, )
 }
 
 #--------------------------------------------
 # Ddos protection plan - Default is "false"
 #--------------------------------------------
-
-resource "azurerm_network_ddos_protection_plan" "ddos" {
+module "hub_vnet_ddos" {
+  source              = "azure/avm-res-network-ddosprotectionplan/azurerm"
+  version             = "~> 0.1"
   count               = var.create_ddos_plan ? 1 : 0
   name                = local.ddos_plan_name
   resource_group_name = local.resource_group_name
   location            = local.location
-  tags                = merge({ "ResourceName" = format("%s", local.ddos_plan_name) }, local.default_tags, var.add_tags, )
+
+  # Resource Lock
+  lock = var.enable_resource_locks ? {
+    name = "${local.ddos_plan_name}-${var.lock_level}-lock"
+    kind = var.lock_level
+  } : null
+
+  # telemtry
+  enable_telemetry = var.disable_telemetry
+
+  tags = merge({ "ResourceName" = format("%s", local.ddos_plan_name) }, local.default_tags, var.add_tags, )
 }
 

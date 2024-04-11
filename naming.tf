@@ -41,7 +41,7 @@ data "azurenoopsutils_resource_name" "snet" {
   name          = var.workload_name
   resource_type = "azurerm_subnet"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
-  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, each.key, local.name_suffix, var.use_naming ? "" : "snet"])
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, each.value.name, local.name_suffix, var.use_naming ? "" : "snet"])
   use_slug      = var.use_naming
   clean_input   = true
   separator     = "-"
@@ -51,7 +51,7 @@ data "azurenoopsutils_resource_name" "firewall_client_pub_ip" {
   name          = var.workload_name
   resource_type = "azurerm_public_ip"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
-  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, local.name_suffix, "fw-client", var.use_naming ? "" : "pip"])
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, local.name_suffix, "clt", var.use_naming ? "" : "pip"])
   use_slug      = var.use_naming
   clean_input   = true
   separator     = "-"
@@ -61,7 +61,7 @@ data "azurenoopsutils_resource_name" "firewall_mgt_pub_ip" {
   name          = var.workload_name
   resource_type = "azurerm_public_ip"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
-  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, local.name_suffix, "fw-management", var.use_naming ? "" : "pip"])
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, local.name_suffix, "mgt", var.use_naming ? "" : "pip"])
   use_slug      = var.use_naming
   clean_input   = true
   separator     = "-"
@@ -72,7 +72,7 @@ data "azurenoopsutils_resource_name" "nsg" {
   name          = var.workload_name
   resource_type = "azurerm_network_security_group"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
-  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, each.key, local.name_suffix, var.use_naming ? "" : "nsg"])
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, each.value.name, local.name_suffix, var.use_naming ? "" : "nsg"])
   use_slug      = var.use_naming
   clean_input   = true
   separator     = "-"
@@ -135,3 +135,34 @@ data "azurenoopsutils_resource_name" "ddos" {
   clean_input   = true
   separator     = "-"
 }
+
+data "azurenoopsutils_resource_name" "pe" {
+  name          = var.workload_name
+  resource_type = "azurerm_private_endpoint"
+  prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, local.name_suffix, var.use_naming ? "" : "pe"])
+  use_slug      = var.use_naming
+  clean_input   = true
+  separator     = "-"
+}
+
+data "azurenoopsutils_resource_name" "psc" {
+  name          = var.workload_name
+  resource_type = "azurerm_private_service_connection"
+  prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, local.name_suffix, var.use_naming ? "" : "psc"])
+  use_slug      = var.use_naming
+  clean_input   = true
+  separator     = "-"
+}
+
+data "azurenoopsutils_resource_name" "nic" {
+  name          = var.workload_name
+  resource_type = "azurerm_network_interface"
+  prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, local.name_suffix, var.use_naming ? "" : "nic"])
+  use_slug      = var.use_naming
+  clean_input   = true
+  separator     = "-"
+}
+

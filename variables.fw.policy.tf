@@ -6,114 +6,135 @@
 #####################################
 
 variable "firewall_application_rule_collection" {
-  default     = {}
-  description = <<EOD
-    application_rule_collection = [
-        {
-            name     = "default_app_rules"
-            priority = 500
-            action   = "Allow"
-            rules = [
-                {
-                    name              = "default_app_rules_rule1"
-                    source_addresses  = ["10.0.0.0/24"]
-                    destination_fqdns = ["www.google.co.uk"]
-                    protocols         = [
-                        {
-                            type = "http"
-                            port = 80
-                        },
-                        {
-                            type = "https"
-                            port = 443
-                        }
-                    ]
-                },
-                {
-                    name                  = "default_app_rules_rule2"
-                    source_addresses      = ["10.0.0.0/24"]
-                    destination_fqdn_tags = ["Windows Update"]
-                    protocols             = [
-                        {
-                            type = "https"
-                            port = 443
-                        },
-                        {
-                            type = "http"
-                            port = 80
-                        },
-                    ]
-                }
-            ]
-        },
-        {
-            name     = "ASE_app_rules"
-            priority = 600
-            action   = "Allow"
-            rules = [
-                {
-                    name                  = "ASE_app_rules_rule1"
-                    source_addresses      = ["10.0.0.0/24"]
-                    destination_fqdn_tags = ["App Service Environment (ASE)"]
-                    protocols             = [
-                        {
-                            type = "https"
-                            port = 443
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-EOD
+  type = list(object({
+    action   = string
+    name     = string
+    priority = number
+    rule = list(object({
+      description           = optional(string)
+      destination_addresses = optional(list(string))
+      destination_fqdn_tags = optional(list(string))
+      destination_fqdns     = optional(list(string))
+      destination_urls      = optional(list(string))
+      name                  = string
+      source_addresses      = optional(list(string))
+      source_ip_groups      = optional(list(string))
+      terminate_tls         = optional(bool)
+      web_categories        = optional(list(string))
+      http_headers = optional(list(object({
+        name  = string
+        value = string
+      })))
+      protocols = optional(list(object({
+        port = number
+        type = string
+      })))
+    }))
+  }))
+  default     = null
+  description = <<-EOT
+ - `action` - (Required) The action to take for the application rules in this collection. Possible values are `Allow` and `Deny`.
+ - `name` - (Required) The name which should be used for this application rule collection.
+ - `priority` - (Required) The priority of the application rule collection. The range is `100`
+
+ ---
+ `rule` block supports the following:
+ - `description` -
+ - `destination_addresses` -
+ - `destination_fqdn_tags` -
+ - `destination_fqdns` -
+ - `destination_urls` -
+ - `name` - (Required) The name which should be used for this Firewall Policy Rule Collection Group. Changing this forces a new Firewall Policy Rule Collection Group to be created.
+ - `source_addresses` -
+ - `source_ip_groups` -
+ - `terminate_tls` -
+ - `web_categories` -
+
+ ---
+ `http_headers` block supports the following:
+ - `name` - (Required) Specifies the name of the header.
+ - `value` - (Required) Specifies the value of the value.
+
+ ---
+ `protocols` block supports the following:
+ - `port` - (Required) Port number of the protocol. Range is 0-64000.
+ - `type` - (Required) Protocol type. Possible values are `Http` and `Https`.
+EOT
 }
 
 
 variable "firewall_network_rules_collection" {
-  default     = {}
-  description = <<EOD
-    network_rule_collections = [
-        {
-            name = "default_network_rules"
-            priority = "500"
-            action = "Allow"
-            rules = [
-                {
-                    name                  = "default_network_rules_AllowRDP" 
-                    protocols             = ["TCP"]
-                    source_addresses      = ["10.0.0.1"]
-                    destination_addresses = ["192.168.0.21"]
-                    destination_ports     = ["3389"]
-                },
-                {
-                    name                  = "default_network_rules_AllowSSH" 
-                    protocols             = ["TCP"]
-                    source_addresses      = ["10.0.0.1"]
-                    destination_addresses = ["192.168.0.22"]
-                    destination_ports     = ["22"]
-                }
-            ]
-        }
-    ]
-EOD
+  type = list(object({
+    action   = string
+    name     = string
+    priority = number
+    rule = list(object({
+      description           = optional(string)
+      destination_addresses = optional(list(string))
+      destination_fqdns     = optional(list(string))
+      destination_ip_groups = optional(list(string))
+      destination_ports     = list(string)
+      name                  = string
+      protocols             = list(string)
+      source_addresses      = optional(list(string))
+      source_ip_groups      = optional(list(string))
+    }))
+  }))
+  default     = null
+  description = <<-EOT
+ - `action` - (Required) The action to take for the network rules in this collection. Possible values are `Allow` and `Deny`.
+ - `name` - (Required) The name which should be used for this network rule collection.
+ - `priority` - (Required) The priority of the network rule collection. The range is `100`
+
+ ---
+ `rule` block supports the following:
+ - `description` -
+ - `destination_addresses` -
+ - `destination_fqdns` -
+ - `destination_ip_groups` -
+ - `destination_ports` -
+ - `name` - (Required) The name which should be used for this Firewall Policy Rule Collection Group. Changing this forces a new Firewall Policy Rule Collection Group to be created.
+ - `protocols` -
+ - `source_addresses` -
+ - `source_ip_groups` -
+EOT
 }
 
-variable "firewall_nat_rule_collections" {
-  default     = {}
-  description = <<EOD
-    name     = nat_rule_collection1
-    priority = "300"
-    action   = "Dnat"     # Only 'Dnat' is possible
-    rules    = [
-        {
-            name                = "nat_rule_collection1_rule1"
-            protocols           = ["TCP"]
-            source_addresses    = ["10.0.0.1", "10.0.0.2"]
-            destination_address = "192.168.1.1"
-            destination_ports   = ["80"]
-            translated_address  = "192.168.0.1"
-            translated_port     = "8080"
-        }
-    ]
-EOD
+variable "firewall_nat_rule_collection" {
+  type = list(object({
+    action   = string
+    name     = string
+    priority = number
+    rule = list(object({
+      description         = optional(string)
+      destination_address = optional(string)
+      destination_ports   = optional(list(string))
+      name                = string
+      protocols           = list(string)
+      source_addresses    = optional(list(string))
+      source_ip_groups    = optional(list(string))
+      translated_address  = optional(string)
+      translated_fqdn     = optional(string)
+      translated_port     = number
+    }))
+  }))
+  default     = null
+  description = <<-EOT
+ - `action` - (Required) The action to take for the NAT rules in this collection. Currently, the only possible value is `Dnat`.
+ - `name` - (Required) The name which should be used for this NAT rule collection.
+ - `priority` - (Required) The priority of the NAT rule collection. The range is `100`
+
+ ---
+ `rule` block supports the following:
+ - `description` -
+ - `destination_address` -
+ - `destination_ports` -
+ - `name` - (Required) The name which should be used for this Firewall Policy Rule Collection Group. Changing this forces a new Firewall Policy Rule Collection Group to be created.
+ - `protocols` -
+ - `source_addresses` -
+ - `source_ip_groups` -
+ - `translated_address` -
+ - `translated_fqdn` -
+ - `translated_port` -
+EOT
 }
