@@ -106,6 +106,7 @@ resource "azurerm_firewall" "fw" {
   location            = local.location
   sku_name            = var.firewall_sku_name
   sku_tier            = var.firewall_sku_tier
+  dns_servers         = var.dns_servers != null ? var.dns_servers : null
   firewall_policy_id  = module.hub_firewall_policy[0].resource.id
   threat_intel_mode   = var.firewall_threat_intelligence_mode
   zones               = var.firewall_zones != null ? var.firewall_zones : null
