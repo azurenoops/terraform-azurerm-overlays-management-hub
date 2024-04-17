@@ -103,6 +103,10 @@ enable_forced_tunneling = true
 #following regions: usgovvirginia, usgovtexas, usgovarizona
 firewall_zones = []
 
+# DNS Settings for Azure Firewall
+enable_dns_proxy = true
+dns_servers = [ "168.63.129.16" ] # Azure DNS
+
 # # (Optional) specify the Network rules for Azure Firewall l
 # This is default values, do not need this if keeping default values
 firewall_network_rules = [

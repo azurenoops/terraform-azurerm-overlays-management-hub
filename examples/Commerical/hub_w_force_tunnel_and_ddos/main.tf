@@ -78,6 +78,11 @@ module "mod_vnet_hub" {
   # This is default values, do not need this if keeping default values
   firewall_nat_rule_collection = var.firewall_nat_rules
 
+  # DNS Servers for Firewall
+  # By default, Azure NoOps will use Azure DNS for Azure Firewall DNS settings.
+  # If you want to use custom DNS settings, set the argument to `enable_custom_dns_settings = true`.
+  dns_servers = var.enable_dns_proxy ? var.dns_servers : []
+
   # (Optional) Private DNS Zone Settings
   # By default, Azure NoOps will create Private DNS Zones in Hub VNet.
   # If you do want to create additional Private DNS Zones,
@@ -90,6 +95,10 @@ module "mod_vnet_hub" {
   enable_bastion_host                 = var.enable_bastion_host
   azure_bastion_host_sku              = var.azure_bastion_host_sku
   azure_bastion_subnet_address_prefix = var.azure_bastion_subnet_address_prefix
+
+   # CIDRs for Azure Storage Account
+  # This will allow the specified CIDRs to bypass the Azure Firewall for Azure Storage Account.
+  hub_storage_bypass_ip_cidr = var.hub_storage_bypass_ip_cidr
 
   # (Optional) By default, this will apply resource locks to all resources created by this module.
   # To disable resource locks, set the argument to `enable_resource_locks = false`.

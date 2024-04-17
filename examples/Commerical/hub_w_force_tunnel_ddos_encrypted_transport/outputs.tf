@@ -135,3 +135,8 @@ output "firewall_name" {
   description = "The name of the Azure Firewall."
   value       = module.mod_vnet_hub.firewall_name
 }
+
+output "firewall_dns_servers" {
+  description = "The DNS servers of the Azure Firewall."
+  value       = module.mod_vnet_hub.firewall_dns_servers
+}
