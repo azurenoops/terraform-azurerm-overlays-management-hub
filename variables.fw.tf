@@ -108,9 +108,9 @@ variable "firewall_sku_name" {
 }
 
 variable "firewall_sku_tier" {
-  description = "SKU tier of the Firewall. Possible values are `Premium`, `Standard` and `Basic`"
+  description = "SKU tier of the Firewall. Defaults to 'Premium', Possible values are `Premium`, `Standard` and `Basic`"
   type        = string
-  default     = "Standard"
+  default     = "Premium"
 }
 
 variable "firewall_zones" {
@@ -119,10 +119,16 @@ variable "firewall_zones" {
   default     = null
 }
 
+variable "enable_dns_proxy" {
+  description = "Controls if DNS Proxy should be enabled for the Azure subscription"
+  type        = bool
+  default     = false
+}
+
 variable "dns_servers" {
   description = "List of dns servers IPs to use for virtual network"
   type        = list(string)
-  default     = []
+  default     = null
 }
 
 variable "firewall_virtual_hub" {
