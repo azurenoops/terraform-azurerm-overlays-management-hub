@@ -125,7 +125,7 @@ output "route_table_id" {
 
 output "private_dns_zone_resource_group_name" {
   description = "The name of the Private DNS zones resource group within Azure DNS"
-  value       = module.mod_dns_rg.resource_group_name
+  value       = module.mod_dns_rg[0].resource_group_name
 }
 
 output "private_dns_zone_names" {
@@ -178,6 +178,11 @@ output "firewall_name" {
   value       = var.enable_firewall ? azurerm_firewall.fw[0].name : null
 }
 
+output "firewall_dns_servers" {
+  description = "The name of the Azure Firewall."
+  value       = var.enable_firewall && var.enable_dns_proxy ? var.dns_servers : null
+}
+
 output "azure_bastion_subnet_id" {
   description = "The resource ID of Azure bastion subnet"
   value       = var.enable_bastion_host ? element(concat([azurerm_subnet.abs_snet[0].id], [""]), 0) : null
@@ -191,4 +196,9 @@ output "azure_bastion_public_ip" {
 output "azure_bastion_host_id" {
   description = "The resource ID of the Bastion Host"
   value       = var.enable_bastion_host ? module.hub_bastion_host[0].bastion_resource.id : null
+}
+
+output "azure_bastion_host_fqdn" {
+  description = "The resource ID of the Bastion Host"
+  value       = var.enable_bastion_host ? module.hub_bastion_host[0].bastion_resource.dns_name : null
 }
