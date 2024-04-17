@@ -50,7 +50,7 @@ resource "azurerm_public_ip_prefix" "firewall_pref" {
 
 module "hub_firewall_client_pip" {
   source  = "azure/avm-res-network-publicipaddress/azurerm"
-  version = "~> 0.1"
+  version = "0.1.0"
 
   count               = var.enable_firewall ? 1 : 0
   name                = local.hub_firewall_client_pip_name
@@ -74,7 +74,7 @@ module "hub_firewall_client_pip" {
 
 module "hub_firewall_management_pip" {
   source  = "azure/avm-res-network-publicipaddress/azurerm"
-  version = "~> 0.1"
+  version = "0.1.0"
 
   count               = var.enable_firewall && var.enable_forced_tunneling ? 1 : 0
   name                = local.hub_firewall_mgt_pip_name
@@ -106,10 +106,9 @@ resource "azurerm_firewall" "fw" {
   location            = local.location
   sku_name            = var.firewall_sku_name
   sku_tier            = var.firewall_sku_tier
-  dns_servers         = var.dns_servers != null ? var.dns_servers : null
   firewall_policy_id  = module.hub_firewall_policy[0].resource.id
   threat_intel_mode   = var.firewall_threat_intelligence_mode
-  zones               = var.firewall_zones != null ? var.firewall_zones : null
+  zones               = var.firewall_zones
   tags                = merge({ "ResourceName" = format("%s", local.hub_firewall_name) }, local.default_tags, var.add_tags, )
 
   ip_configuration {

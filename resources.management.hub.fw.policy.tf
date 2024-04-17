@@ -19,7 +19,7 @@ AUTHOR/S: jrspinella
 #----------------------------------------------
 module "hub_firewall_policy" {
   source  = "azure/avm-res-network-firewallpolicy/azurerm"
-  version = "~> 0.1"
+  version = "0.1.1"
   count   = var.enable_firewall ? 1 : 0
 
   # Resource Group
@@ -29,6 +29,10 @@ module "hub_firewall_policy" {
   firewall_policy_sku                      = var.firewall_sku_tier
   firewall_policy_base_policy_id           = var.base_policy_id == null ? null : var.base_policy_id
   firewall_policy_threat_intelligence_mode = var.firewall_threat_intelligence_mode
+  firewall_policy_dns = var.firewall_sku_tier == "Premium" || var.firewall_sku_tier == "Standard" ? {
+    proxy_enabled = var.enable_dns_proxy
+    servers       = var.dns_servers
+  } : null
 
   firewall_policy_intrusion_detection = var.firewall_sku_tier == "Premium" ? {
     mode = var.firewall_intrusion_detection_mode
@@ -47,7 +51,7 @@ module "hub_firewall_policy" {
 module "hub_fw_app_rule_collection_group" {
   depends_on = [module.hub_firewall_policy]
   source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
-  version    = "~> 0.1"
+  version    = "0.1.1"
 
   count = var.enable_firewall ? 1 : 0
 
@@ -62,7 +66,7 @@ module "hub_fw_app_rule_collection_group" {
 module "hub_fw_nat_rule_collection_group" {
   depends_on = [module.hub_firewall_policy]
   source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
-  version    = "~> 0.1"
+  version    = "0.1.1"
 
   count = var.enable_firewall ? 1 : 0
 
@@ -77,7 +81,7 @@ module "hub_fw_nat_rule_collection_group" {
 module "hub_fw_nw_rule_collection_group" {
   depends_on = [module.hub_firewall_policy]
   source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
-  version    = "~> 0.1"
+  version    = "0.1.1"
 
   count = var.enable_firewall ? 1 : 0
 
