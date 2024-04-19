@@ -7,7 +7,7 @@
 module "hub_st" {
   depends_on                    = [module.mod_scaffold_rg, module.mod_dns_rg]
   source                        = "azure/avm-res-storage-storageaccount/azurerm"
-  version                       = "~> 0.1"
+  version                       = "0.1.1"
   resource_group_name           = local.resource_group_name
   name                          = local.hub_sa_name
   location                      = local.location
@@ -34,8 +34,8 @@ module "hub_st" {
       # these are optional but illustrate making well-aligned service connection & NIC names.
       private_service_connection_name = local.psc_name
       network_interface_name          = local.nic_name
-      inherit_tags                    = false
-      inherit_lock                    = false
+      inherit_tags                    = true
+      inherit_lock                    = true
     }
   }
 

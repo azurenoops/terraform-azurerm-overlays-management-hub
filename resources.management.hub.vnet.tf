@@ -12,7 +12,7 @@ AUTHOR/S: jrspinella
 
 module "hub_vnet" {
   source  = "azure/avm-res-network-virtualnetwork/azurerm"
-  version = "~> 0.1"
+  version = "0.1.4"
 
   # Resource Group
   name                = local.hub_vnet_name
@@ -50,7 +50,7 @@ module "hub_vnet" {
 #--------------------------------------------
 module "hub_vnet_ddos" {
   source              = "azure/avm-res-network-ddosprotectionplan/azurerm"
-  version             = "~> 0.1"
+  version             = "0.2.0"
   count               = var.create_ddos_plan ? 1 : 0
   name                = local.ddos_plan_name
   resource_group_name = local.resource_group_name

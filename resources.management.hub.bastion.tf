@@ -38,7 +38,7 @@ resource "azurerm_subnet" "abs_snet" {
 #---------------------------------------------
 module "hub_bastion_pip" {
   source  = "azure/avm-res-network-publicipaddress/azurerm"
-  version = "~> 0.1"
+  version = "0.1.0"
 
   count               = var.enable_bastion_host ? 1 : 0
   name                = local.bastion_pip_name
@@ -46,7 +46,7 @@ module "hub_bastion_pip" {
   location            = local.location
   allocation_method   = var.azure_bastion_public_ip_allocation_method
   sku                 = var.azure_bastion_public_ip_sku
-  domain_name_label   = var.domain_name_label != null ? var.domain_name_label : format("gw%s%s", lower(replace(local.bastion_pip_name, "/[[:^alnum:]]/", "")), random_string.str.result)
+  domain_name_label   = var.domain_name_label != null ? var.domain_name_label : format("%s%s", lower(replace(local.bastion_pip_name, "/[[:^alnum:]]/", "")), random_string.str.result)
 
   # Resource Lock
   lock = var.enable_resource_locks ? {
@@ -66,7 +66,7 @@ module "hub_bastion_pip" {
 #---------------------------------------------
 module "hub_bastion_host" {
   source  = "azure/avm-res-network-bastionhost/azurerm"
-  version = "~> 0.1"
+  version = "0.1.2"
 
   count = var.enable_bastion_host ? 1 : 0
 

@@ -6,7 +6,7 @@
 ###########################
 
 # The prefixes to use for all resources in this deployment
-org_name           = "an2"   # This Prefix will be used on most deployed resources.  10 Characters max.
+org_name           = "an1"    # This Prefix will be used on most deployed resources.  10 Characters max.
 deploy_environment = "dev"    # dev | test | prod
 environment        = "public" # public | usgovernment
 
@@ -33,13 +33,18 @@ enable_traffic_analytics = true
 hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters
 fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters
 fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed.
-gateway_subnet_address_prefixes     = ["10.8.4.0/27"]   # (Optional)  Hub Gateway Subnet Parameters. If not provided, force_tunneling is not needed.
-
+gateway_subnet_address_prefixes     = ["10.8.4.0/27"]  # (Optional)  Hub Gateway Subnet Parameters.
 # (Required) DDOS Protection Plan
 # By default, Azure NoOps will create DDOS Protection Plan in Hub VNet.
 # If you do not want to create DDOS Protection Plan,
 # set create_ddos_plan to false.
 create_ddos_plan = true
+
+# (Optional) Customer Managed Keys
+# Azure NoOps can create Customer Managed Keys in Hub VNet.
+# If you do not want to create Customer Managed Keys,
+# set enable_customer_managed_key to false.
+enable_customer_managed_key = false
 
 # (Required) Hub Subnets
 # Default Subnets, Service Endpoints
@@ -86,11 +91,10 @@ hub_subnets = {
 # set enable_firewall to false. This will allow different firewall products to be used (Example: F5).
 enable_firewall = true
 
-# By default, forced tunneling is enabled for Azure Firewall.
+# (Optional) By default, forced tunneling is enabled for Azure Firewall.
 # If you do not want to enable forced tunneling,
 # set enable_forced_tunneling to false.
 enable_forced_tunneling = true
-
 
 # (Optional) To enable the availability zones for firewall.
 # Availability Zones can only be configured during deployment
@@ -98,6 +102,10 @@ enable_forced_tunneling = true
 # In Azure Government, Availability Zones are only supported in the
 #following regions: usgovvirginia, usgovtexas, usgovarizona
 firewall_zones = []
+
+# DNS Settings for Azure Firewall
+enable_dns_proxy = true
+dns_servers      = ["168.63.129.16"] # Azure DNS
 
 # # (Optional) specify the Network rules for Azure Firewall l
 # This is default values, do not need this if keeping default values
@@ -178,11 +186,11 @@ firewall_application_rules = [
 #######################################
 
 # Private DNS Zone Settings
-# By default, Azure NoOps will create Private DNS Zones for Azure Monitor in Hub VNet.
+# By default, Azure NoOps will create default Private DNS Zones in Hub VNet.
 # If you do want to create additional Private DNS Zones,
 # add in the list of hub_private_dns_zones to be created.
 # else, remove the hub_private_dns_zones argument.
-hub_private_dns_zones            = []
+hub_private_dns_zones = []
 
 # By default, this module will create a bastion host,
 # and set the argument to `enable_bastion_host = false`, to disable the bastion host.

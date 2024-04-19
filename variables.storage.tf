@@ -24,3 +24,4 @@ variable "hub_storage_bypass_ip_cidr" {
   type        = list(string)
   default     = []
 }
+
