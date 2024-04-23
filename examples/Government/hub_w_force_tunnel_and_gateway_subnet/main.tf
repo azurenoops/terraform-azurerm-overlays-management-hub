@@ -30,7 +30,8 @@ module "mod_vnet_hub" {
   firewall_management_snet_address_prefix = var.fw_management_snet_address_prefixes # (Optional)  Hub Firewall Management Subnet Parameters
   gateway_subnet_address_prefix           = var.gateway_subnet_address_prefixes     # (Optional)  Hub Gateway Subnet Parameters
 
-  create_ddos_plan = var.create_ddos_plan # (Required)  DDoS Plan
+  # (Optional) Enable DDoS Protection Plan
+  create_ddos_plan = var.create_ddos_plan
 
   # (Required) Hub Subnets
   # Default Subnets, Service Endpoints
@@ -38,17 +39,21 @@ module "mod_vnet_hub" {
   # subnet name will be set as per Azure NoOps naming convention by default. expected value here is: <App or project name>
   hub_subnets = var.hub_subnets
 
-  # Enable Flow Logs
+  # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
+  log_analytics_workspace_resource_id = azurerm_resource_group.laws_rg.id
+  log_analytics_workspace_id          = azurerm_log_analytics_workspace.laws.workspace_id
+
+  # (Optional) Enable Flow Logs
   # By default, this will enable flow logs for all subnets.
   enable_traffic_analytics = var.enable_traffic_analytics
 
-  # Firewall Settings
+  # (Required) Firewall Settings
   # By default, Azure NoOps will create Azure Firewall in Hub VNet.
   # If you do not want to create Azure Firewall,
   # set enable_firewall to false. This will allow different firewall products to be used (Example: F5).
   enable_firewall = var.enable_firewall
 
-  # By default, forced tunneling is enabled for Azure Firewall.
+  # (Optional) By default, forced tunneling is enabled for Azure Firewall.
   # If you do not want to enable forced tunneling,
   # set enable_forced_tunneling to false.
   enable_forced_tunneling = var.enable_forced_tunneling
@@ -70,20 +75,20 @@ module "mod_vnet_hub" {
   # This is default values, do not need this if keeping default values
   firewall_nat_rule_collection = var.firewall_nat_rules
 
-   # (Optional) Private DNS Zone Settings
+  # (Optional) Private DNS Zone Settings
   # By default, Azure NoOps will create Private DNS Zones in Hub VNet.
   # If you do want to create additional Private DNS Zones,
   # add in the list of private_dns_zones to be created.
   # else, remove the private_dns_zones argument.
   private_dns_zones = var.hub_private_dns_zones
 
-  # By default, this module will create a bastion host,
+  # (Optional) By default, this module will create a bastion host,
   # and set the argument to `enable_bastion_host = false`, to disable the bastion host.
   enable_bastion_host                 = var.enable_bastion_host
   azure_bastion_host_sku              = var.azure_bastion_host_sku
   azure_bastion_subnet_address_prefix = var.azure_bastion_subnet_address_prefix
 
-  # By default, this will apply resource locks to all resources created by this module.
+  # (Optional) By default, this will apply resource locks to all resources created by this module.
   # To disable resource locks, set the argument to `enable_resource_locks = false`.
   # lock_level can be set to CanNotDelete or ReadOnly
   enable_resource_locks = var.enable_resource_locks

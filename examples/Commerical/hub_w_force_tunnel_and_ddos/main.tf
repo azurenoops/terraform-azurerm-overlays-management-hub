@@ -6,7 +6,7 @@ module "mod_vnet_hub" {
   #version = "x.x.x"
   source = "../../.."
 
-  depends_on = [ azurerm_log_analytics_workspace.laws ]
+  depends_on = [azurerm_log_analytics_workspace.laws]
 
   ################################
   # Landing Zone Configuration  ##
@@ -43,8 +43,8 @@ module "mod_vnet_hub" {
   hub_subnets = var.hub_subnets
 
   # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
-  laws_resource_group_name = azurerm_resource_group.laws_rg.name
-  laws_workspace_name      = azurerm_log_analytics_workspace.laws.name
+  log_analytics_workspace_resource_id = azurerm_resource_group.laws_rg.id
+  log_analytics_workspace_id          = azurerm_log_analytics_workspace.laws.workspace_id
 
   # (Optional) Enable Flow Logs
   # By default, this will enable flow logs for all subnets.
@@ -96,7 +96,7 @@ module "mod_vnet_hub" {
   azure_bastion_host_sku              = var.azure_bastion_host_sku
   azure_bastion_subnet_address_prefix = var.azure_bastion_subnet_address_prefix
 
-   # CIDRs for Azure Storage Account
+  # CIDRs for Azure Storage Account
   # This will allow the specified CIDRs to bypass the Azure Firewall for Azure Storage Account.
   hub_storage_bypass_ip_cidr = var.hub_storage_bypass_ip_cidr
 

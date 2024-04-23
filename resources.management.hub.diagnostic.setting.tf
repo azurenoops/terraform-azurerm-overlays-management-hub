@@ -29,7 +29,7 @@ module "mod_vnet_diagnostic_settings" {
 
 
   resource_id           = module.hub_vnet.vnet_resource.id
-  logs_destinations_ids = [data.azurerm_log_analytics_workspace.laws.id, module.hub_st.id]
+  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.id]
 }
 
 module "mod_nsg_diagnostic_settings" {
@@ -46,7 +46,7 @@ module "mod_nsg_diagnostic_settings" {
   workload_name      = format("%s-nsg", var.workload_name)
 
   resource_id           = azurerm_network_security_group.nsg[each.key].id
-  logs_destinations_ids = [data.azurerm_log_analytics_workspace.laws.id, module.hub_st.id]
+  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.id]
 }
 
 module "mod_fw_diagnostic_settings" {
@@ -63,7 +63,7 @@ module "mod_fw_diagnostic_settings" {
   workload_name      = format("%s-fw", var.workload_name)
 
   resource_id           = azurerm_firewall.fw[0].id
-  logs_destinations_ids = [data.azurerm_log_analytics_workspace.laws.id, module.hub_st.id]
+  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.id]
 }
 
 module "mod_fw_pip_diagnostic_settings" {
@@ -80,7 +80,7 @@ module "mod_fw_pip_diagnostic_settings" {
   workload_name      = format("%s-fw-pip", var.workload_name)
 
   resource_id           = module.hub_firewall_client_pip[0].public_ip_id
-  logs_destinations_ids = [data.azurerm_log_analytics_workspace.laws.id, module.hub_st.id]
+  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.id]
 }
 
 module "mod_bastion_diagnostic_settings" {
@@ -97,5 +97,5 @@ module "mod_bastion_diagnostic_settings" {
   workload_name      = format("%s-bas", var.workload_name)
 
   resource_id           = module.hub_bastion_host[0].bastion_resource.id
-  logs_destinations_ids = [data.azurerm_log_analytics_workspace.laws.id, module.hub_st.id]
+  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.id]
 }

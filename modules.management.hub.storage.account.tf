@@ -56,7 +56,7 @@ module "hub_st" {
   diagnostic_settings_storage_account = {
     storage = {
       name                        = "diag"
-      log_analytics_workspace_id  = data.azurerm_log_analytics_workspace.laws.id
+      log_analytics_workspace_id  = var.log_analytics_workspace_resource_id
       storage_account_resource_id = module.hub_st.id
       log_categories              = ["audit", "alllogs"]
       metric_categories           = ["AllMetrics"]
