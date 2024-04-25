@@ -262,7 +262,7 @@ module "mod_vnet_hub" {
   ]
 
   # Private DNS Zone Settings
-  # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
+  # By default, Azure NoOps will create Private DNS Zones in Hub VNet.
   # If you do want to create additional Private DNS Zones,
   # add in the list of private_dns_zones to be created.
   # else, remove the private_dns_zones argument.
