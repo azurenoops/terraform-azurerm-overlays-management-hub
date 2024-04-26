@@ -17,6 +17,6 @@ data "azurerm_network_watcher" "nwatcher" {
 
 data "azurerm_private_dns_zone" "blob" {
   depends_on          = [module.mod_default_pdz]
-  name                = "privatelink.blob.core.windows.net"
+  name                = var.environment == "public" ? "privatelink.blob.core.windows.net" : "privatelink.blob.core.usgovcloudapi.net"
   resource_group_name = module.mod_dns_rg[0].resource_group_name
 }

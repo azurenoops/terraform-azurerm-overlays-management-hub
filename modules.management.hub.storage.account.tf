@@ -52,24 +52,8 @@ module "hub_st" {
     user_assigned_identity_resource_id = var.user_assigned_identity_id
   } : null
 
-  # Diagnostic Settings
-  diagnostic_settings_storage_account = {
-    storage = {
-      name                        = "diag"
-      log_analytics_workspace_id  = var.log_analytics_workspace_resource_id
-      storage_account_resource_id = module.hub_st.id
-      log_categories              = ["audit", "alllogs"]
-      metric_categories           = ["AllMetrics"]
-    }
-  }
-
   # Blob Properties
-  containers = {
-    logs = {
-      name                  = "logs"
-      container_access_type = "private"
-    }
-  }
+  containers = var.hub_storage_containers
 
   # Blob Properties
   blob_properties = {
@@ -87,25 +71,3 @@ module "hub_st" {
   # Tags
   tags = merge({ "ResourceName" = format("hubstdiaglogs%s", lower(replace(local.hub_sa_name, "/[[:^alnum:]]/", ""))) }, local.default_tags, var.add_tags, )
 }
-
-/* module "hub_st" {
- depends_on                   = [module.mod_scaffold_rg]
-  source                       = "azurenoops/overlays-storage-account/azurerm"
-  version                      = "~> 1.0"
-  existing_resource_group_name = local.resource_group_name
-  storage_account_custom_name  = local.hub_sa_name
-  location                     = local.location
-  environment                  = var.environment
-  deploy_environment           = var.deploy_environment
-  workload_name                = var.workload_name
-  org_name                     = var.org_name
-  account_kind             = var.hub_storage_account_kind
-  account_tier             = var.hub_storage_account_tier
-  account_replication_type = var.hub_storage_account_replication_type
-
-  # Resource Lock
-  enable_resource_locks = var.enable_resource_locks
-  lock_level = var.lock_level
-
-  add_tags = merge({ "ResourceName" = format("hubstdiaglogs%s", lower(replace(local.hub_sa_name, "/[[:^alnum:]]/", ""))) }, local.default_tags, var.add_tags, )
-} */
