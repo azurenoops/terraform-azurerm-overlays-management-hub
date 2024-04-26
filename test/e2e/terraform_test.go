@@ -9,12 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExamplesBasic(t *testing.T) {
-	test_helper.RunE2ETest(t, "../../", "examples/basic", terraform.Options{
+func TestExampleshub_w_force_tunnel_and_ddos(t *testing.T) {
+	test_helper.RunE2ETest(t, "../../", "examples/commerical/hub_w_force_tunnel_and_ddos", terraform.Options{
 		Upgrade: true,
 	}, func(t *testing.T, output test_helper.TerraformOutput) {
-		gotEchoText, ok := output["echo_text"].(string)
+		gotEchoText, ok := output["resource_group_name"].(string)
 		assert.True(t, ok)
-		assert.Regexp(t, regexp.MustCompile("Hello, world!"), gotEchoText)
+		assert.Regexp(t, regexp.MustCompile("an1-eus-hub-dev-rg"), gotEchoText)
 	})
 }
