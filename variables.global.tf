@@ -65,6 +65,15 @@ variable "existing_resource_group_name" {
   default     = null
 }
 
+############################
+# Hub DNS Configuration   ##
+############################
+
+variable "existing_private_dns_zone_blob_id" {
+  description = "Specifies the name of the private DNS zone blob id"
+  default     = null
+}
+
 #######################
 # LAW Configuration  ##
 #######################
