@@ -31,12 +31,6 @@ variable "org_name" {
   type        = string
 }
 
-variable "ops_subscription_id" {
-  description = "Subscription ID for the operations subscription. If not set, the current subscription will be used."
-  type        = string
-  default     = null
-}
-
 variable "disable_telemetry" {
   description = "If set to true, will disable the telemetry sent as part of the module."
   type        = string
@@ -61,6 +55,16 @@ variable "use_location_short_name" {
 
 variable "existing_resource_group_name" {
   description = "The name of the existing resource group to use. If not set, the name will be generated using the `org_name`, `workload_name`, `deploy_environment` and `environment` variables."
+  type        = string
+  default     = null
+}
+
+############################
+# Hub DNS Configuration   ##
+############################
+
+variable "existing_private_dns_zone_blob_id" {
+  description = "Specifies the name of the private DNS zone blob id"
   type        = string
   default     = null
 }

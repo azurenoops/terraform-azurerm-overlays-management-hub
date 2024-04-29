@@ -99,3 +99,19 @@ module "mod_bastion_diagnostic_settings" {
   resource_id           = module.hub_bastion_host[0].bastion_resource.id
   logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.id]
 }
+
+module "mod_storage_diagnostic_settings" {
+  source  = "azurenoops/overlays-diagnostic-settings/azurerm"
+  version = "1.5.0"
+
+  # Resource Group, location, VNet and Subnet details
+  location           = var.location
+  deploy_environment = var.deploy_environment
+  environment        = var.environment
+  org_name           = var.org_name
+  workload_name      = format("%s-storage", var.workload_name)
+
+
+  resource_id           = module.hub_st.id
+  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.id]
+}

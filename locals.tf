@@ -24,8 +24,8 @@ locals {
       "privatelink.vaultcore.azure.net", "privatelink.managedhsm.azure.net", "privatelink.api.azureml.ms", "privatelink.blob.core.windows.net", "privatelink.purview.azure.com",
       "privatelink.purviewstudio.azure.com", "privatelink.siterecovery.windowsazure.com", "privatelink.database.windows.net", "privatelink.dev.azuresynapse.net",
       "privatelink.sql.azuresynapse.net", "privatelink.azuresynapse.net", "privatelink.cognitiveservices.azure.com", "privatelink.analysis.windows.net", "privatelink.service.signalr.net", "privatelink.file.core.windows.net", "privatelink.queue.core.windows.net", "privatelink.table.core.windows.net",
-      "privatelink.${var.location}.backup.windowsazure.com", "privatelink.${var.location}.kusto.windows.net", "privatelink.${var.location}.azmk8s.io"] :
-    ["privatelink.cognitiveservices.azure.us", "privatelink.api.ml.azure.us", "privatelink.azure-api.azure.us","privatelink.developer.azure-api.azure.us", "privatelink.sql.azuresynapse.usgovcloudapi.net",
+      "privatelink.${var.location}.backup.windowsazure.com", "privatelink.agentsvc.azure-automation.net", "privatelink.monitor.azure.com", "privatelink.ods.opinsights.azure.com",  "privatelink.oms.opinsights.azure.com", "privatelink.developer.azure-api.azure.us",  "privatelink.${var.location}.kusto.windows.net", "privatelink.${var.location}.azmk8s.io"] :
+    ["privatelink.cognitiveservices.azure.us", "privatelink.api.ml.azure.us", "privatelink.azure-api.azure.us", "privatelink.sql.azuresynapse.usgovcloudapi.net",
       "privatelink.sql.azuresynapse.usgovcloudapi.net", "privatelink.dev.azuresynapse.usgovcloudapi.net", "privatelink.azuresynapse.usgovcloudapi.net", "privatelink.datafactory.azure.us",
       "privatelink.adf.azure.us", "privatelink.azurehdinsight.us", "privatelink.databricks.azure.us", "privatelink.batch.usgovcloudapi.net", "privatelink-global.wvd.azure.us", "privatelink.wvd.azure.us",
       "privatelink.${var.location}.azurecr.us", "privatelink.database.usgovcloudapi.net", "privatelink.documents.azure.us", "privatelink.mongo.cosmos.azure.us", "privatelink.cassandra.cosmos.azure.us", "privatelink.table.cosmos.azure.us",
@@ -33,5 +33,6 @@ locals {
       "privatelink.servicebus.usgovcloudapi.net", "privatelink.eventgrid.azure.us", "privatelink.azure-automation.us", "privatelink.${var.location}.backup.windowsazure.us",
       "privatelink.siterecovery.windowsazure.us", "privatelink.purview.azure.us", "privatelink.purviewstudio.azure.us", "privatelink.vaultcore.usgovcloudapi.net", "privatelink.azconfig.azure.us",
       "privatelink.blob.core.usgovcloudapi.net", "privatelink.table.core.usgovcloudapi.net", "privatelink.queue.core.usgovcloudapi.net", "privatelink.file.core.usgovcloudapi.net",
-      "privatelink.dfs.core.usgovcloudapi.net", "privatelink.${var.location}.azmk8s.us"]) # List of default private DNS zones
+      "privatelink.dfs.core.usgovcloudapi.net", "privatelink.${var.location}.azmk8s.us", "privatelink.monitor.azure.us", "privatelink.adx.monitor.azure.us",
+      "privatelink.oms.opinsights.azure.us", "privatelink.ods.opinsights.azure.us", "privatelink.agentsvc.azure-automation.us"])
 }
