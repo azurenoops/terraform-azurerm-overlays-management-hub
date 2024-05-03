@@ -10,7 +10,7 @@ AUTHOR/S: jrspinella
 
 resource "azurerm_network_watcher_flow_log" "nwflog" {
   for_each                  = var.hub_subnets
-  name                      = lower(format("network-watcher-flow-log-%s", each.value.name))
+  name                      = lower(format("network-watcher-flow-log-%s-%s", var.org_name, each.value.name))
   network_watcher_name      = data.azurerm_network_watcher.nwatcher.name
   resource_group_name       = data.azurerm_resource_group.netwatch.name # Must provide Netwatcher resource Group
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
