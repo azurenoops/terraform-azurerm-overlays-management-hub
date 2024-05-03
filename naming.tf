@@ -120,7 +120,7 @@ data "azurenoopsutils_resource_name" "bastion_pip" {
   name          = var.workload_name
   resource_type = "azurerm_public_ip"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
-  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, local.name_suffix, "bas", var.use_naming ? "" : "pip"])
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, local.name_suffix, "bas", var.use_naming ? "" : "pip"])
   use_slug      = var.use_naming
   clean_input   = true
   separator     = "-"
@@ -130,7 +130,7 @@ data "azurenoopsutils_resource_name" "ddos" {
   name          = var.workload_name
   resource_type = "azurerm_network_ddos_protection_plan"
   prefixes      = [var.org_name, var.use_location_short_name ? module.mod_azregions.location_short : module.mod_azregions.location_cli]
-  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, var.deploy_environment, local.name_suffix, var.use_naming ? "" : "ddospp"])
+  suffixes      = compact([var.name_prefix == "" ? null : local.name_prefix, local.name_suffix, var.use_naming ? "" : "ddospp"])
   use_slug      = var.use_naming
   clean_input   = true
   separator     = "-"
