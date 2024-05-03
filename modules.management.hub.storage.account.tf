@@ -27,15 +27,8 @@ module "hub_st" {
   # Private Endpoint
   private_endpoints = {
     "blob" = {
-      name                          = local.pe_name
-      subnet_resource_id            = azurerm_subnet.default_snet["default"].id
-      subresource_name              = ["blob"]
-      private_dns_zone_resource_ids = [var.existing_private_dns_zone_blob_id]
-      # these are optional but illustrate making well-aligned service connection & NIC names.
-      private_service_connection_name = local.psc_name
-      network_interface_name          = local.nic_name
-      inherit_tags                    = true
-      inherit_lock                    = true
+      subnet_resource_id = azurerm_subnet.default_snet["default"].id
+      subresource_name   = ["blob"]
     }
   }
 
