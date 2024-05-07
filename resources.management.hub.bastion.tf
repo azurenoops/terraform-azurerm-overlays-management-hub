@@ -46,6 +46,7 @@ module "hub_bastion_pip" {
   location            = local.location
   allocation_method   = var.azure_bastion_public_ip_allocation_method
   sku                 = var.azure_bastion_public_ip_sku
+  zones               = var.firewall_zones != null ? var.firewall_zones : null
   domain_name_label   = var.domain_name_label != null ? var.domain_name_label : format("%s%s", lower(replace(local.bastion_pip_name, "/[[:^alnum:]]/", "")), random_string.str.result)
 
   # Resource Lock
