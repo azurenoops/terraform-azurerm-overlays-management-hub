@@ -38,7 +38,7 @@ resource "azurerm_subnet" "abs_snet" {
 #---------------------------------------------
 module "hub_bastion_pip" {
   source  = "azure/avm-res-network-publicipaddress/azurerm"
-  version = "0.1.0"
+  version = "0.1.2"
 
   count               = var.enable_bastion_host ? 1 : 0
   name                = local.bastion_pip_name
