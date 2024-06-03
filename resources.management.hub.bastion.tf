@@ -67,7 +67,7 @@ module "hub_bastion_pip" {
 #---------------------------------------------
 module "hub_bastion_host" {
   source  = "azure/avm-res-network-bastionhost/azurerm"
-  version = "0.1.2"
+  version = "0.2.0"
 
   count = var.enable_bastion_host ? 1 : 0
 
