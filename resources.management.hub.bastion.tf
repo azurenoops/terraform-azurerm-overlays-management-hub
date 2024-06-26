@@ -67,32 +67,29 @@ module "hub_bastion_pip" {
 #---------------------------------------------
 module "hub_bastion_host" {
   source  = "azure/avm-res-network-bastionhost/azurerm"
-  version = "0.1.2"
+  version = "0.3.0"
 
   count = var.enable_bastion_host ? 1 : 0
 
   # Resource Group
-  resource_group_name  = local.resource_group_name
-  virtual_network_name = module.hub_vnet.vnet_resource.name
+  resource_group_name = local.resource_group_name
+  virtual_network_id  = module.hub_vnet.vnet_resource.id
 
-  bastion_host = {
-    name                = local.bastion_name
-    resource_group_name = local.resource_group_name
-    location            = local.location
-    copy_paste_enabled  = var.enable_copy_paste
-    file_copy_enabled   = var.azure_bastion_host_sku == "Standard" ? var.enable_file_copy : null
-    sku                 = var.azure_bastion_host_sku
-    ip_configuration = {
-      name                 = "${lower(local.bastion_name)}-ipconfig"
-      subnet_id            = azurerm_subnet.abs_snet[0].id
-      public_ip_address_id = module.hub_bastion_pip[0].public_ip_id
-    }
-    ip_connect_enabled     = var.enable_ip_connect
-    scale_units            = var.azure_bastion_host_sku == "Standard" ? var.scale_units : 2
-    shareable_link_enabled = var.azure_bastion_host_sku == "Standard" ? var.enable_shareable_link : null
-    tunneling_enabled      = var.azure_bastion_host_sku == "Standard" ? var.enable_tunneling : null
-    tags                   = merge({ "ResourceName" = lower(local.bastion_name) }, local.default_tags, var.add_tags, )
+  # Bastion Host Configuration
+  name               = local.bastion_name
+  location           = local.location
+  copy_paste_enabled = var.enable_copy_paste
+  file_copy_enabled  = var.azure_bastion_host_sku == "Standard" ? var.enable_file_copy : null
+  sku                = var.azure_bastion_host_sku
+  ip_configuration = {
+    name                 = "${lower(local.bastion_name)}-ipconfig"
+    subnet_id            = azurerm_subnet.abs_snet[0].id
+    public_ip_address_id = module.hub_bastion_pip[0].public_ip_id
   }
+  ip_connect_enabled     = var.enable_ip_connect
+  scale_units            = var.azure_bastion_host_sku == "Standard" ? var.scale_units : 2
+  shareable_link_enabled = var.azure_bastion_host_sku == "Standard" ? var.enable_shareable_link : null
+  tunneling_enabled      = var.azure_bastion_host_sku == "Standard" ? var.enable_tunneling : null
 
   # Resource Lock
   lock = var.enable_resource_locks ? {
