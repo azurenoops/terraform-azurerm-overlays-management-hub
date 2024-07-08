@@ -7,7 +7,7 @@
 module "hub_st" {
   depends_on                    = [module.mod_scaffold_rg, module.mod_dns_rg]
   source                        = "azure/avm-res-storage-storageaccount/azurerm"
-  version                       = "0.1.1"
+  version                       = "0.2.1"
   resource_group_name           = local.resource_group_name
   name                          = local.hub_sa_name
   location                      = local.location
