@@ -55,7 +55,7 @@ module "hub_st" {
   customer_managed_key = var.enable_customer_managed_key ? {
     key_vault_resource_id              = var.key_vault_resource_id
     key_name                           = var.key_name
-    user_assigned_identity_id          = { resource_id = azurerm_user_assigned_identity.user_assigned_identity.id }
+    user_assigned_identity             = { resource_id = azurerm_user_assigned_identity.user_assigned_identity.id }
   } : null
 
   # Role Assignments
