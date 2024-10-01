@@ -45,8 +45,8 @@ variable "firewall_snet_service_endpoints" {
 
 variable "firewall_snet_private_endpoint_network_policies_enabled" {
   description = "Controls if network policies are enabled on the firewall client subnet"
-  type        = bool
-  default     = false
+  type        = string
+  default     = "Disabled"
 }
 
 variable "firewall_snet_private_link_service_network_policies_enabled" {
@@ -63,8 +63,8 @@ variable "firewall_management_snet_service_endpoints" {
 
 variable "firewall_management_snet_private_endpoint_network_policies_enabled" {
   description = "Controls if network policies are enabled on the firewall management subnet"
-  type        = bool
-  default     = false
+  type        = string
+  default     = "Disabled"
 }
 
 variable "firewall_management_snet_private_link_service_network_policies_enabled" {

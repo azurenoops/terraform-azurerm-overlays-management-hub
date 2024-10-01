@@ -19,3 +19,9 @@ resource "azurerm_role_assignment" "default_dns" {
   role_definition_name = "Private DNS Zone Contributor"
   principal_id         = data.azurerm_client_config.current.object_id
 }
+
+resource "azurerm_role_assignment" "nw_peering" {
+  scope                = module.hub_vnet.virtual_network_id
+  role_definition_name = "Network Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
