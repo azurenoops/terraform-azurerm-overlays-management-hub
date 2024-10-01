@@ -43,10 +43,3 @@ resource "azurerm_key_vault_key" "kv_key" {
     "wrapKey"
   ]
 }
-
-# Create a User Assigned Identity for the Windows Jumpbox for Azure Disk Encryption
-resource "azurerm_user_assigned_identity" "user_assigned_identity" {
-  location            = var.default_location
-  resource_group_name = azurerm_resource_group.laws_rg.name
-  name                = "kv_usi"
-}
