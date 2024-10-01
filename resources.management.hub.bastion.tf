@@ -29,7 +29,7 @@ resource "azurerm_subnet" "abs_snet" {
   resource_group_name                           = local.resource_group_name
   virtual_network_name                          = module.hub_vnet.vnet_resource.name
   address_prefixes                              = var.azure_bastion_subnet_address_prefix
-  private_endpoint_network_policies = true
+  private_endpoint_network_policies             = "Enabled"
   private_link_service_network_policies_enabled = true
 }
 
