@@ -25,7 +25,7 @@ variable "hub_subnets" {
     }))
 
     #Subnet NSG rules - see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group#security_rule
-    nsg_subnet_rules = optional(list(object({
+    nsg_subnet_rules = optional(map(object({
       name                                       = string
       description                                = string
       priority                                   = number

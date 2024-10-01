@@ -171,17 +171,17 @@ output "firewall_management_public_ip" {
 
 output "firewall_private_ip" {
   description = "The private ip of firewall."
-  value       = var.enable_firewall ? module.hub_fw[0].ip_configuration[0].private_ip_address : null
+  value       = var.enable_firewall ? module.hub_fw[0].ip_configuration.private_ip_address : null
 }
 
 output "firewall_id" {
   description = "The Resource ID of the Azure Firewall."
-  value       = var.enable_firewall ? module.hub_fw[0].id : null
+  value       = var.enable_firewall ? module.hub_fw[0].resource_id : null
 }
 
 output "firewall_name" {
   description = "The name of the Azure Firewall."
-  value       = var.enable_firewall ? module.hub_fw[0].name : null
+  value       = var.enable_firewall ? module.hub_fw[0].resource.name : null
 }
 
 output "firewall_dns_servers" {
