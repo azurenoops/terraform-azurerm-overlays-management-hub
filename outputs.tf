@@ -97,7 +97,7 @@ output "network_security_group_names" {
   description = "Map of names for default NSGs"
   value = { for key, name in zipmap(
     sort(keys(var.hub_subnets)),
-    sort(values(module.nsg)[*]["reource.name"])) :
+    sort(values(module.nsg)[*]["resource.name"])) :
   key => { key = key, name = name } }
 }
 
@@ -171,7 +171,7 @@ output "firewall_management_public_ip" {
 
 output "firewall_private_ip" {
   description = "The private ip of firewall."
-  value       = var.enable_firewall ? module.hub_fw[0].ip_configuration[0].private_ip_address : null
+  value       = var.enable_firewall ? module.hub_fw[0].resource.ip_configuration[0].private_ip_address : null
 }
 
 output "firewall_id" {
