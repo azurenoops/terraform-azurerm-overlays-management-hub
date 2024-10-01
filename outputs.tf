@@ -97,7 +97,7 @@ output "network_security_group_names" {
   description = "Map of names for default NSGs"
   value = { for key, name in zipmap(
     sort(keys(var.hub_subnets)),
-    sort(values(module.nsg)[*]["resource.name"])) :
+    sort(values(module.nsg)[*]["name"])) :
   key => { key = key, name = name } }
 }
 
