@@ -33,11 +33,28 @@ module "hub_vnet" {
     id     = module.hub_vnet_ddos[0].resource.id
   } : null
 
+  role_assignments = {
+    role_assignment_nw_peering = {
+      role_definition_id_or_name       = "Network Contributor"
+      principal_id                     = data.azurerm_client_config.current.object_id
+      skip_service_principal_aad_check = false
+    },
+  }
+
   # Resource Lock
   lock = var.enable_resource_locks ? {
     name = "${local.hub_vnet_name}-${var.lock_level}-lock"
     kind = var.lock_level
   } : null
+
+  // VNet Diagnostic Settings
+  diagnostic_settings = {
+    sendToLogAnalytics = {
+      name                           = "sendToLogAnalytics"
+      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      log_analytics_destination_type = "Dedicated"
+    }
+  }
 
   # telemtry
   enable_telemetry = var.disable_telemetry

@@ -14,7 +14,7 @@ resource "azurerm_route_table" "routetable" {
   name                          = local.hub_rt_name
   resource_group_name           = local.resource_group_name
   location                      = local.location
-  disable_bgp_route_propagation = var.disable_bgp_route_propagation
+  bgp_route_propagation_enabled = var.disable_bgp_route_propagation
   tags                          = merge({ "ResourceName" = "route-network-outbound" }, local.default_tags, var.add_tags, )
 }
 
@@ -50,7 +50,7 @@ resource "azurerm_route_table" "afw_routetable" {
   name                          = local.hub_afw_rt_name
   resource_group_name           = local.resource_group_name
   location                      = local.location
-  disable_bgp_route_propagation = false
+  bgp_route_propagation_enabled = false
   tags                          = merge({ "ResourceName" = "afw-subnet-route-network-outbound" }, local.default_tags, var.add_tags, )
 
   count = var.enable_encrypted_transport ? 1 : 0

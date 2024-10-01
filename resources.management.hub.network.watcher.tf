@@ -30,3 +30,15 @@ resource "azurerm_network_watcher_flow_log" "nwflog" {
     interval_in_minutes   = 10
   }
 }
+
+/* module "network_watcher_flow_log" {
+  source                    = "Azure/azurerm-avm-res-network-networkwatcher/azurerm"
+  version                   = "0.1.1"
+  for_each                  = var.hub_subnets
+  name                      = lower(format("network-watcher-flow-log-%s-%s", var.org_name, each.value.name))
+  net
+  network_watcher_name      = data.azurerm_network_watcher.nwatcher.name
+  resource_group_name       = data.azurerm_resource_group.netwatch.name # Must provide Netwatcher resource Group
+  network_security_group_id = azurerm_network_security_group.nsg[each.key].id
+  storage_account_id        = module.hub_st.id
+} */

@@ -5,15 +5,21 @@
 # Hub Logging Storage Account for Log Archiving
 #----------------------------------------------------------
 module "hub_st" {
-  depends_on                    = [module.mod_scaffold_rg, module.mod_dns_rg]
-  source                        = "azure/avm-res-storage-storageaccount/azurerm"
-  version                       = "0.1.1"
-  resource_group_name           = local.resource_group_name
-  name                          = local.hub_sa_name
-  location                      = local.location
-  account_kind                  = var.hub_storage_account_kind
-  account_tier                  = var.hub_storage_account_tier
-  account_replication_type      = var.hub_storage_account_replication_type
+  depends_on = [module.mod_scaffold_rg, module.mod_dns_rg]
+  source     = "azure/avm-res-storage-storageaccount/azurerm"
+  version    = "0.2.7"
+
+  // Globals
+  resource_group_name = local.resource_group_name
+  name                = local.hub_sa_name
+  location            = local.location
+
+  // Account 
+  account_kind             = var.hub_storage_account_kind
+  account_tier             = var.hub_storage_account_tier
+  account_replication_type = var.hub_storage_account_replication_type
+
+  // Marked as true for PE
   public_network_access_enabled = true
 
   # Network Rules
@@ -27,8 +33,9 @@ module "hub_st" {
   # Private Endpoint
   private_endpoints = {
     "blob" = {
-      subnet_resource_id = azurerm_subnet.default_snet["default"].id
-      subresource_name   = ["blob"]
+      subnet_resource_id            = azurerm_subnet.default_snet["default"].id
+      subresource_name              = ["blob"]
+      private_dns_zone_resource_ids = [var.environment == "public" ? module.mod_default_pdz["privatelink.blob.core.windows.net"].id : module.mod_default_pdz["privatelink.blob.core.usgovcloudapi.net"].id]
     }
   }
 
@@ -38,12 +45,32 @@ module "hub_st" {
     kind = var.lock_level
   } : null
 
+  # Managed Idenities
+  managed_identities = {
+    system_assigned            = true
+    user_assigned_resource_ids = [var.user_assigned_identity_id]
+  }
+
   # Customer Managed Key
   customer_managed_key = var.enable_customer_managed_key ? {
     key_vault_resource_id              = var.key_vault_resource_id
     key_name                           = var.key_name
-    user_assigned_identity_resource_id = var.user_assigned_identity_id
+    user_assigned_identity_resource_id = { resource_id = var.user_assigned_identity_id }
   } : null
+
+  # Role Assignments
+  role_assignments = {
+    role_assignment_uai = {
+      role_definition_id_or_name       = "Storage Blob Data Contributor"
+      principal_id                     = coalesce(var.user_assigned_identity_id, data.azurerm_client_config.current.object_id)
+      skip_service_principal_aad_check = false
+    },
+    role_assignment_current_user = {
+      role_definition_id_or_name       = "Owner"
+      principal_id                     = data.azurerm_client_config.current.object_id
+      skip_service_principal_aad_check = false
+    },
+  }
 
   # Blob Properties
   containers = var.hub_storage_containers
@@ -55,6 +82,15 @@ module "hub_st" {
     }
     delete_retention_policy = {
       days = 30
+    }
+  }
+
+  // Storage Diagnostic Settings
+  diagnostic_settings_blob = {
+    sendToLogAnalytics = {
+      name                           = "sendToLogAnalytics_storage"
+      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      log_analytics_destination_type = "Dedicated"
     }
   }
 

@@ -13,21 +13,9 @@ AUTHOR/S: jrspinella
 #----------------------------------------------------------------
 # Azure Role Assignment for Service Principal - current user
 #-----------------------------------------------------------------
-resource "azurerm_role_assignment" "peering" {
-  scope                = module.hub_vnet.vnet_resource.id
-  role_definition_name = "Network Contributor"
-  principal_id         = data.azurerm_client_config.current.object_id
-}
-
 resource "azurerm_role_assignment" "default_dns" {
   for_each             = toset(concat(local.if_default_private_dns_zones_enabled, var.private_dns_zones))
   scope                = module.mod_default_pdz[each.key].private_dns_zone_id
   role_definition_name = "Private DNS Zone Contributor"
-  principal_id         = data.azurerm_client_config.current.object_id
-}
-
-resource "azurerm_role_assignment" "storage" {
-  scope                = module.hub_st.id
-  role_definition_name = "Storage Blob Data Contributor"
   principal_id         = data.azurerm_client_config.current.object_id
 }

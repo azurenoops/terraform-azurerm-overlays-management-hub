@@ -29,7 +29,7 @@ resource "azurerm_subnet" "abs_snet" {
   resource_group_name                           = local.resource_group_name
   virtual_network_name                          = module.hub_vnet.vnet_resource.name
   address_prefixes                              = var.azure_bastion_subnet_address_prefix
-  private_endpoint_network_policies_enabled     = true
+  private_endpoint_network_policies = true
   private_link_service_network_policies_enabled = true
 }
 
@@ -38,7 +38,7 @@ resource "azurerm_subnet" "abs_snet" {
 #---------------------------------------------
 module "hub_bastion_pip" {
   source  = "azure/avm-res-network-publicipaddress/azurerm"
-  version = "0.1.0"
+  version = "0.1.2"
 
   count               = var.enable_bastion_host ? 1 : 0
   name                = local.bastion_pip_name
@@ -54,6 +54,15 @@ module "hub_bastion_pip" {
     name = format("%s-%s-lock", local.bastion_pip_name, var.lock_level)
     kind = var.lock_level
   } : null
+
+  // Bastion PIP Diagnostic Settings
+  diagnostic_settings = {
+    sendToLogAnalytics = {
+      name                           = "sendToLogAnalytics"
+      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      log_analytics_destination_type = "Dedicated"
+    }
+  }
 
   # telemtry
   enable_telemetry = var.disable_telemetry
@@ -99,6 +108,15 @@ module "hub_bastion_host" {
     name = format("%s-%s-lock", local.bastion_name, var.lock_level)
     kind = var.lock_level
   } : null
+
+  // Bastion Diagnostic Settings
+  diagnostic_settings = {
+    sendToLogAnalytics = {
+      name                           = "sendToLogAnalytics_bastion"
+      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      log_analytics_destination_type = "Dedicated"
+    }
+  }
 
   # telemtry
   enable_telemetry = var.disable_telemetry
