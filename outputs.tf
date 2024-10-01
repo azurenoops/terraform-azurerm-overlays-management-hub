@@ -146,7 +146,7 @@ output "private_dns_zone_names" {
 
 output "hub_storage_account_id" {
   description = "The ID of the storage account."
-  value       = module.hub_st.id
+  value       = module.hub_st.resource_id
 }
 
 output "hub_storage_account_name" {

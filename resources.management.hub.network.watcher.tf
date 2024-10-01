@@ -13,7 +13,7 @@ resource "azurerm_network_watcher_flow_log" "nwflog" {
   name                      = lower(format("network-watcher-flow-log-%s-%s", var.org_name, each.value.name))
   network_watcher_name      = data.azurerm_network_watcher.nwatcher.name
   resource_group_name       = data.azurerm_resource_group.netwatch.name # Must provide Netwatcher resource Group
-  network_security_group_id = azurerm_network_security_group.nsg[each.key].id
+  network_security_group_id = module.nsg[each.key].id
   storage_account_id        = module.hub_st.id
   enabled                   = true
   version                   = 2
