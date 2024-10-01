@@ -28,6 +28,21 @@ resource "azurerm_key_vault" "kv" {
   purge_protection_enabled = true
 }
 
+resource "azurerm_key_vault_key" "kv_key" {
+  name         = "tfex-key"
+  key_vault_id = azurerm_key_vault.kv.id
+  key_type     = "RSA"
+  key_size     = 2048
+  key_opts = [
+    "decrypt",
+    "encrypt",
+    "sign",
+    "unwrapKey",
+    "verify",
+    "wrapKey"
+  ]
+}
+
 # Create a User Assigned Identity for the Windows Jumpbox for Azure Disk Encryption
 resource "azurerm_user_assigned_identity" "user_assigned_identity" {
   location            = var.default_location
