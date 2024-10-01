@@ -48,21 +48,21 @@ module "hub_st" {
   # Managed Idenities
   managed_identities = {
     system_assigned            = true
-    user_assigned_resource_ids = [azurerm_user_assigned_identity.user_assigned_identity.id]
+    user_assigned_resource_ids = [azurerm_user_assigned_identity.user_assigned_identity[0].id]
   }
 
   # Customer Managed Key
   customer_managed_key = var.enable_customer_managed_key ? {
     key_vault_resource_id              = var.key_vault_resource_id
     key_name                           = var.key_name
-    user_assigned_identity             = { resource_id = azurerm_user_assigned_identity.user_assigned_identity.id }
+    user_assigned_identity             = { resource_id = azurerm_user_assigned_identity.user_assigned_identity[0].id }
   } : null
 
   # Role Assignments
   role_assignments = {
     role_assignment_uai = {
       role_definition_id_or_name       = "Storage Blob Data Contributor"
-      principal_id                     = coalesce(azurerm_user_assigned_identity.user_assigned_identity.id, data.azurerm_client_config.current.object_id)
+      principal_id                     = coalesce(azurerm_user_assigned_identity.user_assigned_identity[0].id, data.azurerm_client_config.current.object_id)
       skip_service_principal_aad_check = false
     },
     role_assignment_current_user = {
@@ -104,6 +104,7 @@ module "hub_st" {
 
 # Create a User Assigned Identity for Azure Encryption
 resource "azurerm_user_assigned_identity" "user_assigned_identity" {
+  count = var.enable_customer_managed_key ? 1 : 0
   location            = local.location
   resource_group_name = local.resource_group_name
   name                = "hub_sa_usi"
