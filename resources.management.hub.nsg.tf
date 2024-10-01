@@ -70,7 +70,7 @@ module "nsg" {
 resource "azurerm_subnet_network_security_group_association" "nsgassoc" {
   for_each                  = var.hub_subnets
   subnet_id                 = azurerm_subnet.default_snet[each.key].id
-  network_security_group_id = azurerm_network_security_group.nsg[each.key].id
+  network_security_group_id = module.nsg[each.key].id
 }
 
 

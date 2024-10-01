@@ -24,7 +24,7 @@ resource "azurerm_key_vault" "kv" {
   location            = var.default_location
   resource_group_name = azurerm_resource_group.laws_rg.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
-  sku_name            = "Premium"
+  sku_name            = "premium"
 
   purge_protection_enabled = true
 }
