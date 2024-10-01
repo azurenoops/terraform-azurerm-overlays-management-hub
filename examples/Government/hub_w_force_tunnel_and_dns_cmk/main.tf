@@ -6,7 +6,7 @@ module "mod_vnet_hub" {
   #version = "x.x.x"
   source = "../../.."
 
-  depends_on = [ azurerm_log_analytics_workspace.laws, azurerm_user_assigned_identity.user_assigned_identity ]
+  depends_on = [ azurerm_log_analytics_workspace.laws ]
 
   ################################
   # Landing Zone Configuration  ##
