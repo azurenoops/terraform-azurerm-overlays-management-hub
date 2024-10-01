@@ -56,7 +56,7 @@ hub_subnets = {
     name                                       = "hub"
     address_prefixes                           = ["10.8.4.224/27"]
     service_endpoints                          = ["Microsoft.Storage"]
-    private_endpoint_network_policies_enabled  = false
+    private_endpoint_network_policies_enabled  = "Disabled"
     private_endpoint_service_endpoints_enabled = true
     nsg_subnet_rules = [
       {

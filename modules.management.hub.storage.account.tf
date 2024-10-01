@@ -35,7 +35,7 @@ module "hub_st" {
     "blob" = {
       subnet_resource_id            = azurerm_subnet.default_snet["default"].id
       subresource_name              = "blob"
-      private_dns_zone_resource_ids = [var.environment == "public" ? module.mod_default_pdz["privatelink.blob.core.windows.net"].id : module.mod_default_pdz["privatelink.blob.core.usgovcloudapi.net"].id]
+      private_dns_zone_resource_ids = [var.environment == "public" ? module.mod_default_pdz["privatelink.blob.core.windows.net"].private_dns_zone_id : module.mod_default_pdz["privatelink.blob.core.usgovcloudapi.net"].private_dns_zone_id]
     }
   }
 
