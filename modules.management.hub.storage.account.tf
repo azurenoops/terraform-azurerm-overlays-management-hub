@@ -5,7 +5,7 @@
 # Hub Logging Storage Account for Log Archiving
 #----------------------------------------------------------
 module "hub_st" {
-  depends_on = [module.mod_scaffold_rg, module.mod_dns_rg]
+  depends_on = [module.mod_scaffold_rg, module.mod_dns_rg, azurerm_user_assigned_identity.user_assigned_identity]
   source     = "azure/avm-res-storage-storageaccount/azurerm"
   version    = "0.2.7"
 
