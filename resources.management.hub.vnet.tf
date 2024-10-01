@@ -40,13 +40,13 @@ module "hub_vnet" {
   } : null
 
   // VNet Diagnostic Settings
-  diagnostic_settings = {
+/*   diagnostic_settings = {
     sendToLogAnalytics = {
-      name                           = "sendToLogAnalytics"
+      name                           = "sendToLogAnalytics_nw"
       workspace_resource_id          = var.log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
-  }
+  } */
 
   # telemtry
   enable_telemetry = var.disable_telemetry

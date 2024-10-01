@@ -29,7 +29,7 @@ resource "azurerm_route" "force_internet_tunneling" {
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.routetable.name
   address_prefix         = "0.0.0.0/0"
-  next_hop_in_ip_address = module.hub_fw[0].resource.ip_configuration.private_ip_address
+  next_hop_in_ip_address = module.hub_fw[0].resource.ip_configuration[0].private_ip_address
   next_hop_type          = "VirtualAppliance"
 
   count = var.enable_firewall && var.enable_forced_tunneling ? 1 : 0
