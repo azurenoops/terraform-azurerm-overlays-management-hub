@@ -30,7 +30,7 @@ resource "azurerm_key_vault" "kv" {
 }
 
 resource "azurerm_key_vault_key" "kv_key" {
-  name         = "cmk_for_storage_account"
+  name         = "cmk-for-storage-account"
   key_vault_id = azurerm_key_vault.kv.id
   key_type     = "RSA"
   key_size     = 2048

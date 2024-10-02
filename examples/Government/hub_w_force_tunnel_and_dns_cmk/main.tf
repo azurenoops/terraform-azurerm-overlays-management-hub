@@ -41,7 +41,7 @@ module "mod_vnet_hub" {
   enable_customer_managed_key = true
   # Uncomment the following lines to enable Customer Managed Key for Azure Hub Storage Account
   key_vault_resource_id       = azurerm_key_vault.kv.id
-  key_name                    = "cmk_for_storage_account"
+  key_name                    = "cmk-for-storage-account"
 
   # (Required) Hub Subnets
   # Default Subnets, Service Endpoints
