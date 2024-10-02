@@ -20,7 +20,7 @@ resource "azurerm_log_analytics_workspace" "laws" {
 }
 
 resource "azurerm_key_vault" "kv" {
-  name                = "examplekv"
+  name                = "kv-${var.default_location}-${var.org_name}"
   location            = var.default_location
   resource_group_name = azurerm_resource_group.laws_rg.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
@@ -30,7 +30,7 @@ resource "azurerm_key_vault" "kv" {
 }
 
 resource "azurerm_key_vault_key" "kv_key" {
-  name         = "tfex-key"
+  name         = "cmk_for_storage_account"
   key_vault_id = azurerm_key_vault.kv.id
   key_type     = "RSA"
   key_size     = 2048
