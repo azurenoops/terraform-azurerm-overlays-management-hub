@@ -154,6 +154,10 @@ output "hub_storage_account_name" {
   value       = module.hub_st.name
 }
 
+output "hub_storage_account_prinicpal_id" {
+  value = azurerm_user_assigned_identity.user_assigned_identity[0].id
+}
+
 output "public_ip_prefix_id" {
   description = "The id of the Public IP Prefix resource"
   value       = var.enable_firewall ? azurerm_public_ip_prefix.firewall_pref[0].id : null

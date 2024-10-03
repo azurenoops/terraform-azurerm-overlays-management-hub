@@ -10,39 +10,50 @@ DESCRIPTION: The following components will be options in this deployment
 AUTHOR/S: jrspinella
 */
 
-resource "azurerm_route_table" "routetable" {
+module "hub_route_table" {
+  source  = "azure/avm-res-network-routetable/azurerm"
+  version = "0.3.0"
+
+  //Globals
   name                          = local.hub_rt_name
   resource_group_name           = local.resource_group_name
   location                      = local.location
   bgp_route_propagation_enabled = var.disable_bgp_route_propagation
-  tags                          = merge({ "ResourceName" = "route-network-outbound" }, local.default_tags, var.add_tags, )
-}
 
-resource "azurerm_subnet_route_table_association" "rtassoc" {
-  for_each       = var.hub_subnets
-  subnet_id      = azurerm_subnet.default_snet[each.key].id
-  route_table_id = azurerm_route_table.routetable.id
-}
+  # Routes
+  routes = {
+    for_each = var.route_table_routes
+    "default-route-${each.value.route_name}" = {
+      name                   = lower(format("route-to-firewall-%s", each.value.route_name))
+      address_prefix         = each.value.address_prefix
+      next_hop_type          = each.value.next_hop_type
+      next_hop_in_ip_address = each.value.next_hop_in_ip_address
+    },
+    force_internet_tunneling = var.enable_firewall && var.enable_forced_tunneling ? {
+      name                   = lower(format("route-to-firewall-%s", local.hub_vnet_name))
+      address_prefix         = "0.0.0.0/0"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = module.hub_fw[0].resource.ip_configuration[0].private_ip_address
+    } : null,
+  }
 
-resource "azurerm_route" "force_internet_tunneling" {
-  name                   = lower(format("route-to-firewall-%s", local.hub_vnet_name))
-  resource_group_name    = local.resource_group_name
-  route_table_name       = azurerm_route_table.routetable.name
-  address_prefix         = "0.0.0.0/0"
-  next_hop_in_ip_address = module.hub_fw[0].resource.ip_configuration[0].private_ip_address
-  next_hop_type          = "VirtualAppliance"
+  # Subnet Assoc
+  subnet_resource_ids = {
+    for_each             = var.hub_subnets
+    "subnet-${each.key}" = azurerm_subnet.default_snet[each.key].id
+  }
 
-  count = var.enable_firewall && var.enable_forced_tunneling ? 1 : 0
-}
+  # Resource Lock
+  lock = var.enable_resource_locks ? {
+    name = "${local.ddos_plan_name}-${var.lock_level}-lock"
+    kind = var.lock_level
+  } : null
 
-resource "azurerm_route" "route" {
-  for_each               = var.route_table_routes
-  name                   = lower(format("route-to-firewall-%s", each.value.route_name))
-  resource_group_name    = local.resource_group_name
-  route_table_name       = azurerm_route_table.routetable.name
-  address_prefix         = each.value.address_prefix
-  next_hop_type          = each.value.next_hop_type
-  next_hop_in_ip_address = each.value.next_hop_in_ip_address
+  # telemtry
+  enable_telemetry = var.disable_telemetry
+
+  # tags
+  tags = merge({ "ResourceName" = format("%s", local.ddos_plan_name) }, local.default_tags, var.add_tags, )
 }
 
 # Encrypted Transport Route Table
@@ -64,7 +75,7 @@ resource "azurerm_subnet_route_table_association" "afw_rtassoc" {
 }
 
 resource "azurerm_route" "afw_route" {
-  name                   = lower(format("route-to-afw-subnet-%s",local.location))
+  name                   = lower(format("route-to-afw-subnet-%s", local.location))
   resource_group_name    = local.resource_group_name
   route_table_name       = azurerm_route_table.afw_routetable[0].name
   address_prefix         = var.encrypted_transport_address_prefix

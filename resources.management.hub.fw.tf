@@ -71,7 +71,7 @@ module "hub_firewall_client_pip" {
   // FW PIP Diagnostic Settings
   diagnostic_settings = {
     sendToLogAnalytics = {
-      name                           = "sendToLogAnalytics"
+      name                           = format("sendToLogAnalytics_%s_fwpip", var.workload_name)
       workspace_resource_id          = var.log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
@@ -104,7 +104,7 @@ module "hub_firewall_management_pip" {
   // FW PIP Diagnostic Settings
   diagnostic_settings = {
     sendToLogAnalytics = {
-      name                           = "sendToLogAnalytics"
+      name                           = format("sendToLogAnalytics_%s_fwmgtpip", var.workload_name)
       workspace_resource_id          = var.log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
@@ -195,7 +195,7 @@ module "hub_fw" {
   // Bastion Diagnostic Settings
   diagnostic_settings = {
     sendToLogAnalytics = {
-      name                           = "sendToLogAnalytics_fw"
+      name                           = format("sendToLogAnalytics_%s_fw", var.workload_name)
       workspace_resource_id          = var.log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }

@@ -55,15 +55,6 @@ module "nsg" {
   location            = local.location
   tags                = merge({ "ResourceName" = lower("nsg_${each.key}") }, local.default_tags, var.add_tags, )
 
-  // VNet Diagnostic Settings
-  diagnostic_settings = {
-    sendToLogAnalytics = {
-      name                           = "sendToLogAnalytics"
-      workspace_resource_id          = var.log_analytics_workspace_resource_id
-      log_analytics_destination_type = "Dedicated"
-    }
-  }
-
   security_rules =  each.value.nsg_subnet_rules 
 }
 

@@ -112,7 +112,7 @@ module "hub_bastion_host" {
   // Bastion Diagnostic Settings
   diagnostic_settings = {
     sendToLogAnalytics = {
-      name                           = "sendToLogAnalytics_bastion"
+      name                           = format("sendToLogAnalytics_%s_bastion", var.workload_name)
       workspace_resource_id          = var.log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
