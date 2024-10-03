@@ -29,7 +29,7 @@ module "mod_vnet_diagnostic_settings" {
 
 
   resource_id           = module.hub_vnet.vnet_resource.id
-  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.id]
+  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.resource.id]
 }
 
 module "mod_nsg_diagnostic_settings" {
@@ -45,6 +45,6 @@ module "mod_nsg_diagnostic_settings" {
   org_name           = var.org_name
   workload_name      = format("sendToLogAnalytics_%s_nsg", var.workload_name)
 
-  resource_id           = azurerm_network_security_group.nsg[each.key].id
-  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.id]
+  resource_id           = module.nsg[each.key].resource.id
+  logs_destinations_ids = [var.log_analytics_workspace_resource_id, module.hub_st.resource.id]
 }
