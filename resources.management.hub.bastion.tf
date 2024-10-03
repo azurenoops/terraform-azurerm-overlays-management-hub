@@ -58,7 +58,7 @@ module "hub_bastion_pip" {
   // Bastion PIP Diagnostic Settings
   diagnostic_settings = {
     sendToLogAnalytics = {
-      name                           = "sendToLogAnalytics"
+      name                           = format("sendToLogAnalytics_%s_bastionpip", var.workload_name)
       workspace_resource_id          = var.log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
