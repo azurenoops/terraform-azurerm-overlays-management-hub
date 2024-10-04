@@ -27,27 +27,6 @@ resource "azurerm_key_vault" "kv" {
   sku_name            = "standard"
 
   purge_protection_enabled = true
-
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
-
-    secret_permissions = [
-      "Get",
-      "Delete"
-    ]
-
-    storage_permissions = [
-      "Get",
-      "List",
-      "Set",
-      "SetSAS",
-      "GetSAS",
-      "DeleteSAS",
-      "Update",
-      "RegenerateKey"
-    ]
-  }
 }
 
 resource "azurerm_key_vault_key" "kv_key" {
@@ -62,5 +41,43 @@ resource "azurerm_key_vault_key" "kv_key" {
     "unwrapKey",
     "verify",
     "wrapKey"
+  ]
+}
+
+resource "azurerm_key_vault_access_policy" "storage" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = module.mod_vnet_hub.hub_storage_account_principal_id
+
+  secret_permissions = ["Get"]
+  key_permissions = [
+    "Get",
+    "UnwrapKey",
+    "WrapKey"
+  ]
+}
+
+resource "azurerm_key_vault_access_policy" "client" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
+
+  secret_permissions = ["Get"]
+  key_permissions = [
+    "Get",
+    "Create",
+    "Delete",
+    "List",
+    "Restore",
+    "Recover",
+    "UnwrapKey",
+    "WrapKey",
+    "Purge",
+    "Encrypt",
+    "Decrypt",
+    "Sign",
+    "Verify",
+    "GetRotationPolicy",
+    "SetRotationPolicy"
   ]
 }

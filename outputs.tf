@@ -154,7 +154,7 @@ output "hub_storage_account_name" {
   value       = module.hub_st.name
 }
 
-output "hub_storage_account_prinicpal_id" {
+output "hub_storage_account_principal_id" {
   value = azurerm_user_assigned_identity.user_assigned_identity[0].principal_id
 }
 
