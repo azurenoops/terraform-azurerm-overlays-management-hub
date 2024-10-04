@@ -66,7 +66,7 @@ module "hub_st" {
   role_assignments = {
     role_assignment_uai = {
       role_definition_id_or_name       = "Storage Blob Data Contributor"
-      principal_id                     = coalesce(azurerm_user_assigned_identity.user_assigned_identity[0].id, data.azurerm_client_config.current.object_id)
+      principal_id                     = coalesce(azurerm_user_assigned_identity.user_assigned_identity[0].principal_id, data.azurerm_client_config.current.object_id)
       skip_service_principal_aad_check = false
     },
     role_assignment_current_user = {
