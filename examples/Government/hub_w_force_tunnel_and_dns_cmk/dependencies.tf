@@ -27,6 +27,8 @@ resource "azurerm_key_vault" "kv" {
   sku_name            = "standard"
 
   purge_protection_enabled = true
+
+  access_policy = [ azurerm_key_vault_access_policy.client, azurerm_key_vault_access_policy.storage ]  
 }
 
 resource "azurerm_key_vault_key" "kv_key" {
