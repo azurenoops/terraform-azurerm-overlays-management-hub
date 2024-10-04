@@ -45,7 +45,7 @@ module "hub_firewall_policy" {
   } : null
 
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 }
 
 module "hub_fw_app_rule_collection_group" {

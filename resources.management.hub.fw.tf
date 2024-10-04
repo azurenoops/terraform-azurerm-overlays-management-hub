@@ -78,7 +78,7 @@ module "hub_firewall_client_pip" {
   }
 
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 }
 
 module "hub_firewall_management_pip" {
@@ -111,7 +111,7 @@ module "hub_firewall_management_pip" {
   }
 
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 }
 
 #-----------------

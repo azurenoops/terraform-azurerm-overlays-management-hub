@@ -65,7 +65,7 @@ module "hub_bastion_pip" {
   }
 
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 
   # Tags
   tags = merge({ "ResourceName" = local.bastion_pip_name }, local.default_tags, var.add_tags, )
@@ -119,7 +119,7 @@ module "hub_bastion_host" {
   }
 
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 
   # tags
   tags = merge({ "ResourceName" = format("%s", local.bastion_name) }, local.default_tags, var.add_tags, )

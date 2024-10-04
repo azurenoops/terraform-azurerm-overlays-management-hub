@@ -40,7 +40,7 @@ module "hub_vnet" {
   } : null
 
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 
   tags = merge({ "ResourceName" = format("%s", local.hub_vnet_name) }, local.default_tags, var.add_tags, )
 }
@@ -63,7 +63,7 @@ module "hub_vnet_ddos" {
   } : null
 
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 
   tags = merge({ "ResourceName" = format("%s", local.ddos_plan_name) }, local.default_tags, var.add_tags, )
 }

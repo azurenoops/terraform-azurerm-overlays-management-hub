@@ -31,8 +31,8 @@ variable "org_name" {
   type        = string
 }
 
-variable "disable_telemetry" {
-  description = "If set to true, will disable the telemetry sent as part of the module."
+variable "enable_telemetry" {
+  description = "If set to true, will enable the telemetry sent as part of the module."
   type        = string
   default     = true
 }
