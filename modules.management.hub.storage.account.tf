@@ -15,9 +15,10 @@ module "hub_st" {
   location            = local.location
 
   // Account 
-  account_kind             = var.hub_storage_account_kind
-  account_tier             = var.hub_storage_account_tier
-  account_replication_type = var.hub_storage_account_replication_type
+  account_kind              = var.hub_storage_account_kind
+  account_tier              = var.hub_storage_account_tier
+  account_replication_type  = var.hub_storage_account_replication_type
+  shared_access_key_enabled = true
 
   // Marked as true for PE
   public_network_access_enabled = true
@@ -46,16 +47,19 @@ module "hub_st" {
   } : null
 
   # Managed Idenities
-  managed_identities = {
+  managed_identities = var.enable_customer_managed_key ? {
     system_assigned            = true
     user_assigned_resource_ids = [azurerm_user_assigned_identity.user_assigned_identity[0].id]
+  } : {
+      system_assigned            = true
+      user_assigned_resource_ids = [var.hub_storage_user_assigned_resource_ids]
   }
 
   # Customer Managed Key
   customer_managed_key = var.enable_customer_managed_key ? {
-    key_vault_resource_id              = var.key_vault_resource_id
-    key_name                           = var.key_name
-    user_assigned_identity             = { resource_id = azurerm_user_assigned_identity.user_assigned_identity[0].id }
+    key_vault_resource_id  = var.key_vault_resource_id
+    key_name               = var.key_name
+    user_assigned_identity = { resource_id = azurerm_user_assigned_identity.user_assigned_identity[0].id }
   } : null
 
   # Role Assignments
@@ -104,7 +108,7 @@ module "hub_st" {
 
 # Create a User Assigned Identity for Azure Encryption
 resource "azurerm_user_assigned_identity" "user_assigned_identity" {
-  count = var.enable_customer_managed_key ? 1 : 0
+  count               = var.enable_customer_managed_key ? 1 : 0
   location            = local.location
   resource_group_name = local.resource_group_name
   name                = "hub_sa_usi"
