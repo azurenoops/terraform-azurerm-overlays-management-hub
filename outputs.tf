@@ -155,7 +155,7 @@ output "hub_storage_account_name" {
 }
 
 output "hub_storage_account_prinicpal_id" {
-  value = azurerm_user_assigned_identity.user_assigned_identity[0].id
+  value = azurerm_user_assigned_identity.user_assigned_identity[0].principal_id
 }
 
 output "public_ip_prefix_id" {
