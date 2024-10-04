@@ -115,12 +115,12 @@ output "network_watcher_id" {
 
 output "route_table_name" {
   description = "The name of the route table"
-  value       = azurerm_route_table.routetable.name
+  value       = module.hub_route_table.name
 }
 
 output "route_table_id" {
   description = "The resource id of the route table"
-  value       = azurerm_route_table.routetable.id
+  value       = module.hub_route_table.resource_id
 }
 
 output "private_dns_zone_resource_group_name" {
