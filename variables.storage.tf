@@ -69,6 +69,6 @@ EOT
 variable "hub_storage_user_assigned_resource_ids" {
   description = "This is to assign user assigned identities. This is not used for Customer Managed Keys."
   type = list(string)
-  default = [ ]
+  default = null
   
 }

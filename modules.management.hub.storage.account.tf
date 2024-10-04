@@ -52,7 +52,7 @@ module "hub_st" {
     user_assigned_resource_ids = [azurerm_user_assigned_identity.user_assigned_identity[0].id]
   } : {
       system_assigned            = true
-      user_assigned_resource_ids = [var.hub_storage_user_assigned_resource_ids]
+      user_assigned_resource_ids = length(var.hub_storage_user_assigned_resource_ids) > 0 ? var.hub_storage_user_assigned_resource_ids : []
   }
 
   # Customer Managed Key
