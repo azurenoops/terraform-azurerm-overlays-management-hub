@@ -59,7 +59,7 @@ module "hub_bastion_pip" {
   diagnostic_settings = {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_bastionpip", var.workload_name)
-      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
   }
@@ -113,7 +113,7 @@ module "hub_bastion_host" {
   diagnostic_settings = {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_bastion", var.workload_name)
-      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
   }

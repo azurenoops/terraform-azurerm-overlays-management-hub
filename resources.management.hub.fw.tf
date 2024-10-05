@@ -72,7 +72,7 @@ module "hub_firewall_client_pip" {
   diagnostic_settings = {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_fwpip", var.workload_name)
-      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
   }
@@ -105,7 +105,7 @@ module "hub_firewall_management_pip" {
   diagnostic_settings = {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_fwmgtpip", var.workload_name)
-      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
   }
@@ -196,7 +196,7 @@ module "hub_fw" {
   diagnostic_settings = {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_fw", var.workload_name)
-      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
   }

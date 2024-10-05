@@ -38,8 +38,8 @@ module "mod_vnet_hub" {
   firewall_management_snet_address_prefix = var.fw_management_snet_address_prefixes # (Optional)  Hub Firewall Management Subnet Parameters
 
   # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
-  log_analytics_workspace_resource_id = data.azurerm_log_analytics_workspace.log_analytics.id
-  log_analytics_workspace_id          = data.azurerm_log_analytics_workspace.log_analytics.workspace_id
+  existing_log_analytics_workspace_resource_id = data.azurerm_log_analytics_workspace.log_analytics.id
+  existing_log_analytics_workspace_id          = data.azurerm_log_analytics_workspace.log_analytics.workspace_id
 
   # (Optional) Enable DDos Protection Plan
   create_ddos_plan = var.create_ddos_plan

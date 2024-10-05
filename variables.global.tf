@@ -63,13 +63,13 @@ variable "existing_resource_group_name" {
 # LAW Configuration  ##
 #######################
 
-variable "log_analytics_workspace_id" {
+variable "existing_log_analytics_workspace_id" {
   description = "Log Analytics Workspace ID"
   type        = string
   default = null
 }
 
-variable "log_analytics_workspace_resource_id" {
+variable "existing_log_analytics_workspace_resource_id" {
   description = "Log Analytics Workspace Resource ID"
   type        = string
   default = null

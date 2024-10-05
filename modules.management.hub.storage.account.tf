@@ -93,7 +93,7 @@ module "hub_st" {
   diagnostic_settings_blob = {
     sendToLogAnalytics = {
       name                           = "sendToLogAnalytics_storage"
-      workspace_resource_id          = var.log_analytics_workspace_resource_id
+      workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
   }
