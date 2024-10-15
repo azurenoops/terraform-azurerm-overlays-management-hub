@@ -19,7 +19,7 @@ AUTHOR/S: jrspinella
 #----------------------------------------------
 module "hub_firewall_policy" {
   source  = "azure/avm-res-network-firewallpolicy/azurerm"
-  version = "0.1.1"
+  version = "0.1.3"
   count   = var.enable_firewall ? 1 : 0
 
   # Resource Group
@@ -45,13 +45,13 @@ module "hub_firewall_policy" {
   } : null
 
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 }
 
 module "hub_fw_app_rule_collection_group" {
   depends_on = [module.hub_firewall_policy]
   source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
-  version    = "0.1.1"
+  version    = "0.1.3"
 
   count = var.enable_firewall ? 1 : 0
 
@@ -66,7 +66,7 @@ module "hub_fw_app_rule_collection_group" {
 module "hub_fw_nat_rule_collection_group" {
   depends_on = [module.hub_firewall_policy]
   source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
-  version    = "0.1.1"
+  version    = "0.1.3"
 
   count = var.enable_firewall ? 1 : 0
 
@@ -81,7 +81,7 @@ module "hub_fw_nat_rule_collection_group" {
 module "hub_fw_nw_rule_collection_group" {
   depends_on = [module.hub_firewall_policy]
   source     = "azure/avm-res-network-firewallpolicy/azurerm//modules/rule_collection_groups"
-  version    = "0.1.1"
+  version    = "0.1.3"
 
   count = var.enable_firewall ? 1 : 0
 

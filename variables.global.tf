@@ -31,8 +31,8 @@ variable "org_name" {
   type        = string
 }
 
-variable "disable_telemetry" {
-  description = "If set to true, will disable the telemetry sent as part of the module."
+variable "enable_telemetry" {
+  description = "If set to true, will enable the telemetry sent as part of the module."
   type        = string
   default     = true
 }
@@ -63,13 +63,13 @@ variable "existing_resource_group_name" {
 # LAW Configuration  ##
 #######################
 
-variable "log_analytics_workspace_id" {
+variable "existing_log_analytics_workspace_id" {
   description = "Log Analytics Workspace ID"
   type        = string
   default = null
 }
 
-variable "log_analytics_workspace_resource_id" {
+variable "existing_log_analytics_workspace_resource_id" {
   description = "Log Analytics Workspace Resource ID"
   type        = string
   default = null

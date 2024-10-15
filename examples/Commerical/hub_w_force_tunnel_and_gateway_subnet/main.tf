@@ -44,8 +44,8 @@ module "mod_vnet_hub" {
   hub_subnets = var.hub_subnets
 
   # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
-  log_analytics_workspace_resource_id = azurerm_resource_group.laws_rg.id
-  log_analytics_workspace_id          = azurerm_log_analytics_workspace.laws.workspace_id
+  existing_log_analytics_workspace_resource_id = azurerm_resource_group.laws_rg.id
+  existing_log_analytics_workspace_id          = azurerm_log_analytics_workspace.laws.workspace_id
 
   # (Optional) Enable Flow Logs
   # By default, this will enable flow logs for all subnets.

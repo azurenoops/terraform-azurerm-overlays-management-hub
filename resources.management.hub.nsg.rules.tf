@@ -8,7 +8,7 @@ resource "azurerm_network_security_rule" "http_inbound" {
   resource_group_name         = local.resource_group_name
   access                      = "Allow"
   direction                   = "Inbound"
-  network_security_group_name = azurerm_network_security_group.nsg.*.name
+  network_security_group_name = module.nsg.*.name
   priority                    = 4000
   protocol                    = "Tcp"
   source_port_range           = "*"
@@ -25,7 +25,7 @@ resource "azurerm_network_security_rule" "https_inbound" {
   resource_group_name         = local.resource_group_name
   access                      = "Allow"
   direction                   = "Inbound"
-  network_security_group_name = azurerm_network_security_group.nsg.*.name
+  network_security_group_name = module.nsg.*.name
   priority                    = 4001
   protocol                    = "Tcp"
   source_port_range           = "*"
@@ -42,7 +42,7 @@ resource "azurerm_network_security_rule" "ssh_inbound" {
   resource_group_name         = local.resource_group_name
   access                      = "Allow"
   direction                   = "Inbound"
-  network_security_group_name = azurerm_network_security_group.nsg.*.name
+  network_security_group_name = module.nsg.*.name
   priority                    = 4002
   protocol                    = "Tcp"
   source_port_range           = "*"
@@ -59,7 +59,7 @@ resource "azurerm_network_security_rule" "rdp_inbound" {
   resource_group_name         = local.resource_group_name
   access                      = "Allow"
   direction                   = "Inbound"
-  network_security_group_name = azurerm_network_security_group.nsg.*.name
+  network_security_group_name = module.nsg.*.name
   priority                    = 4003
   protocol                    = "Tcp"
   source_port_range           = "*"
@@ -76,7 +76,7 @@ resource "azurerm_network_security_rule" "winrm_inbound" {
   resource_group_name         = local.resource_group_name
   access                      = "Allow"
   direction                   = "Inbound"
-  network_security_group_name = azurerm_network_security_group.nsg.*.name
+  network_security_group_name = module.nsg.*.name
   priority                    = 4004
   protocol                    = "Tcp"
   source_port_range           = "*"
@@ -93,7 +93,7 @@ resource "azurerm_network_security_rule" "appgw_health_probe_inbound" {
   resource_group_name         = local.resource_group_name
   access                      = "Allow"
   direction                   = "Inbound"
-  network_security_group_name = azurerm_network_security_group.nsg.*.name
+  network_security_group_name = module.nsg.*.name
   priority                    = 4005
   protocol                    = "Tcp"
   source_port_range           = "*"
@@ -109,7 +109,7 @@ resource "azurerm_network_security_rule" "lb_health_probe_inbound" {
   resource_group_name         = local.resource_group_name
   access                      = "Allow"
   direction                   = "Inbound"
-  network_security_group_name = azurerm_network_security_group.nsg.*.name
+  network_security_group_name = module.nsg.*.name
   priority                    = 4006
   protocol                    = "Tcp"
   source_port_range           = "*"
@@ -125,7 +125,7 @@ resource "azurerm_network_security_rule" "nfs_inbound" {
   resource_group_name         = local.resource_group_name
   access                      = "Allow"
   direction                   = "Inbound"
-  network_security_group_name = azurerm_network_security_group.nsg.*.name
+  network_security_group_name = module.nsg.*.name
   priority                    = 4007
   protocol                    = "*"
   source_port_range           = "*"
@@ -142,7 +142,7 @@ resource "azurerm_network_security_rule" "cifs_inbound" {
   resource_group_name         = local.resource_group_name
   access                      = "Allow"
   direction                   = "Inbound"
-  network_security_group_name = azurerm_network_security_group.nsg.*.name
+  network_security_group_name = module.nsg.*.name
   priority                    = 4008
   protocol                    = "*"
   source_port_range           = "*"

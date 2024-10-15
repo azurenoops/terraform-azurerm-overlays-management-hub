@@ -29,7 +29,7 @@ resource "azurerm_subnet" "abs_snet" {
   resource_group_name                           = local.resource_group_name
   virtual_network_name                          = module.hub_vnet.vnet_resource.name
   address_prefixes                              = var.azure_bastion_subnet_address_prefix
-  private_endpoint_network_policies_enabled     = true
+  private_endpoint_network_policies             = "Enabled"
   private_link_service_network_policies_enabled = true
 }
 
@@ -38,7 +38,7 @@ resource "azurerm_subnet" "abs_snet" {
 #---------------------------------------------
 module "hub_bastion_pip" {
   source  = "azure/avm-res-network-publicipaddress/azurerm"
-  version = "0.1.0"
+  version = "0.1.2"
 
   count               = var.enable_bastion_host ? 1 : 0
   name                = local.bastion_pip_name
@@ -55,8 +55,17 @@ module "hub_bastion_pip" {
     kind = var.lock_level
   } : null
 
+  // Bastion PIP Diagnostic Settings
+  diagnostic_settings = {
+    sendToLogAnalytics = {
+      name                           = format("sendToLogAnalytics_%s_bastionpip", var.workload_name)
+      workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
+      log_analytics_destination_type = "Dedicated"
+    }
+  }
+
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 
   # Tags
   tags = merge({ "ResourceName" = local.bastion_pip_name }, local.default_tags, var.add_tags, )
@@ -100,8 +109,17 @@ module "hub_bastion_host" {
     kind = var.lock_level
   } : null
 
+  // Bastion Diagnostic Settings
+  diagnostic_settings = {
+    sendToLogAnalytics = {
+      name                           = format("sendToLogAnalytics_%s_bastion", var.workload_name)
+      workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
+      log_analytics_destination_type = "Dedicated"
+    }
+  }
+
   # telemtry
-  enable_telemetry = var.disable_telemetry
+  enable_telemetry = var.enable_telemetry
 
   # tags
   tags = merge({ "ResourceName" = format("%s", local.bastion_name) }, local.default_tags, var.add_tags, )

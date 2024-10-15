@@ -89,7 +89,7 @@ output "network_security_group_ids" {
   description = "Map of ids for default NSGs"
   value = { for key, id in zipmap(
     sort(keys(var.hub_subnets)),
-    sort(values(azurerm_network_security_group.nsg)[*]["id"])) :
+    sort(values(module.nsg)[*]["resource_id"])) :
   key => { key = key, id = id } }
 }
 
@@ -97,7 +97,7 @@ output "network_security_group_names" {
   description = "Map of names for default NSGs"
   value = { for key, name in zipmap(
     sort(keys(var.hub_subnets)),
-    sort(values(azurerm_network_security_group.nsg)[*]["name"])) :
+    sort(values(module.nsg)[*]["name"])) :
   key => { key = key, name = name } }
 }
 
@@ -146,12 +146,16 @@ output "private_dns_zone_names" {
 
 output "hub_storage_account_id" {
   description = "The ID of the storage account."
-  value       = module.hub_st.id
+  value       = module.hub_st.resource_id
 }
 
 output "hub_storage_account_name" {
   description = "The name of the storage account."
   value       = module.hub_st.name
+}
+
+output "hub_storage_account_principal_id" {
+  value = azurerm_user_assigned_identity.user_assigned_identity[0].principal_id
 }
 
 output "public_ip_prefix_id" {
@@ -171,17 +175,17 @@ output "firewall_management_public_ip" {
 
 output "firewall_private_ip" {
   description = "The private ip of firewall."
-  value       = var.enable_firewall ? azurerm_firewall.fw[0].ip_configuration[0].private_ip_address : null
+  value       = var.enable_firewall ? module.hub_fw[0].resource.ip_configuration[0].private_ip_address : null
 }
 
 output "firewall_id" {
   description = "The Resource ID of the Azure Firewall."
-  value       = var.enable_firewall ? azurerm_firewall.fw[0].id : null
+  value       = var.enable_firewall ? module.hub_fw[0].resource_id : null
 }
 
 output "firewall_name" {
   description = "The name of the Azure Firewall."
-  value       = var.enable_firewall ? azurerm_firewall.fw[0].name : null
+  value       = var.enable_firewall ? module.hub_fw[0].resource.name : null
 }
 
 output "firewall_dns_servers" {

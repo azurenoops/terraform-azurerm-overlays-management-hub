@@ -10,7 +10,7 @@ AUTHOR/S: jrspinella
 
 module "mod_default_pdz" {
   source     = "azurenoops/overlays-private-dns-zone/azurerm"
-  version    = "~> 1.0"
+  version    = "1.0.2"
   depends_on = [module.mod_dns_rg]
 
   for_each = toset(concat(local.if_default_private_dns_zones_enabled, var.private_dns_zones))
@@ -30,4 +30,35 @@ module "mod_default_pdz" {
   ]
   add_tags = merge({ "ResourceName" = format("%s", lower(each.key)) }, local.default_tags, var.add_tags, )
 }
+
+/* module "mod_default_pdz" {
+  source  = "Azure/avm-ptn-network-private-link-private-dns-zones/azurerm"
+  version = "0.4.0"
+  depends_on = [module.mod_dns_rg]
+
+  for_each = toset(concat(local.if_default_private_dns_zones_enabled, var.private_dns_zones))
+
+  // Globals
+  location            = module.mod_azregions.location_cli
+  resource_group_name = module.mod_dns_rg[0].resource_group_name
+
+  // Creatre new RG
+  resource_group_creation_enabled = false
+
+  //
+  private_link_private_dns_zones = each.key
+
+  // Virutal Netowrk Links
+  virtual_network_resource_ids_to_link_to = {
+    "vnet1_${each.key}" = {
+      vnet_resource_id = module.hub_vnet.vnet_resource.id
+    }
+  }
+
+  # telemtry
+  enable_telemetry = var.enable_telemetry
+
+  # Tags
+  tags = merge({ "ResourceName" = format("%s", lower(each.key)) }, local.default_tags, var.add_tags, )
+} */
 

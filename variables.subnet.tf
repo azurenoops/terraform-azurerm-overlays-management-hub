@@ -12,7 +12,7 @@ variable "hub_subnets" {
     name                                       = string
     address_prefixes                           = list(string)
     service_endpoints                          = list(string)
-    private_endpoint_network_policies_enabled  = bool
+    private_endpoint_network_policies_enabled  = string
     private_endpoint_service_endpoints_enabled = bool
 
     # Delegation block - see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet#delegation
@@ -25,7 +25,7 @@ variable "hub_subnets" {
     }))
 
     #Subnet NSG rules - see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group#security_rule
-    nsg_subnet_rules = optional(list(object({
+    nsg_subnet_rules = optional(map(object({
       name                                       = string
       description                                = string
       priority                                   = number
