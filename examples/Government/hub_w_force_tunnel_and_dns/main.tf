@@ -8,9 +8,6 @@ module "mod_vnet_hub" {
 
   depends_on = [ azurerm_log_analytics_workspace.laws ]
 
-  ################################
-  # Landing Zone Configuration  ##
-  ################################
   ####################################
   # Management Hub Virtual Network  ##
   ####################################

@@ -26,9 +26,7 @@ resource "azurerm_key_vault" "kv" {
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "standard"
 
-  purge_protection_enabled = true
-
-  access_policy = [ azurerm_key_vault_access_policy.client, azurerm_key_vault_access_policy.storage ]  
+  purge_protection_enabled = true 
 }
 
 resource "azurerm_key_vault_key" "kv_key" {
