@@ -26,7 +26,7 @@ module "mod_default_pdz" {
   private_dns_zone_name        = each.key
   existing_resource_group_name = module.mod_dns_rg[0].resource_group_name
   private_dns_zone_vnets_ids = [
-    module.hub_vnet.vnet_resource.id,
+    module.hub_vnet.resource_id,
   ]
   add_tags = merge({ "ResourceName" = format("%s", lower(each.key)) }, local.default_tags, var.add_tags, )
 }

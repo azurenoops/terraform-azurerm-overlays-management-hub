@@ -8,9 +8,6 @@ module "mod_vnet_hub" {
 
   depends_on = [ azurerm_log_analytics_workspace.laws, azurerm_key_vault.kv, azurerm_key_vault_key.kv_key]
 
-  ################################
-  # Landing Zone Configuration  ##
-  ################################
   ####################################
   # Management Hub Virtual Network  ##
   ####################################
@@ -42,7 +39,7 @@ module "mod_vnet_hub" {
   # Uncomment the following lines to enable Customer Managed Key for Azure Hub Storage Account
   key_vault_resource_id       = azurerm_key_vault.kv.id
   key_name                    = "cmk-for-storage-account"
-
+  
   # (Required) Hub Subnets
   # Default Subnets, Service Endpoints
   # This is the default subnet with required configuration, check README.md for more details

@@ -15,7 +15,7 @@ resource "azurerm_subnet" "firewall_client_snet" {
   count                                         = var.enable_firewall ? 1 : 0
   name                                          = "AzureFirewallSubnet"
   resource_group_name                           = local.resource_group_name
-  virtual_network_name                          = module.hub_vnet.vnet_resource.name
+  virtual_network_name                          = module.hub_vnet.name
   address_prefixes                              = var.firewall_subnet_address_prefix
   service_endpoints                             = var.firewall_snet_service_endpoints
   private_endpoint_network_policies             = var.firewall_snet_private_endpoint_network_policies_enabled
@@ -29,7 +29,7 @@ resource "azurerm_subnet" "firewall_management_snet" {
   count                                         = (var.enable_firewall && var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? 1 : 0
   name                                          = "AzureFirewallManagementSubnet"
   resource_group_name                           = local.resource_group_name
-  virtual_network_name                          = module.hub_vnet.vnet_resource.name
+  virtual_network_name                          = module.hub_vnet.name
   address_prefixes                              = var.firewall_management_snet_address_prefix
   service_endpoints                             = var.firewall_management_snet_service_endpoints
   private_endpoint_network_policies             = var.firewall_management_snet_private_endpoint_network_policies_enabled

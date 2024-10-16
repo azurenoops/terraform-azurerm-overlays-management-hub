@@ -6,10 +6,6 @@ module "mod_vnet_hub" {
   #version = "x.x.x"
   source = "../../.."
 
-  ################################
-  # Landing Zone Configuration  ##
-  ################################
-
   ####################################
   # Management Hub Virtual Network  ##
   ####################################
