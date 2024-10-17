@@ -35,7 +35,7 @@ module "mod_vnet_hub" {
   create_ddos_plan = var.create_ddos_plan
 
   # (Optional) Enable Customer Managed Key for Azure Storage Account
-  enable_customer_managed_key = true
+  enable_customer_managed_keys = true
   # Uncomment the following lines to enable Customer Managed Key for Azure Hub Storage Account
   key_vault_resource_id       = azurerm_key_vault.kv.id
   key_name                    = "cmk-for-storage-account"
