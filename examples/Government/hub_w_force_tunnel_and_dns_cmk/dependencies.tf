@@ -20,13 +20,27 @@ resource "azurerm_log_analytics_workspace" "laws" {
 }
 
 resource "azurerm_key_vault" "kv" {
-  name                = "kv-${var.default_location}-${var.org_name}"
-  location            = var.default_location
-  resource_group_name = azurerm_resource_group.laws_rg.name
-  tenant_id           = data.azurerm_client_config.current.tenant_id
-  sku_name            = "standard"
+  name                      = "kv-${var.default_location}-${var.org_name}"
+  location                  = var.default_location
+  resource_group_name       = azurerm_resource_group.laws_rg.name
+  tenant_id                 = data.azurerm_client_config.current.tenant_id
+  sku_name                  = "standard"
+  enable_rbac_authorization = true
+  purge_protection_enabled  = false
+}
 
-  purge_protection_enabled = true 
+resource "azurerm_role_assignment" "kv_admin" {
+  depends_on           = [azurerm_key_vault.kv]
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "kv_crypto_officer" {
+  depends_on           = [azurerm_key_vault.kv]
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Crypto Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
 resource "azurerm_key_vault_key" "kv_key" {
@@ -41,43 +55,5 @@ resource "azurerm_key_vault_key" "kv_key" {
     "unwrapKey",
     "verify",
     "wrapKey"
-  ]
-}
-
-resource "azurerm_key_vault_access_policy" "storage" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = module.mod_vnet_hub.hub_storage_account_principal_id
-
-  secret_permissions = ["Get"]
-  key_permissions = [
-    "Get",
-    "UnwrapKey",
-    "WrapKey"
-  ]
-}
-
-resource "azurerm_key_vault_access_policy" "client" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
-
-  secret_permissions = ["Get"]
-  key_permissions = [
-    "Get",
-    "Create",
-    "Delete",
-    "List",
-    "Restore",
-    "Recover",
-    "UnwrapKey",
-    "WrapKey",
-    "Purge",
-    "Encrypt",
-    "Decrypt",
-    "Sign",
-    "Verify",
-    "GetRotationPolicy",
-    "SetRotationPolicy"
   ]
 }

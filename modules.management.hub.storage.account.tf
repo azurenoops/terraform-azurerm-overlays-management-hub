@@ -52,7 +52,7 @@ module "hub_st" {
     user_assigned_resource_ids = [azurerm_user_assigned_identity.user_assigned_identity[0].id]
     } : {
     system_assigned            = true
-    user_assigned_resource_ids = length(var.hub_storage_user_assigned_resource_ids) > 0 ? var.hub_storage_user_assigned_resource_ids : []
+    user_assigned_resource_ids = var.hub_storage_user_assigned_resource_ids != null ? var.hub_storage_user_assigned_resource_ids : []
   }
 
   # Customer Managed Key
@@ -73,12 +73,7 @@ module "hub_st" {
       role_definition_id_or_name       = "Owner"
       principal_id                     = data.azurerm_client_config.current.object_id
       skip_service_principal_aad_check = false
-    },
-    role_assignment_uai_cmk = var.enable_customer_managed_keys ? {
-      role_definition_id_or_name       = "Key Vault Crypto Officer"
-      principal_id                     = azurerm_user_assigned_identity.user_assigned_identity[0].principal_id
-      skip_service_principal_aad_check = false
-    } : null
+    }
   }
 
   # Blob Properties
@@ -117,4 +112,11 @@ resource "azurerm_user_assigned_identity" "user_assigned_identity" {
   location            = local.location
   resource_group_name = local.resource_group_name
   name                = "${local.hub_sa_name}-usi"
+}
+
+resource "azurerm_role_assignment" "kv_crypto_officer" {
+  count                = var.enable_customer_managed_keys ? 1 : 0
+  scope                = var.key_vault_resource_id
+  role_definition_name = "Key Vault Crypto Officer"
+  principal_id         = azurerm_user_assigned_identity.user_assigned_identity[0].principal_id
 }
