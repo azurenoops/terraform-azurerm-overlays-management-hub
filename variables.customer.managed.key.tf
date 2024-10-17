@@ -5,7 +5,7 @@
 # Local declarations
 #---------------------------------
 
-variable "enable_customer_managed_key" {
+variable "enable_customer_managed_keys" {
   type        = bool
   description = "Enable Customer Managed Key for Hub Storage Account."
   default     = false

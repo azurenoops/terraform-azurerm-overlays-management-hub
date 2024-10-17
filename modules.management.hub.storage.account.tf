@@ -47,16 +47,16 @@ module "hub_st" {
   } : null
 
   # Managed Idenities
-  managed_identities = var.enable_customer_managed_key ? {
+  managed_identities = var.enable_customer_managed_keys ? {
     system_assigned            = true
     user_assigned_resource_ids = [azurerm_user_assigned_identity.user_assigned_identity[0].id]
-  } : {
-      system_assigned            = true
-      user_assigned_resource_ids = length(var.hub_storage_user_assigned_resource_ids) > 0 ? var.hub_storage_user_assigned_resource_ids : []
+    } : {
+    system_assigned            = true
+    user_assigned_resource_ids = var.hub_storage_user_assigned_resource_ids != null ? var.hub_storage_user_assigned_resource_ids : []
   }
 
   # Customer Managed Key
-  customer_managed_key = var.enable_customer_managed_key ? {
+  customer_managed_key = var.enable_customer_managed_keys ? {
     key_vault_resource_id  = var.key_vault_resource_id
     key_name               = var.key_name
     user_assigned_identity = { resource_id = azurerm_user_assigned_identity.user_assigned_identity[0].id }
@@ -73,7 +73,7 @@ module "hub_st" {
       role_definition_id_or_name       = "Owner"
       principal_id                     = data.azurerm_client_config.current.object_id
       skip_service_principal_aad_check = false
-    },
+    }
   }
 
   # Blob Properties
@@ -108,8 +108,15 @@ module "hub_st" {
 
 # Create a User Assigned Identity for Azure Encryption
 resource "azurerm_user_assigned_identity" "user_assigned_identity" {
-  count               = var.enable_customer_managed_key ? 1 : 0
+  count               = var.enable_customer_managed_keys ? 1 : 0
   location            = local.location
   resource_group_name = local.resource_group_name
-  name                = "hub_sa_usi"
+  name                = "${local.hub_sa_name}-usi"
+}
+
+resource "azurerm_role_assignment" "kv_crypto_officer" {
+  count                = var.enable_customer_managed_keys ? 1 : 0
+  scope                = var.key_vault_resource_id
+  role_definition_name = "Key Vault Crypto Officer"
+  principal_id         = azurerm_user_assigned_identity.user_assigned_identity[0].principal_id
 }
