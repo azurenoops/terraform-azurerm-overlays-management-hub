@@ -35,39 +35,39 @@ output "virtual_network_address_space" {
 
 output "gateway_subnet_id" {
   description = "Name of gateway subnet id"
-  value       = var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet[0].id : null
+  value       = var.gateway_subnet_address_prefix != null ? module.gw_snet[0].resource_id : null
 }
 
 output "gateway_subnet_name" {
   description = "Name of gateway subnet"
-  value       = var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet[0].name : null
+  value       = var.gateway_subnet_address_prefix != null ? module.gw_snet[0].name : null
 }
 
 output "firewall_client_subnet_id" {
   description = "Name of firewall client subnet id"
-  value       = var.enable_firewall ? azurerm_subnet.firewall_client_snet[0].id : null
+  value       = var.enable_firewall ? module.firewall_client_snet[0].resource_id : null
 }
 
 output "firewall_client_subnet_name" {
   description = "Name of gateway subnet"
-  value       = var.enable_firewall ? azurerm_subnet.firewall_client_snet[0].name : null
+  value       = var.enable_firewall ? module.firewall_client_snet[0].name : null
 }
 
 output "firewall_management_subnet_id" {
   description = "Name of firewall management subnet id"
-  value       = var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null ? azurerm_subnet.firewall_management_snet[0].id : null
+  value       = var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null ? module.firewall_management_snet[0].resource_id : null
 }
 
 output "firewall_management_subnet_name" {
   description = "Name of firewall management subnet"
-  value       = var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null ? azurerm_subnet.firewall_management_snet[0].name : null
+  value       = var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null ? module.firewall_management_snet[0].name : null
 }
 
 output "subnet_ids" {
   description = "Map of ids for default subnets"
   value = { for key, id in zipmap(
     sort(keys(var.hub_subnets)),
-    sort(values(azurerm_subnet.default_snet)[*]["id"])) :
+    sort(values(module.default_snet)[*]["resource_id"])) :
   key => { key = key, id = id } }
 }
 
@@ -75,13 +75,13 @@ output "subnet_names" {
   description = "Map of names for default subnets"
   value = { for key, name in zipmap(
     sort(keys(var.hub_subnets)),
-    sort(values(azurerm_subnet.default_snet)[*]["name"])) :
+    sort(values(module.default_snet)[*]["name"])) :
   key => { key = key, name = name } }
 }
 
 output "subnet_address_prefixes" {
   description = "List of address prefix for subnets"
-  value       = flatten(concat([for s in azurerm_subnet.default_snet : s.address_prefixes], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet[0].address_prefixes : null], [(var.enable_firewall) ? azurerm_subnet.firewall_client_snet[0].address_prefixes : null], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? azurerm_subnet.firewall_management_snet[0].address_prefixes : null]))
+  value       = flatten(concat([for s in module.default_snet : s.resource.body.properties.addressPrefixes], [var.gateway_subnet_address_prefix != null ? module.gw_snet[0].resource.body.properties.addressPrefixes : null], [(var.enable_firewall) ? module.firewall_client_snet[0].resource.body.properties.addressPrefixes : null], [(var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? module.firewall_management_snet[0].resource.body.properties.addressPrefixes : null]))
 }
 
 # Network Security group ids
@@ -155,7 +155,7 @@ output "hub_storage_account_name" {
 }
 
 output "hub_storage_account_principal_id" {
-  value = var.enable_customer_managed_keys ? azurerm_user_assigned_identity.user_assigned_identity[0].principal_id : null
+  value = var.enable_customer_managed_keys ? var.user_assigned_identity_principal_id : null
 }
 
 output "public_ip_prefix_id" {
@@ -195,7 +195,7 @@ output "firewall_dns_servers" {
 
 output "azure_bastion_subnet_id" {
   description = "The resource ID of Azure bastion subnet"
-  value       = var.enable_bastion_host ? element(concat([azurerm_subnet.abs_snet[0].id], [""]), 0) : null
+  value       = var.enable_bastion_host ? element(concat([module.abs_snet[0].resource_id], [""]), 0) : null
 }
 
 output "azure_bastion_public_ip" {
@@ -205,10 +205,10 @@ output "azure_bastion_public_ip" {
 
 output "azure_bastion_host_id" {
   description = "The resource ID of the Bastion Host"
-  value       = var.enable_bastion_host ? module.hub_bastion_host[0].bastion_resource.id : null
+  value       = var.enable_bastion_host ? module.hub_bastion_host[0].resource_id : null
 }
 
 output "azure_bastion_host_fqdn" {
   description = "The resource ID of the Bastion Host"
-  value       = var.enable_bastion_host ? module.hub_bastion_host[0].bastion_resource.dns_name : null
+  value       = var.enable_bastion_host ? module.hub_bastion_host[0].resource.dns_name : null
 }
