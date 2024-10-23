@@ -70,7 +70,7 @@ resource "azurerm_public_ip_prefix" "firewall_pref" {
 
 module "hub_firewall_client_pip" {
   source  = "azure/avm-res-network-publicipaddress/azurerm"
-  version = "0.1.0"
+  version = "0.1.2"
 
   count               = var.enable_firewall ? 1 : 0
   name                = local.hub_firewall_client_pip_name
@@ -103,7 +103,7 @@ module "hub_firewall_client_pip" {
 
 module "hub_firewall_management_pip" {
   source  = "azure/avm-res-network-publicipaddress/azurerm"
-  version = "0.1.0"
+  version = "0.1.2"
 
   count               = var.enable_firewall && var.enable_forced_tunneling ? 1 : 0
   name                = local.hub_firewall_mgt_pip_name
