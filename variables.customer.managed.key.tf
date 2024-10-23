@@ -5,7 +5,7 @@
 # Local declarations
 #---------------------------------
 
-variable "enable_customer_managed_key" {
+variable "enable_customer_managed_keys" {
   type        = bool
   description = "Enable Customer Managed Key for Hub Storage Account."
   default     = false
@@ -22,9 +22,15 @@ variable "key_name" {
   description = "The name of the key in the Key Vault for Customer Managed Key for Hub Storage Account."
   default = null
 }
-/* 
+
 variable "user_assigned_identity_id" {
   type        = string
   description = "The ID of the User Assigned Identity to use for Key Vault access for Customer Managed Key for Hub Storage Account."
   default = null
-} */
+}
+
+variable "user_assigned_identity_principal_id" {
+  type        = string
+  description = "The Principal ID of the User Assigned Identity to use for Key Vault access for Customer Managed Key for Hub Storage Account."
+  default = null  
+}

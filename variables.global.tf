@@ -14,6 +14,7 @@ variable "location" {
 variable "environment" {
   description = "The Terraform backend environment e.g. public or usgovernment"
   type        = string
+  default = "public"
 }
 
 variable "deploy_environment" {

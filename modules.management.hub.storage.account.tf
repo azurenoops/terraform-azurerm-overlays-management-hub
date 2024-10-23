@@ -5,7 +5,7 @@
 # Hub Logging Storage Account for Log Archiving
 #----------------------------------------------------------
 module "hub_st" {
-  depends_on = [module.mod_scaffold_rg, module.mod_dns_rg, azurerm_user_assigned_identity.user_assigned_identity]
+  depends_on = [module.mod_scaffold_rg, module.mod_dns_rg]
   source     = "azure/avm-res-storage-storageaccount/azurerm"
   version    = "0.2.7"
 
@@ -28,13 +28,13 @@ module "hub_st" {
     bypass                     = ["AzureServices"]
     default_action             = "Deny"
     ip_rules                   = var.hub_storage_bypass_ip_cidr
-    virtual_network_subnet_ids = toset([azurerm_subnet.default_snet["default"].id])
+    virtual_network_subnet_ids = toset([module.default_snet["default"].resource_id])
   }
 
   # Private Endpoint
   private_endpoints = {
     "blob" = {
-      subnet_resource_id            = azurerm_subnet.default_snet["default"].id
+      subnet_resource_id            = module.default_snet["default"].resource_id
       subresource_name              = "blob"
       private_dns_zone_resource_ids = [var.environment == "public" ? module.mod_default_pdz["privatelink.blob.core.windows.net"].private_dns_zone_id : module.mod_default_pdz["privatelink.blob.core.usgovcloudapi.net"].private_dns_zone_id]
     }
@@ -47,33 +47,33 @@ module "hub_st" {
   } : null
 
   # Managed Idenities
-  managed_identities = var.enable_customer_managed_key ? {
+  managed_identities = var.enable_customer_managed_keys ? {
     system_assigned            = true
-    user_assigned_resource_ids = [azurerm_user_assigned_identity.user_assigned_identity[0].id]
-  } : {
-      system_assigned            = true
-      user_assigned_resource_ids = length(var.hub_storage_user_assigned_resource_ids) > 0 ? var.hub_storage_user_assigned_resource_ids : []
+    user_assigned_resource_ids = [var.user_assigned_identity_id]
+    } : {
+    system_assigned            = true
+    user_assigned_resource_ids = var.hub_storage_user_assigned_resource_ids != null ? var.hub_storage_user_assigned_resource_ids : []
   }
 
   # Customer Managed Key
-  customer_managed_key = var.enable_customer_managed_key ? {
+  customer_managed_key = var.enable_customer_managed_keys ? {
     key_vault_resource_id  = var.key_vault_resource_id
     key_name               = var.key_name
-    user_assigned_identity = { resource_id = azurerm_user_assigned_identity.user_assigned_identity[0].id }
+    user_assigned_identity = { resource_id = var.user_assigned_identity_id }
   } : null
 
   # Role Assignments
   role_assignments = {
     role_assignment_uai = {
       role_definition_id_or_name       = "Storage Blob Data Contributor"
-      principal_id                     = coalesce(azurerm_user_assigned_identity.user_assigned_identity[0].principal_id, data.azurerm_client_config.current.object_id)
+      principal_id                     = coalesce(var.user_assigned_identity_principal_id, data.azurerm_client_config.current.object_id)
       skip_service_principal_aad_check = false
     },
     role_assignment_current_user = {
       role_definition_id_or_name       = "Owner"
       principal_id                     = data.azurerm_client_config.current.object_id
       skip_service_principal_aad_check = false
-    },
+    }
   }
 
   # Blob Properties
@@ -103,13 +103,4 @@ module "hub_st" {
 
   # Tags
   tags = merge({ "ResourceName" = format("hubstdiaglogs%s", lower(replace(local.hub_sa_name, "/[[:^alnum:]]/", ""))) }, local.default_tags, var.add_tags, )
-}
-
-
-# Create a User Assigned Identity for Azure Encryption
-resource "azurerm_user_assigned_identity" "user_assigned_identity" {
-  count               = var.enable_customer_managed_key ? 1 : 0
-  location            = local.location
-  resource_group_name = local.resource_group_name
-  name                = "hub_sa_usi"
 }
