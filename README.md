@@ -18,8 +18,8 @@ provider "azurerm" {
   environment = "usgovernment"
 }
 
-module "overlays-management-spoke" {
-  source  = "azurenoops/overlays-management-spoke/azurerm"
+module "overlays-management-hub" {
+  source  = "azurenoops/overlays-management-hub/azurerm"
   version = "2.0.0"
 
   location = "usgovvirginia"
