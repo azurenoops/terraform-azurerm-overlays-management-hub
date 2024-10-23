@@ -11,27 +11,47 @@ AUTHOR/S: jrspinella
 #---------------------------------------------------------
 # Firewall Subnet Creation or selection
 #----------------------------------------------------------
-resource "azurerm_subnet" "firewall_client_snet" {
-  count                                         = var.enable_firewall ? 1 : 0
-  name                                          = "AzureFirewallSubnet"
-  resource_group_name                           = local.resource_group_name
-  virtual_network_name                          = module.hub_vnet.name
-  address_prefixes                              = var.firewall_subnet_address_prefix
-  service_endpoints                             = var.firewall_snet_service_endpoints
+module "firewall_client_snet" {
+  source  = "azure/avm-res-network-virtualnetwork/azurerm//modules/subnet"
+  version = "0.4.2"
+  count   = var.enable_firewall ? 1 : 0
+
+  # Resource Name
+  name = "AzureFirewallSubnet"
+
+  # Virtual Networks
+  virtual_network = {
+    resource_id = module.hub_vnet.resource_id
+  }
+
+  # Subnet Information
+  address_prefixes  = var.firewall_subnet_address_prefix
+  service_endpoints = var.firewall_snet_service_endpoints
+  # Applicable to the subnets which used for Private link endpoints or services
   private_endpoint_network_policies             = var.firewall_snet_private_endpoint_network_policies_enabled
   private_link_service_network_policies_enabled = var.firewall_snet_private_link_service_network_policies_enabled
 }
 
 #---------------------------------------------------------
 # Firewall Management Subnet Creation
-#----------------------------------------------------------
-resource "azurerm_subnet" "firewall_management_snet" {
-  count                                         = (var.enable_firewall && var.enable_forced_tunneling && var.firewall_management_snet_address_prefix != null) ? 1 : 0
-  name                                          = "AzureFirewallManagementSubnet"
-  resource_group_name                           = local.resource_group_name
-  virtual_network_name                          = module.hub_vnet.name
-  address_prefixes                              = var.firewall_management_snet_address_prefix
-  service_endpoints                             = var.firewall_management_snet_service_endpoints
+#---------------------------------------------------------
+module "firewall_management_snet" {
+  source  = "azure/avm-res-network-virtualnetwork/azurerm//modules/subnet"
+  version = "0.4.2"
+  count   = var.enable_firewall && var.enable_forced_tunneling ? 1 : 0
+
+  # Resource Name
+  name = "AzureFirewallManagementSubnet"
+
+  # Virtual Networks
+  virtual_network = {
+    resource_id = module.hub_vnet.resource_id
+  }
+
+  # Subnet Information
+  address_prefixes  = var.firewall_management_snet_address_prefix
+  service_endpoints = var.firewall_management_snet_service_endpoints
+  # Applicable to the subnets which used for Private link endpoints or services
   private_endpoint_network_policies             = var.firewall_management_snet_private_endpoint_network_policies_enabled
   private_link_service_network_policies_enabled = var.firewall_management_snet_private_link_service_network_policies_enabled
 }
@@ -117,45 +137,9 @@ module "hub_firewall_management_pip" {
 #-----------------
 # Azure Firewall
 #-----------------
-/* resource "azurerm_firewall" "fw" {
-  count               = var.enable_firewall ? 1 : 0
-  name                = local.hub_firewall_name
-  resource_group_name = local.resource_group_name
-  location            = local.location
-  sku_name            = var.firewall_sku_name
-  sku_tier            = var.firewall_sku_tier
-  firewall_policy_id  = module.hub_firewall_policy[0].resource.id
-  threat_intel_mode   = var.firewall_threat_intelligence_mode
-  zones               = var.firewall_zones
-  tags                = merge({ "ResourceName" = format("%s", local.hub_firewall_name) }, local.default_tags, var.add_tags, )
-
-  ip_configuration {
-    name                 = lower(format("%s-ipconfig", local.hub_firewall_name))
-    subnet_id            = azurerm_subnet.firewall_client_snet[0].id
-    public_ip_address_id = module.hub_firewall_client_pip[0].public_ip_id
-  }
-
-  dynamic "management_ip_configuration" {
-    for_each = var.enable_forced_tunneling ? [1] : []
-    content {
-      name                 = lower(format("%s-forced-tunnel-ipconfig", local.hub_firewall_name))
-      subnet_id            = azurerm_subnet.firewall_management_snet[0].id
-      public_ip_address_id = module.hub_firewall_management_pip[0].public_ip_id
-    }
-  }
-
-  dynamic "virtual_hub" {
-    for_each = var.firewall_virtual_hub != null ? [var.firewall_virtual_hub] : []
-    content {
-      virtual_hub_id  = virtual_hub.value.virtual_hub_id
-      public_ip_count = virtual_hub.value.public_ip_count
-    }
-  }
-} */
-
 module "hub_fw" {
   source  = "azure/avm-res-network-azurefirewall/azurerm"
-  version = "0.2.2"
+  version = "0.3.0"
   count   = var.enable_firewall ? 1 : 0
 
   # Resource Group
@@ -171,7 +155,7 @@ module "hub_fw" {
   firewall_ip_configuration = [
     {
       name                 = lower("${local.hub_firewall_name}-ipconfig")
-      subnet_id            = azurerm_subnet.firewall_client_snet[0].id
+      subnet_id            = module.firewall_client_snet[0].resource_id
       public_ip_address_id = module.hub_firewall_client_pip[0].public_ip_id
     }
   ]
@@ -179,7 +163,7 @@ module "hub_fw" {
   # Management IP Configuration
   firewall_management_ip_configuration = var.enable_forced_tunneling ? {
     name                 = lower("${local.hub_firewall_name}-forced-tunnel-ipconfig")
-    subnet_id            = azurerm_subnet.firewall_management_snet[0].id
+    subnet_id            = module.firewall_management_snet[0].resource_id
     public_ip_address_id = module.hub_firewall_management_pip[0].public_ip_id
   } : {}
 

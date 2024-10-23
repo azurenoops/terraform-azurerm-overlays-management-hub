@@ -96,7 +96,7 @@ resource "azurerm_route_table" "routetable" {
 
 resource "azurerm_subnet_route_table_association" "rtassoc" {
   for_each       = var.hub_subnets
-  subnet_id      = azurerm_subnet.default_snet[each.key].id
+  subnet_id      = module.default_snet[each.key].resource_id
   route_table_id = azurerm_route_table.routetable.id
 }
 
@@ -133,7 +133,7 @@ resource "azurerm_route_table" "afw_routetable" {
 }
 
 resource "azurerm_subnet_route_table_association" "afw_rtassoc" {
-  subnet_id      = azurerm_subnet.firewall_client_snet[0].id
+  subnet_id      = module.firewall_client_snet[0].resource_id
   route_table_id = azurerm_route_table.afw_routetable[0].id
 
   count = var.enable_encrypted_transport ? 1 : 0
