@@ -17,17 +17,21 @@ resource "azurerm_network_watcher_flow_log" "nwflog" {
   storage_account_id        = module.hub_st.resource_id
   enabled                   = true
   version                   = 2
+  
   retention_policy {
     enabled = true
     days    = 0
   }
 
-  traffic_analytics {
-    enabled               = var.enable_traffic_analytics
-    workspace_id          = var.existing_log_analytics_workspace_id
-    workspace_region      = local.location
-    workspace_resource_id = var.existing_log_analytics_workspace_resource_id
-    interval_in_minutes   = 10
+  dynamic "traffic_analytics" {
+    for_each = var.enable_traffic_analytics ? ["enable_traffic_analytics"] : []
+    content {
+      enabled               = var.enable_traffic_analytics
+      workspace_id          = var.existing_log_analytics_workspace_id
+      workspace_region      = local.location
+      workspace_resource_id = var.existing_log_analytics_workspace_resource_id
+      interval_in_minutes   = 10
+    }
   }
 }
 

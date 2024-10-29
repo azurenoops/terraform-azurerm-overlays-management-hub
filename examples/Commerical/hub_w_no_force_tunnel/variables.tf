@@ -42,16 +42,6 @@ variable "lock_level" {
   default     = "CanNotDelete"
 }
 
-######################################
-# Customer Managed Keys Configuration
-######################################
-
-variable "enable_customer_managed_key" {
-  description = "If set to true, will enable customer managed keys for all resources deployed by this module where supported."
-  type        = bool
-  default     = false
-}
-
 ################################
 # Landing Zone Configuration  ##
 ################################
@@ -79,7 +69,7 @@ variable "hub_subnets" {
     name                                       = string
     address_prefixes                           = list(string)
     service_endpoints                          = list(string)
-    private_endpoint_network_policies_enabled  = bool
+    private_endpoint_network_policies_enabled  = string
     private_endpoint_service_endpoints_enabled = bool
 
     # Delegation block - see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet#delegation
@@ -92,7 +82,7 @@ variable "hub_subnets" {
     }))
 
     #Subnet NSG rules - see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group#security_rule
-    nsg_subnet_rules = optional(list(object({
+    nsg_subnet_rules = optional(map(object({
       name                                       = string
       description                                = string
       priority                                   = number
@@ -126,16 +116,58 @@ variable "enable_traffic_analytics" {
   default     = false
 }
 
+variable "enable_private_dns_zones" {
+  type        = bool
+  description = "If set to true, will enable the deployment of Private DNS Zones. Default is true."
+  default     = true  
+}
+
 variable "hub_private_dns_zones" {
   description = "The private DNS zones of the hub virtual network."
   type        = any
   default     = {}
 }
 
+variable "fw_client_snet_address_prefixes" {
+  description = "The address prefix of the firewall subnet."
+  type        = list(string)
+  default     = ["10.8.4.64/26"]
+}
+
+variable "firewall_sku_tier" {
+  description = "The SKU tier of the Azure Firewall. Possible values are Basic, Standard and Premium. Default is Standard."
+  type        = string
+  default     = "Basic"
+}
+
+variable "firewall_zones" {
+  description = "A collection of availability zones to spread the Firewall over"
+  type        = list(string)
+  default     = null
+}
+
 variable "enable_firewall" {
   description = "Enables an Azure Firewall"
   type        = bool
   default     = true
+}
+
+variable "firewall_application_rules" {
+  description = "List of application rules to apply to firewall."
+  type = any
+  default     = []
+}
+
+variable "firewall_network_rules" {
+  description = "List of network rules to apply to firewall."
+  type = any
+  default     = []
+}
+
+variable "firewall_nat_rules" {
+  description = "List of nat rules to apply to firewall."
+  type = any
+  default     = []
 }
 
 variable "enable_forced_tunneling" {
@@ -150,14 +182,3 @@ variable "enable_bastion_host" {
   default     = true
 }
 
-variable "azure_bastion_host_sku" {
-  description = "The SKU of the Azure Bastion Host. Possible values are Standard and Basic. Default is Standard."
-  type        = string
-  default     = "Standard"
-}
-
-variable "azure_bastion_subnet_address_prefix" {
-  description = "The address prefix of the Azure Bastion Host subnet."
-  type        = list(string)
-  default     = null
-}

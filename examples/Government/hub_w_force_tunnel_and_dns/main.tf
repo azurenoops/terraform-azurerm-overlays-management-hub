@@ -6,8 +6,6 @@ module "mod_vnet_hub" {
   #version = "x.x.x"
   source = "../../.."
 
-  depends_on = [ azurerm_log_analytics_workspace.laws ]
-
   ####################################
   # Management Hub Virtual Network  ##
   ####################################
@@ -77,7 +75,8 @@ module "mod_vnet_hub" {
   # If you do want to create additional Private DNS Zones,
   # add in the list of private_dns_zones to be created.
   # else, remove the private_dns_zones argument.
-  private_dns_zones = var.hub_private_dns_zones
+  enable_private_dns_zones = var.enable_private_dns_zones
+  private_dns_zones        = var.hub_private_dns_zones
 
   # (Optional) By default, this module will create a bastion host,
   # and set the argument to `enable_bastion_host = false`, to disable the bastion host.

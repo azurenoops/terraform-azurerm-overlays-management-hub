@@ -32,13 +32,13 @@ module "hub_st" {
   }
 
   # Private Endpoint
-  private_endpoints = {
+  private_endpoints = var.enable_private_dns_zones ? {
     "blob" = {
       subnet_resource_id            = module.default_snet["default"].resource_id
       subresource_name              = "blob"
       private_dns_zone_resource_ids = [var.environment == "public" ? module.mod_default_pdz["privatelink.blob.core.windows.net"].private_dns_zone_id : module.mod_default_pdz["privatelink.blob.core.usgovcloudapi.net"].private_dns_zone_id]
-    }
-  }
+    } 
+  } : null
 
   # Resource Lock
   lock = var.enable_resource_locks ? {

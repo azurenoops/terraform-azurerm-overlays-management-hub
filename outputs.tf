@@ -125,23 +125,23 @@ output "route_table_id" {
 
 output "private_dns_zone_resource_group_name" {
   description = "The name of the Private DNS zones resource group within Azure DNS"
-  value       = module.mod_dns_rg[0].resource_group_name
+  value       = var.enable_private_dns_zones ? module.mod_dns_rg[0].resource_group_name : null
 }
 
 output "private_dns_zone_resource_ids" {
   description = "The IDs of the Private DNS zones within Azure DNS"
-  value = { for key, id in zipmap(
+  value = var.enable_private_dns_zones ? { for key, id in zipmap(
     sort(local.if_default_private_dns_zones_enabled),
     sort(values(module.mod_default_pdz)[*]["private_dns_zone_id"])) :
-  key => { key = key, id = id } }
+  key => { key = key, id = id } } : null
 }
 
 output "private_dns_zone_names" {
   description = "The names of Private DNS zones within Azure DNS"
-   value = { for key, name in zipmap(
+   value = var.enable_private_dns_zones ? { for key, name in zipmap(
     sort(local.if_default_private_dns_zones_enabled),
     sort(values(module.mod_default_pdz)[*]["private_dns_zone_name"])) :
-  key => { key = key, name = name } }
+  key => { key = key, name = name } } : null
 }
 
 output "hub_storage_account_id" {

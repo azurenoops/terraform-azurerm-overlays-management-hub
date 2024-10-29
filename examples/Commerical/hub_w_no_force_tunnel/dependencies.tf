@@ -4,6 +4,7 @@
 #----------------------------------------------
 # Log Analytics Workspace
 #----------------------------------------------
+data "azurerm_client_config" "root" {}
 
 resource "azurerm_resource_group" "laws_rg" {
   name     = "laws-rg-${var.default_location}-${var.org_name}"

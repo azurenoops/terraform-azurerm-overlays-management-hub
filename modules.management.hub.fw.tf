@@ -93,7 +93,7 @@ module "hub_firewall_client_pip" {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_fwpip", var.workload_name)
       workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
-      log_analytics_destination_type = "Dedicated"
+      log_categories                 = ["DDoSProtectionNotifications", "DDoSMitigationFlowLogs","DDoSMitigationReports"]  
     }
   }
 
@@ -126,7 +126,7 @@ module "hub_firewall_management_pip" {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_fwmgtpip", var.workload_name)
       workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
-      log_analytics_destination_type = "Dedicated"
+      log_categories                 = ["DDoSProtectionNotifications", "DDoSMitigationFlowLogs","DDoSMitigationReports"]   
     }
   }
 
@@ -150,7 +150,7 @@ module "hub_fw" {
   firewall_sku_tier   = var.firewall_sku_tier
   firewall_policy_id  = module.hub_firewall_policy[0].resource.id
   firewall_zones      = var.firewall_zones != null ? var.firewall_zones : null
-
+  
   # Firewall Subnet
   firewall_ip_configuration = [
     {
@@ -165,7 +165,7 @@ module "hub_fw" {
     name                 = lower("${local.hub_firewall_name}-forced-tunnel-ipconfig")
     subnet_id            = module.firewall_management_snet[0].resource_id
     public_ip_address_id = module.hub_firewall_management_pip[0].public_ip_id
-  } : {}
+  } : null
 
   # Virtual Hub
   firewall_virtual_hub = var.firewall_virtual_hub != null ? var.firewall_virtual_hub : null
@@ -181,7 +181,7 @@ module "hub_fw" {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_fw", var.workload_name)
       workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
-      log_analytics_destination_type = "Dedicated"
+      log_categories                 = ["AzureFirewallApplicationRule", "AzureFirewallNetworkRule"]      
     }
   }
 

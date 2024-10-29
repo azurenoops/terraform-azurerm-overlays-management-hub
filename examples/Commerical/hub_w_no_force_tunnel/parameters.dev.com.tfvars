@@ -6,19 +6,19 @@
 ###########################
 
 # The prefixes to use for all resources in this deployment
-org_name           = "an1"   # This Prefix will be used on most deployed resources.  10 Characters max.
+org_name           = "an16"   # This Prefix will be used on most deployed resources.  10 Characters max.
 deploy_environment = "dev"    # dev | test | prod
-environment        = "usgovernment" # public | usgovernment
+environment        = "public" # public | usgovernment
 
 # The default region to deploy to
-default_location = "usgovvirginia"
+default_location = "eastus"
 
 # Enable locks on resources
 enable_resource_locks = false # true | false
 
 # Enable NSG Flow Logs
 # By default, this will enable flow logs traffic analytics for all subnets.
-enable_traffic_analytics = true
+enable_traffic_analytics = false
 
 ################################
 # Landing Zone Configuration  ##
@@ -32,13 +32,12 @@ enable_traffic_analytics = true
 # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.
 hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters
 fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters
-fw_management_snet_address_prefixes = ["10.8.4.128/26"] # (Optional)  Hub Firewall Management Subnet Parameters. If not provided, force_tunneling is not needed.
 
 # (Required) DDOS Protection Plan
 # By default, Azure NoOps will create DDOS Protection Plan in Hub VNet.
 # If you do not want to create DDOS Protection Plan,
 # set create_ddos_plan to false.
-create_ddos_plan = true
+create_ddos_plan = false
 
 # (Required) Hub Subnets
 # Default Subnets, Service Endpoints
@@ -55,11 +54,11 @@ hub_subnets = {
   default = {
     name                                       = "hub"
     address_prefixes                           = ["10.8.4.224/27"]
-    service_endpoints                          = ["Microsoft.Storage"]
-    private_endpoint_network_policies_enabled  = false
+    service_endpoints                          = ["Microsoft.Storage", "Microsoft.KeyVault"]
+    private_endpoint_network_policies_enabled  = "Disabled"
     private_endpoint_service_endpoints_enabled = true
-    nsg_subnet_rules = [
-      {
+    nsg_subnet_rules = {
+      allow443 = {
         name                       = "allow-443",
         description                = "Allow access to port 443",
         priority                   = 100,
@@ -71,7 +70,7 @@ hub_subnets = {
         source_address_prefix      = "*",
         destination_address_prefix = "*"
       }
-    ]
+    }
   },
 }
 
@@ -88,7 +87,7 @@ enable_firewall = true
 # By default, forced tunneling is enabled for Azure Firewall.
 # If you do not want to enable forced tunneling,
 # set enable_forced_tunneling to false.
-enable_forced_tunneling = true
+enable_forced_tunneling = false
 
 # (Optional) To enable the availability zones for firewall.
 # Availability Zones can only be configured during deployment
@@ -180,11 +179,12 @@ firewall_application_rules = [
 # If you do want to create additional Private DNS Zones,
 # add in the list of hub_private_dns_zones to be created.
 # else, remove the hub_private_dns_zones argument.
+enable_private_dns_zones                 = false
 hub_private_dns_zones            = []
 
 # By default, this module will create a bastion host,
 # and set the argument to `enable_bastion_host = false`, to disable the bastion host.
-enable_bastion_host                 = true
+enable_bastion_host                 = false
 azure_bastion_host_sku              = "Standard"
 azure_bastion_subnet_address_prefix = ["10.8.4.192/27"]
 
