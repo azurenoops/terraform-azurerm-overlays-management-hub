@@ -67,13 +67,13 @@ module "hub_bastion_pip" {
   } : null
 
   // Bastion PIP Diagnostic Settings
-  diagnostic_settings = {
+  diagnostic_settings = var.existing_log_analytics_workspace_resource_id != null ? {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_bastionpip", var.workload_name)
       workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
-  }
+  } : null
 
   # telemtry
   enable_telemetry = var.enable_telemetry
@@ -117,13 +117,13 @@ module "hub_bastion_host" {
   } : null
 
   // Bastion Diagnostic Settings
-  diagnostic_settings = {
+  diagnostic_settings = var.existing_log_analytics_workspace_resource_id != null ? {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_bastion", var.workload_name)
       workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
-  }
+  } : null
 
   # telemtry
   enable_telemetry = var.enable_telemetry

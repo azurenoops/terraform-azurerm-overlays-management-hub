@@ -30,8 +30,8 @@ enable_traffic_analytics = false
 
 # (Required)  Hub Virtual Network Parameters
 # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.
-hub_vnet_address_space              = ["10.8.4.0/23"]   # (Required)  Hub Virtual Network Parameters
-fw_client_snet_address_prefixes     = ["10.8.4.64/26"]  # (Required)  Hub Firewall Subnet Parameters
+hub_vnet_address_space          = ["10.8.4.0/23"]  # (Required)  Hub Virtual Network Parameters
+fw_client_snet_address_prefixes = ["10.8.4.64/26"] # (Required)  Hub Firewall Subnet Parameters
 
 # (Required) DDOS Protection Plan
 # By default, Azure NoOps will create DDOS Protection Plan in Hub VNet.
@@ -112,20 +112,6 @@ firewall_network_rules = [
         destination_ports     = ["*"]
       }
     ]
-  },
-  {
-    name     = "AllowTrafficBetweenSpokes"
-    priority = "200"
-    action   = "Allow"
-    rule = [
-      {
-        name                  = "AllSpokeTraffic"
-        protocols             = ["Any"]
-        source_addresses      = ["10.96.0.0/19"]
-        destination_addresses = ["*"]
-        destination_ports     = ["*"]
-      }
-    ]
   }
 ]
 
@@ -135,24 +121,6 @@ firewall_application_rules = [
   {
     name     = "AzureAuth"
     priority = "110"
-    action   = "Allow"
-    rule = [
-      {
-        name              = "msftauth"
-        source_addresses  = ["*"]
-        destination_fqdns = ["aadcdn.msftauth.net", "aadcdn.msauth.net"]
-        protocols = [
-          {
-            type = "Https"
-            port = 443
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name     = "AzureAuth2"
-    priority = "130"
     action   = "Allow"
     rule = [
       {
@@ -179,8 +147,8 @@ firewall_application_rules = [
 # If you do want to create additional Private DNS Zones,
 # add in the list of hub_private_dns_zones to be created.
 # else, remove the hub_private_dns_zones argument.
-enable_private_dns_zones                 = false
-hub_private_dns_zones            = []
+enable_private_dns_zones = false
+hub_private_dns_zones    = []
 
 # By default, this module will create a bastion host,
 # and set the argument to `enable_bastion_host = false`, to disable the bastion host.
