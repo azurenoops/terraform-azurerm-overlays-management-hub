@@ -34,7 +34,7 @@ module "mod_vnet_hub" {
   create_ddos_plan = var.create_ddos_plan
 
   # (Optional) Enable Customer Managed Key for Storage Account
-  enable_customer_managed_key = var.enable_customer_managed_key
+  enable_customer_managed_keys = var.enable_customer_managed_key
 
   # (Required) Hub Subnets
   # Default Subnets, Service Endpoints
