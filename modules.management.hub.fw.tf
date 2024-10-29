@@ -89,13 +89,13 @@ module "hub_firewall_client_pip" {
   } : null
 
   // FW PIP Diagnostic Settings
-  diagnostic_settings = {
+  diagnostic_settings = var.existing_log_analytics_workspace_resource_id != null ? {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_fwpip", var.workload_name)
       workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_categories                 = ["DDoSProtectionNotifications", "DDoSMitigationFlowLogs","DDoSMitigationReports"]  
     }
-  }
+  } : null
 
   # telemtry
   enable_telemetry = var.enable_telemetry
@@ -122,13 +122,13 @@ module "hub_firewall_management_pip" {
   } : null
 
   // FW PIP Diagnostic Settings
-  diagnostic_settings = {
+  diagnostic_settings = var.existing_log_analytics_workspace_resource_id != null ? {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_fwmgtpip", var.workload_name)
       workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_categories                 = ["DDoSProtectionNotifications", "DDoSMitigationFlowLogs","DDoSMitigationReports"]   
     }
-  }
+  } : null
 
   # telemtry
   enable_telemetry = var.enable_telemetry
@@ -177,13 +177,13 @@ module "hub_fw" {
   } : null
 
   // Bastion Diagnostic Settings
-  diagnostic_settings = {
+  diagnostic_settings = var.existing_log_analytics_workspace_resource_id != null ? {
     sendToLogAnalytics = {
       name                           = format("sendToLogAnalytics_%s_fw", var.workload_name)
       workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_categories                 = ["AzureFirewallApplicationRule", "AzureFirewallNetworkRule"]      
     }
-  }
+  } : null
 
   tags = merge({ "ResourceName" = format("%s", local.hub_firewall_name) }, local.default_tags, var.add_tags, )
 }

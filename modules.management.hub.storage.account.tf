@@ -90,13 +90,13 @@ module "hub_st" {
   }
 
   // Storage Diagnostic Settings
-  diagnostic_settings_blob = {
+  diagnostic_settings_blob = var.existing_log_analytics_workspace_resource_id != null ? {
     sendToLogAnalytics = {
       name                           = "sendToLogAnalytics_storage"
       workspace_resource_id          = var.existing_log_analytics_workspace_resource_id
       log_analytics_destination_type = "Dedicated"
     }
-  }
+  } : null
 
   # telemtry
   enable_telemetry = var.enable_telemetry
