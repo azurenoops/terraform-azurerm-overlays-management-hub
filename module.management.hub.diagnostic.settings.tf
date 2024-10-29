@@ -20,6 +20,8 @@ module "mod_vnet_diagnostic_settings" {
   source  = "azurenoops/overlays-diagnostic-settings/azurerm"
   version = "1.5.0"
 
+  count = var.existing_log_analytics_workspace_resource_id ? 1 : 0
+
   # Resource Group, location, VNet and Subnet details
   location           = var.location
   deploy_environment = var.deploy_environment
@@ -36,7 +38,7 @@ module "mod_nsg_diagnostic_settings" {
   source  = "azurenoops/overlays-diagnostic-settings/azurerm"
   version = "1.5.0"
 
-  for_each = var.hub_subnets
+  for_each = toset(var.existing_log_analytics_workspace_resource_id ? [var.hub_subnets] : [])
 
   # Resource Group, location, VNet and Subnet details
   location           = var.location

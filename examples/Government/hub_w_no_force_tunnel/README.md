@@ -1,10 +1,17 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
+# Azure NoOps Management Hub without force tunneling, Customer Managed Key and AMPLS features
+
+This example is to create a Azure NoOps Management Hub, without Forced Tunnel, Customer Managed Keys, DDOS Protection. The hub will have Logging Solutions and other additional features.
+
+```hcl
+# Azure Provider configuration
+provider "azurerm" {
+  features {}
+}
 
 module "mod_vnet_hub" {
   #source  = "azurenoops/overlays-management-hub/azurerm"
   #version = "x.x.x"
-  source = "../../.."
+  source = "../../.." # For Example, use the relative path to the module
 
   ################################
   # Landing Zone Configuration  ##
@@ -28,18 +35,25 @@ module "mod_vnet_hub" {
   firewall_subnet_address_prefix          = var.fw_client_snet_address_prefixes     # (Required)  Hub Firewall Subnet Parameters
   firewall_management_snet_address_prefix = var.fw_management_snet_address_prefixes # (Optional)  Hub Firewall Management Subnet Parameters
 
-  # (Optional) Enable DDoS Protection Plan
+  # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
+  existing_log_analytics_workspace_resource_id = data.azurerm_log_analytics_workspace.log_analytics.id
+  existing_log_analytics_workspace_id          = data.azurerm_log_analytics_workspace.log_analytics.workspace_id
+
+  # (Optional) Enable DDos Protection Plan
   create_ddos_plan = var.create_ddos_plan
+
+  # (Optional) Enable Customer Managed Key for Azure Storage Account
+  enable_customer_managed_key = true
+  # Uncomment the following lines to enable Customer Managed Key for Azure Hub Storage Account
+  key_vault_resource_id       = azurerm_key_vault.kv.id
+  key_name                    = "cmk_for_storage_account"
+  user_assigned_identity_id   = azurerm_user_assigned_identity.user_assigned_identity.id
 
   # (Required) Hub Subnets
   # Default Subnets, Service Endpoints
   # This is the default subnet with required configuration, check README.md for more details
   # subnet name will be set as per Azure NoOps naming convention by default. expected value here is: <App or project name>
   hub_subnets = var.hub_subnets
-
-  # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
-  existing_log_analytics_workspace_resource_id = azurerm_resource_group.laws_rg.id
-  existing_log_analytics_workspace_id          = azurerm_log_analytics_workspace.laws.workspace_id
 
   # (Optional) Enable Flow Logs
   # By default, this will enable flow logs for all subnets.
@@ -73,27 +87,19 @@ module "mod_vnet_hub" {
   # This is default values, do not need this if keeping default values
   firewall_nat_rule_collection = var.firewall_nat_rules
 
-  # DNS Servers for Firewall
-  # By default, Azure NoOps will use Azure DNS for Azure Firewall DNS settings.
-  # If you want to use custom DNS settings, set the argument to `enable_custom_dns_settings = true`.
-  dns_servers = var.enable_dns_proxy ? var.dns_servers : []
-
   # (Optional) Private DNS Zone Settings
   # By default, Azure NoOps will create Private DNS Zones in Hub VNet.
   # If you do want to create additional Private DNS Zones,
   # add in the list of private_dns_zones to be created.
   # else, remove the private_dns_zones argument.
-  private_dns_zones = var.hub_private_dns_zones
+  enable_private_dns_zones = var.enable_private_dns_zones
+  private_dns_zones        = var.hub_private_dns_zones
 
   # (Optional) By default, this module will create a bastion host,
   # and set the argument to `enable_bastion_host = false`, to disable the bastion host.
   enable_bastion_host                 = var.enable_bastion_host
   azure_bastion_host_sku              = var.azure_bastion_host_sku
   azure_bastion_subnet_address_prefix = var.azure_bastion_subnet_address_prefix
-
-  # CIDRs for Azure Storage Account
-  # This will allow the specified CIDRs to bypass the Azure Firewall for Azure Storage Account.
-  hub_storage_bypass_ip_cidr = var.hub_storage_bypass_ip_cidr
 
   # (Optional) By default, this will apply resource locks to all resources created by this module.
   # To disable resource locks, set the argument to `enable_resource_locks = false`.
@@ -104,3 +110,16 @@ module "mod_vnet_hub" {
   # Tags
   add_tags = local.tags # Tags to be applied to all resources
 }
+```
+
+## Terraform Usage
+
+To run this example you need to execute following Terraform commands
+
+```hcl
+terraform init
+terraform plan --var-file=parameters.tfvars --out dev.plan
+terraform apply "dev.plan"
+```
+
+Run `terraform destroy` when you don't need these resources.

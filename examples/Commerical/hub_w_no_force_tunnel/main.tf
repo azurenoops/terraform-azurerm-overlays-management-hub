@@ -6,9 +6,6 @@ module "mod_vnet_hub" {
   #version = "x.x.x"
   source = "../../.."
 
-  ################################
-  # Landing Zone Configuration  ##
-  ################################
   ####################################
   # Management Hub Virtual Network  ##
   ####################################
@@ -28,18 +25,26 @@ module "mod_vnet_hub" {
   firewall_subnet_address_prefix          = var.fw_client_snet_address_prefixes     # (Required)  Hub Firewall Subnet Parameters
   firewall_management_snet_address_prefix = var.fw_management_snet_address_prefixes # (Optional)  Hub Firewall Management Subnet Parameters
 
-  # (Optional) Enable DDoS Protection Plan
+  # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
+  existing_log_analytics_workspace_resource_id = azurerm_log_analytics_workspace.laws.id
+  existing_log_analytics_workspace_id          = azurerm_log_analytics_workspace.laws.workspace_id
+
+  # (Optional) Enable DDos Protection Plan
   create_ddos_plan = var.create_ddos_plan
+
+  # (Optional) Enable Customer Managed Key for Azure Storage Account
+  enable_customer_managed_keys = false
+  # Uncomment the following lines to enable Customer Managed Key for Azure Hub Storage Account
+  //key_vault_resource_id               = module.mod_shared_keyvault.resource_id
+  //key_name                            = "cmk-for-storage-account"
+  //user_assigned_identity_id           = azurerm_user_assigned_identity.user_assigned_identity.id
+  //user_assigned_identity_principal_id = azurerm_user_assigned_identity.user_assigned_identity.principal_id
 
   # (Required) Hub Subnets
   # Default Subnets, Service Endpoints
   # This is the default subnet with required configuration, check README.md for more details
   # subnet name will be set as per Azure NoOps naming convention by default. expected value here is: <App or project name>
   hub_subnets = var.hub_subnets
-
-  # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
-  existing_log_analytics_workspace_resource_id = azurerm_resource_group.laws_rg.id
-  existing_log_analytics_workspace_id          = azurerm_log_analytics_workspace.laws.workspace_id
 
   # (Optional) Enable Flow Logs
   # By default, this will enable flow logs for all subnets.
@@ -73,11 +78,6 @@ module "mod_vnet_hub" {
   # This is default values, do not need this if keeping default values
   firewall_nat_rule_collection = var.firewall_nat_rules
 
-  # DNS Servers for Firewall
-  # By default, Azure NoOps will use Azure DNS for Azure Firewall DNS settings.
-  # If you want to use custom DNS settings, set the argument to `enable_custom_dns_settings = true`.
-  dns_servers = var.enable_dns_proxy ? var.dns_servers : []
-
   # (Optional) Private DNS Zone Settings
   # By default, Azure NoOps will create Private DNS Zones in Hub VNet.
   # If you do want to create additional Private DNS Zones,
@@ -90,10 +90,6 @@ module "mod_vnet_hub" {
   enable_bastion_host                 = var.enable_bastion_host
   azure_bastion_host_sku              = var.azure_bastion_host_sku
   azure_bastion_subnet_address_prefix = var.azure_bastion_subnet_address_prefix
-
-  # CIDRs for Azure Storage Account
-  # This will allow the specified CIDRs to bypass the Azure Firewall for Azure Storage Account.
-  hub_storage_bypass_ip_cidr = var.hub_storage_bypass_ip_cidr
 
   # (Optional) By default, this will apply resource locks to all resources created by this module.
   # To disable resource locks, set the argument to `enable_resource_locks = false`.

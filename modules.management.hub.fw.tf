@@ -165,7 +165,7 @@ module "hub_fw" {
     name                 = lower("${local.hub_firewall_name}-forced-tunnel-ipconfig")
     subnet_id            = module.firewall_management_snet[0].resource_id
     public_ip_address_id = module.hub_firewall_management_pip[0].public_ip_id
-  } : {}
+  } : null
 
   # Virtual Hub
   firewall_virtual_hub = var.firewall_virtual_hub != null ? var.firewall_virtual_hub : null

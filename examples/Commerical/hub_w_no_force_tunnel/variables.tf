@@ -42,16 +42,6 @@ variable "lock_level" {
   default     = "CanNotDelete"
 }
 
-######################################
-# Customer Managed Keys Configuration
-######################################
-
-variable "enable_customer_managed_key" {
-  description = "If set to true, will enable customer managed keys for all resources deployed by this module where supported."
-  type        = bool
-  default     = false
-}
-
 ################################
 # Landing Zone Configuration  ##
 ################################
@@ -196,22 +186,4 @@ variable "azure_bastion_subnet_address_prefix" {
   description = "The address prefix of the Azure Bastion Host subnet."
   type        = list(string)
   default     = null
-}
-
-variable "enable_dns_proxy" {
-  description = "Enable [true/false] The Azure Firewall DNS Proxy will forward all DNS traffic. When this value is set to true, you must provide a value for 'dns_servers'."
-  type        = bool
-  default     = true
-}
-
-variable "dns_servers" {
-  description = "['168.63.129.16'] The Azure Firewall DNS Proxy will forward all DNS traffic. When this value is set to true, you must provide a value for 'dns_servers'. This should be a comma separated list of IP addresses to forward DNS traffic."
-  type        = list(string)
-  default     = ["168.63.129.16"]
-}
-
-variable "hub_storage_bypass_ip_cidr" {
-  description = "The CIDRs for Azure Storage Account. This will allow the specified CIDRs to bypass the Azure Firewall for Azure Storage Account."
-  type        = list(string)
-  default     = []
 }

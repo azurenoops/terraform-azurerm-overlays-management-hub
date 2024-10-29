@@ -1,5 +1,12 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
+# Azure NoOps Management Hub with force tunneling, Customer Managed Key and AMPLS features
+
+This example is to create a Azure NoOps Management Hub, with Forced Tunnel, Customer Managed Keys, DDOS Protection, Logging Solutions and other additional features.
+
+```hcl
+# Azure Provider configuration
+provider "azurerm" {
+  features {}
+}
 
 module "mod_vnet_hub" {
   #source  = "azurenoops/overlays-management-hub/azurerm"
@@ -27,22 +34,28 @@ module "mod_vnet_hub" {
 
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.
   virtual_network_address_space           = var.hub_vnet_address_space              # (Required)  Hub Virtual Network Parameters
+  firewall_subnet_address_prefix          = var.fw_client_snet_address_prefixes     # (Required)  Hub Firewall Subnet Parameters
+  firewall_management_snet_address_prefix = var.fw_management_snet_address_prefixes # (Optional)  Hub Firewall Management Subnet Parameters
 
-  # (Optional) Enable DDoS Protection Plan
+  # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
+  existing_log_analytics_workspace_resource_id = data.azurerm_log_analytics_workspace.log_analytics.id
+  existing_log_analytics_workspace_id          = data.azurerm_log_analytics_workspace.log_analytics.workspace_id
+
+  # (Optional) Enable DDos Protection Plan
   create_ddos_plan = var.create_ddos_plan
 
-  # (Optional) Enable Customer Managed Key for Storage Account
-  enable_customer_managed_key = var.enable_customer_managed_key
+  # (Optional) Enable Customer Managed Key for Azure Storage Account
+  enable_customer_managed_key = true
+  # Uncomment the following lines to enable Customer Managed Key for Azure Hub Storage Account
+  key_vault_resource_id       = azurerm_key_vault.kv.id
+  key_name                    = "cmk_for_storage_account"
+  user_assigned_identity_id   = azurerm_user_assigned_identity.user_assigned_identity.id
 
   # (Required) Hub Subnets
   # Default Subnets, Service Endpoints
   # This is the default subnet with required configuration, check README.md for more details
   # subnet name will be set as per Azure NoOps naming convention by default. expected value here is: <App or project name>
   hub_subnets = var.hub_subnets
-
-  # (Required) Log Analytics Workspace for Network Diagnostic Settings & Traffic Analytics
-  existing_log_analytics_workspace_resource_id = azurerm_resource_group.laws_rg.id
-  existing_log_analytics_workspace_id          = azurerm_log_analytics_workspace.laws.workspace_id
 
   # (Optional) Enable Flow Logs
   # By default, this will enable flow logs for all subnets.
@@ -58,6 +71,23 @@ module "mod_vnet_hub" {
   # If you do not want to enable forced tunneling,
   # set enable_forced_tunneling to false.
   enable_forced_tunneling = var.enable_forced_tunneling
+
+  # (Optional) To enable the availability zones for firewall.
+  # Availability Zones can only be configured during deployment
+  # You can't modify an existing firewall to include Availability Zones
+  firewall_zones = var.firewall_zones
+
+  # # (Optional) specify the Network rules for Azure Firewall l
+  # This is default values, do not need this if keeping default values
+  firewall_network_rules_collection = var.firewall_network_rules
+
+  # (Optional) specify the application rules for Azure Firewall
+  # This is default values, do not need this if keeping default values
+  firewall_application_rule_collection = var.firewall_application_rules
+
+  # (Optional) specify the nat rules for Azure Firewall
+  # This is default values, do not need this if keeping default values
+  firewall_nat_rule_collection = var.firewall_nat_rules
 
   # (Optional) Private DNS Zone Settings
   # By default, Azure NoOps will create Private DNS Zones in Hub VNet.
@@ -81,3 +111,16 @@ module "mod_vnet_hub" {
   # Tags
   add_tags = local.tags # Tags to be applied to all resources
 }
+```
+
+## Terraform Usage
+
+To run this example you need to execute following Terraform commands
+
+```hcl
+terraform init
+terraform plan --var-file=parameters.tfvars --out dev.plan
+terraform apply "dev.plan"
+```
+
+Run `terraform destroy` when you don't need these resources.
