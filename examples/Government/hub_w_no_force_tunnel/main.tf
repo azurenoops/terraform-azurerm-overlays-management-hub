@@ -76,8 +76,6 @@ module "mod_vnet_hub" {
   # (Optional) By default, this module will create a bastion host,
   # and set the argument to `enable_bastion_host = false`, to disable the bastion host.
   enable_bastion_host                 = var.enable_bastion_host
-  azure_bastion_host_sku              = var.azure_bastion_host_sku
-  azure_bastion_subnet_address_prefix = var.azure_bastion_subnet_address_prefix
 
   # (Optional) By default, this will apply resource locks to all resources created by this module.
   # To disable resource locks, set the argument to `enable_resource_locks = false`.

@@ -116,6 +116,12 @@ variable "enable_traffic_analytics" {
   default     = false
 }
 
+variable "enable_private_dns_zones" {
+  type        = bool
+  description = "If set to true, will enable the deployment of Private DNS Zones. Default is true."
+  default     = true  
+}
+
 variable "hub_private_dns_zones" {
   description = "The private DNS zones of the hub virtual network."
   type        = any
@@ -128,10 +134,10 @@ variable "fw_client_snet_address_prefixes" {
   default     = ["10.8.4.64/26"]
 }
 
-variable "fw_management_snet_address_prefixes" {
-  description = "The address prefix of the firewall subnet."
-  type        = list(string)
-  default     = ["10.8.4.128/26"]
+variable "firewall_sku_tier" {
+  description = "The SKU tier of the Azure Firewall. Possible values are Basic, Standard and Premium. Default is Standard."
+  type        = string
+  default     = "Basic"
 }
 
 variable "firewall_zones" {
@@ -176,14 +182,3 @@ variable "enable_bastion_host" {
   default     = true
 }
 
-variable "azure_bastion_host_sku" {
-  description = "The SKU of the Azure Bastion Host. Possible values are Standard and Basic. Default is Standard."
-  type        = string
-  default     = "Standard"
-}
-
-variable "azure_bastion_subnet_address_prefix" {
-  description = "The address prefix of the Azure Bastion Host subnet."
-  type        = list(string)
-  default     = null
-}
