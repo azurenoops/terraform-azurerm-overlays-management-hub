@@ -25,7 +25,7 @@ resource "random_string" "str" {
 #-----------------------------------------------------------------------
 module "abs_snet" {
   source     = "azure/avm-res-network-virtualnetwork/azurerm//modules/subnet"
-  version    = "0.4.2"
+  version    = "0.6.0"
   depends_on = [module.hub_vnet]
   count      = (var.enable_bastion_host && var.azure_bastion_subnet_address_prefix != null) ? 1 : 0
 
